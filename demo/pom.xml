@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.5.3</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.example</groupId>
+    <artifactId>demo</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>demo</name>
+    <description>Demo project for Diboot</description>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <diboot.version>2.3.0</diboot.version>
+        <springboot.version>2.5.3</springboot.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.22</version>
+        </dependency>
+
+        <!-- 依赖的Spring jar -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!-- 依赖redis
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <version>${springboot.version}</version>
+        </dependency>-->
+
+        <!-- diboot-core内核 -->
+        <dependency>
+            <groupId>com.diboot</groupId>
+            <artifactId>diboot-core-spring-boot-starter</artifactId>
+            <version>${diboot.version}</version>
+        </dependency>
+        <!-- diboot-iam 身份与访问控制组件 -->
+        <dependency>
+            <groupId>com.diboot</groupId>
+            <artifactId>diboot-iam-spring-boot-starter</artifactId>
+            <version>${diboot.version}</version>
+        </dependency>
+        <!-- diboot-file文件处理组件 -->
+        <dependency>
+            <groupId>com.diboot</groupId>
+            <artifactId>diboot-file-spring-boot-starter</artifactId>
+            <version>${diboot.version}</version>
+        </dependency>
+        <!-- diboot-scheduler定时处理组件 -->
+        <dependency>
+            <groupId>com.diboot</groupId>
+            <artifactId>diboot-scheduler-spring-boot-starter</artifactId>
+            <version>${diboot.version}</version>
+        </dependency>
+        <!-- diboot-message消息通知组件 -->
+        <dependency>
+            <groupId>com.diboot</groupId>
+            <artifactId>diboot-message-spring-boot-starter</artifactId>
+            <version>${diboot.version}</version>
+        </dependency>
+
+        <!-- 依赖diboot-devtools -->
+        <dependency>
+            <groupId>com.diboot</groupId>
+            <artifactId>diboot-devtools-spring-boot-starter</artifactId>
+            <version>${diboot.version}</version>
+            <scope>provided</scope><!-- 只在开发过程依赖，打jar包时剔除。-->
+            <!--注：IDEA某些版本下provided无效，需删除此行，打包前手动剔除devtools依赖 -->
+        </dependency>
+
+        <!-- 默认的验证码组件，可按需替换 -->
+        <dependency>
+            <groupId>com.github.whvcse</groupId>
+            <artifactId>easy-captcha</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${springboot.version}</version>
+                <configuration>
+                    <excludes>
+                        <exclude><!-- 只在开发过程依赖，打jar包时剔除 -->
+                            <groupId>com.diboot</groupId>
+                            <artifactId>diboot-devtools-spring-boot-starter</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
