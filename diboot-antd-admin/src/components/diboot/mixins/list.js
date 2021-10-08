@@ -6,6 +6,7 @@ import { downloadFileFromRes } from '@/utils/fileUtil'
 export default {
   data () {
     return {
+      primaryKey: 'id',
       // 请求接口基础路径
       baseApi: '/',
       // 列表数据接口
@@ -30,6 +31,10 @@ export default {
       getListFromMixin: true,
       // 是否使mixin在当前业务的attachMore接口中自动获取关联数据
       getMore: false,
+      // 是否重新加载
+      reload: false,
+      // 是否编辑
+      editable: false,
       // 日期区间选择配置
       dateRangeQuery: {},
       // 标记加载状态
@@ -209,15 +214,15 @@ export default {
      * @returns {Promise<*>}
      */
     async attachMore () {
-      let res = {}
-      if (this.getMore === true) {
-        res = await dibootApi.get(`${this.baseApi}/attachMore`)
-      } else if (this.attachMoreList.length > 0) {
-        res = await dibootApi.post('/common/attachMore', this.attachMoreList)
-      }
-      if (res.code === 0) {
-        this.more = res.data
-        return res.data
+      const reqList = []
+      // 个性化接口
+      this.getMore === true && reqList.push(dibootApi.get(`${this.baseApi}/attachMore`))
+      // 通用获取当前对象关联的数据的接口
+      this.attachMoreList.length > 0 && reqList.push(dibootApi.post('/common/attachMore', this.attachMoreList))
+      if (reqList.length > 0) {
+        const resList = await Promise.all(reqList)
+        resList.forEach(res => res.code === 0 && Object.keys(res.data).forEach(key => { this.more[key] = res.data[key] }))
+        this.$forceUpdate()
       }
     },
     /**
@@ -348,6 +353,29 @@ export default {
       })
     },
     /**
+     * 编辑表格结束后触发
+     * @param value
+     * @param oldValue
+     */
+    async handleEditTableRow (model) {
+      console.log(model)
+      if (this.editable) {
+        try {
+          const res = await dibootApi.put(`${this.baseApi}/${model[this.primaryKey]}`, model)
+          if (res.code === 0) {
+            await this.getList()
+          } else {
+            this.$message.warning(res.msg)
+          }
+        } catch (e) {
+          this.$message.warning('网络异常')
+        } finally {
+          this.reload = !this.reload
+        }
+      }
+      this.editable = !this.editable
+    },
+    /**
      * 下载文件
      * @param res
      */
@@ -404,8 +432,8 @@ export default {
     dateRange2queryParam () {
       _.forEach(this.dateRangeQuery, (v, k) => {
         if (k && v && v.length === 2) {
-          this.queryParam[`${k}Begin`] = v[0].format('YYYY-MM-DD')
-          this.queryParam[`${k}End`] = v[1].format('YYYY-MM-DD')
+          this.queryParam[`${k}Begin`] = v[0] ? v[0].format('YYYY-MM-DD') : ''
+          this.queryParam[`${k}End`] = v[1] ? v[1].format('YYYY-MM-DD') : ''
         }
       })
     },

@@ -9,15 +9,15 @@
     <a-form layout="vertical" :form="form">
       <a-row :gutter="16">
         <a-col :span="12">
-          <a-form-item label="选择定时任务">
+          <a-form-item label="定时任务">
             <a-select
               @change="handleJobSelectChange"
               :getPopupContainer="getPopupContainer"
               placeholder="请选择任务"
               v-decorator="[
-                'jobName',
+                'jobKey',
                 {
-                  initialValue: model.jobName,
+                  initialValue: model.jobKey,
                   rules: [{ required: true, message: '任务不能为空'}]
                 }
               ]"
@@ -25,11 +25,25 @@
               <a-select-option
                 v-for="(item, index) in jobList"
                 :key="index"
-                :value="item.jobName"
+                :value="item.jobKey"
               >
-                {{ item.jobName }}
+                {{ item.jobKey + (item.jobName.length > 0 ? `（${item.jobName}）` : '') }}
               </a-select-option>
             </a-select>
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item label="任务名称">
+            <a-input
+              placeholder="请输入任务名称"
+              v-decorator="[
+                'jobName',
+                {
+                  initialValue: model.jobName,
+                  rules: [{ required: true, message: '任务名称不能为空', whitespace: true }]
+                }
+              ]"
+            />
           </a-form-item>
         </a-col>
         <a-col :span="12">
@@ -56,24 +70,11 @@
                   rules: [{ required: true, message: '定时表达式不能为空'}]
                 }
               ]"
-            />
-          </a-form-item>
-        </a-col>
-        <a-col :span="24">
-          <a-form-item>
-            <template slot="label">
-              <span>参数</span>
-            </template>
-            <a-textarea
-              placeholder="请输入参数"
-              v-decorator="[
-                'paramJson',
-                {
-                  initialValue: model.paramJson,
-                  rules: [{ validator: this.checkJson }]
-                }
-              ]"
-            />
+            >
+              <a slot="addonAfter" href="https://www.bejson.com/othertools/cron/" target="_blank">
+                在线编辑器
+              </a>
+            </a-input>
           </a-form-item>
         </a-col>
         <a-col :span="12">
@@ -94,6 +95,20 @@
             </a-select>
           </a-form-item>
         </a-col>
+        <a-col :span="24">
+          <a-form-item label="参数">
+            <a-textarea
+              placeholder="请输入参数"
+              v-decorator="[
+                'paramJson',
+                {
+                  initialValue: model.paramJson,
+                  rules: [{ validator: this.checkJson }]
+                }
+              ]"
+            />
+          </a-form-item>
+        </a-col>
         <a-col :span="12">
           <a-form-item label="状态">
             <a-radio-group
@@ -111,6 +126,27 @@
               </a-radio-button>
               <a-radio-button value="I">
                 停用
+              </a-radio-button>
+            </a-radio-group>
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item label="记录日志">
+            <a-radio-group
+              :default-value="true"
+              button-style="solid"
+              v-decorator="[
+                'saveLog',
+                {
+                  initialValue: model.saveLog != null ? model.saveLog : true,
+                }
+              ]"
+            >
+              <a-radio-button :value="true">
+                开启
+              </a-radio-button>
+              <a-radio-button :value="false">
+                关闭
               </a-radio-button>
             </a-radio-group>
           </a-form-item>
@@ -149,8 +185,9 @@ export default {
       baseApi: '/scheduleJob',
       form: this.$form.createForm(this),
       jobList: [],
-      jobExample: {},
-      jobCron: {}
+      jobName: {},
+      jobCron: {},
+      jobExample: {}
     }
   },
   methods: {
@@ -181,16 +218,18 @@ export default {
       if (res.code === 0) {
         this.jobList = res.data || []
         this.jobList.forEach(value => {
-          this.jobExample[value.jobName] = value.paramJsonExample
-          this.jobCron[value.jobName] = value.jobCron
+          this.jobName[value.jobKey] = value.jobName
+          this.jobCron[value.jobKey] = value.jobCron
+          this.jobExample[value.jobKey] = value.paramJsonExample
         })
       } else {
         this.$message.error('无可执行定时任务！')
       }
     },
     handleJobSelectChange (value) {
-      this.$set(this.model, 'paramJson', this.jobExample[value])
+      this.$set(this.model, 'jobName', this.jobName[value])
       this.$set(this.model, 'cron', this.jobCron[value])
+      this.$set(this.model, 'paramJson', this.jobExample[value])
     }
   }
 }

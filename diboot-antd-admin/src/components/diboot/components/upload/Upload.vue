@@ -144,8 +144,10 @@
        * 预览
        */
       async handlePreview (file) {
-        this.imageUrl = file.url || file.preview
-        this.previewVisible = true
+        if (this.isImage) {
+          this.imageUrl = file.url || file.preview
+          this.previewVisible = true
+        }
       },
       /**
        * 取消预览
@@ -237,11 +239,11 @@
       },
       /**
        /**
-       * 单个文件上传大小，默认2M
+       * 单个文件上传大小，默认10M
        */
       limitSize: {
         type: Number,
-        default: 2
+        default: 10
       },
       /**
        * 是否是图片，默认不是图片类型（主要用户上传后构建值）
