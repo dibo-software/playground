@@ -17,7 +17,6 @@
     <properties>
         <java.version>1.8</java.version>
         <diboot.version>2.4.0</diboot.version>
-        <springboot.version>2.5.5</springboot.version>
     </properties>
 
     <dependencies>
@@ -99,7 +98,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${springboot.version}</version>
                 <configuration>
                     <excludes>
                         <exclude><!-- 只在开发过程依赖，打jar包时剔除 -->
