@@ -2,60 +2,86 @@
   <div class="editable-cell">
     <div v-if="editable" class="editable-cell-input-wrapper">
       <template v-if="formType === 'INPUT'">
-        <el-input v-model="tempValue" @input="changeValue"/>
+        <el-input
+          v-model="tempValue"
+          :placeholder="placeholder"
+          @input="changeValue"
+        />
       </template>
       <template v-if="formType === 'INPUT_NUMBER'">
         <el-input-number
           v-model="tempValue"
+          :placeholder="placeholder"
           controls-position="right"
           @change="changeValue"
         />
       </template>
       <template v-else-if="formType === 'TEXTAREA'">
         <el-input
-          @input="changeValue"
-          type="textarea"
           v-model="tempValue"
+          :placeholder="placeholder"
+          type="textarea"
+          @input="changeValue"
         />
       </template>
       <template v-else-if="formType === 'S_SELECT'">
         <el-select
+          v-model="tempValue"
+          :placeholder="placeholder"
           filterable
           @change="changeValue"
-          v-model="tempValue"
         >
           <el-option
-            v-for="(item, index) in dataKvList || []"
+            v-for="(item, index) in options || []"
             :key="index"
-            :value="item.v"
-            :label="item.k"
-          >
-          </el-option>
+            :value="item.value"
+            :label="item.label"
+          />
         </el-select>
       </template>
       <template v-else-if="formType === 'SWITCH'">
-        <el-switch  @change="changeValue" v-model="tempValue"/>
+        <el-switch v-model="tempValue" @change="changeValue" />
       </template>
       <template v-else-if="formType === 'DATEPICKER'">
         <el-date-picker
           v-model="tempValue"
-          @change="changeValue"
+          :placeholder="placeholder"
           value-format="yyyy-MM-dd"
           type="date"
+          @change="changeValue"
         />
       </template>
       <template v-else-if="formType === 'DATETIMEPICKER'">
         <el-date-picker
           v-model="tempValue"
-          @change="changeValue"
+          :placeholder="placeholder"
           value-format="yyyy-MM-dd HH:mm:ss"
           type="datetime"
+          @change="changeValue"
         />
+      </template>
+      <template v-else-if="formType === 'TREE'">
+        <el-select
+          @change="changeValue"
+          v-model="tempValue"
+          filterable
+          placeholder="placeholder"
+        >
+          <el-option
+            v-for="item in treeDataList || []"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
       </template>
     </div>
     <div v-else :class="{'text-ellipsis': ellipsis, 'editable-cell-text-wrapper': true}">
       <template v-if="label">
-        {{label}}
+        {{ label }}
+      </template>
+      <template v-else-if="!label && formType === 'TREE'">
+        -
       </template>
       <template v-else>
         {{ (isBoolean ? (tempValue ? '是' : '否') : tempValue) || '-' }}
@@ -65,6 +91,9 @@
 </template>
 
 <script>
+import _ from 'lodash'
+import { dibootApi } from '@/utils/request'
+import { treeListFormatter, treeList2IndentList } from '@/utils/treeDataUtil'
 export default {
   name: 'EditTableCell',
   // 文本值， 表单类型， 选择类型的数据集
@@ -94,7 +123,7 @@ export default {
       default: false
     },
     // 选择类型的数据集
-    dataKvList: {
+    options: {
       type: Array,
       default: () => []
     },
@@ -102,16 +131,75 @@ export default {
     ellipsis: {
       type: Boolean,
       default: false
+    },
+    placeholder: {
+      type: String,
+      default: ''
+    },
+    // 基础请求路径
+    baseUrl: {
+      type: String,
+      default: ''
+    },
+    // 完整请求路径
+    fullUrl: {
+      type: String,
+      default: ''
+    },
+    // 树的value字段
+    treeValueField: {
+      type: String,
+      default: 'id'
+    },
+    // 树的显示字段
+    treeTitleField: {
+      type: String,
+      default: 'label'
     }
   },
   data() {
     return {
-      tempValue: this.value
+      tempValue: this.value,
+      treeList: []
+    }
+  },
+  watch: {
+    editable(val) {
+      val && this.reloadData()
     }
   },
   methods: {
     changeValue(val) {
       this.$emit('input', val)
+    },
+    /**
+     * 重新加载数据
+     */
+    async reloadData() {
+      if (this.formType === 'TREE') {
+        const res = await dibootApi.get(this.fullUrl ? this.fullUrl : `${this.baseUrl}/list`)
+        if (res.code === 0) {
+          this.treeList = res.data
+        }
+      }
+    }
+  },
+  computed: {
+    elTreeList: function() {
+      let tempTreeList = []
+      const { treeList } = this
+      if (treeList && treeList.length > 0) {
+        tempTreeList = treeListFormatter(treeList, this.treeValueField, this.treeTitleField, true)
+      }
+      tempTreeList.splice(0, 0, { key: '0', value: '0', label: '--无--' })
+      return tempTreeList
+    },
+    treeDataList: function() {
+      const { elTreeList } = this
+      if (elTreeList.length === 0) {
+        return []
+      }
+      return treeList2IndentList(_.cloneDeep(elTreeList), 0)
     }
   }
 }
@@ -120,9 +208,6 @@ export default {
 <style scoped>
 .editable-cell {
   position: relative;
-}
-editable-cell-text-wrapper {
-  padding-right: 24px;
 }
 .editable-cell-input-wrapper {
  display: flex;

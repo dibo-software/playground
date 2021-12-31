@@ -11,10 +11,10 @@
             @change="onSearch"
           >
             <el-option
-              v-for="(item, index) in more.userStatusKvList"
+              v-for="(item, index) in more.userStatusOptions"
               :key="index"
-              :value="item.v"
-              :label="item.k"
+              :value="item.value"
+              :label="item.label"
             />
           </el-select>
           <el-button v-waves type="primary" icon="el-icon-search" @click="onSearch">
@@ -97,7 +97,12 @@ export default {
   },
   data() {
     return {
-      baseApi: '/iam/user'
+      baseApi: '/iam/user',
+      attachMoreList: [
+        {
+          target: 'USER_STATUS'
+        }
+      ]
     }
   },
   watch: {
