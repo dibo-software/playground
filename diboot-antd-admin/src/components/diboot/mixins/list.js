@@ -3,7 +3,11 @@ import { dibootApi } from '@/utils/request'
 import moment from 'moment'
 import _ from 'lodash'
 import { downloadFileFromRes } from '@/utils/fileUtil'
+import more from './more'
+import { list2tree } from '@/utils/treeDataUtil'
+
 export default {
+  mixins: [more],
   data () {
     return {
       primaryKey: 'id',
@@ -23,18 +27,12 @@ export default {
       advanced: false,
       // 列表数据
       data: [],
-      // 关联相关的更多数据
-      more: {},
-      // 获取关联数据列表的配置列表
-      attachMoreList: [],
       // 是否从mixin中自动获取初始的列表数据
       getListFromMixin: true,
-      // 是否使mixin在当前业务的attachMore接口中自动获取关联数据
-      getMore: false,
       // 是否重新加载
       reload: false,
-      // 是否编辑
-      editable: false,
+      // 当前激活value
+      currentPrimaryValue: '',
       // 日期区间选择配置
       dateRangeQuery: {},
       // 标记加载状态
@@ -42,7 +40,7 @@ export default {
       // 窗口高度
       windowHeight: 240,
       // 是否允许撤回删除
-      allowCanceledDelete: true,
+      allowCanceledDelete: false,
       // 分页数据
       pagination: {
         pageSize: 10,
@@ -55,7 +53,7 @@ export default {
     }
   },
   methods: {
-
+    list2tree,
     /**
      * 分页、排序、筛选变化时触发
      * @param pagination 分页
@@ -101,23 +99,12 @@ export default {
      * @returns {Promise<any>}
      */
     postList () {
-      this.dateRange2queryParam()
       return new Promise((resolve, reject) => {
         this.loadingData = true
-        // 转化包含moment的时间类型
-        this.contentTransform(this.queryParam)
-        // 过滤掉不存在值的属性
-        let tempQueryParam = {}
-        // 合并自定义查询参数
-        merge(tempQueryParam, this.customQueryParam)
-        // 合并搜索参数
-        merge(tempQueryParam, this.queryParam)
-        // 改造查询条件（用于列表页扩展）
-        tempQueryParam = this.rebuildQuery(tempQueryParam)
         // 使用post方式请求列表数据（多用于复杂参数通过json对象进行传输到后端进行筛选）
         dibootApi.post(
           this.listApi ? this.listApi : `${this.baseApi}/list`,
-          tempQueryParam
+          this.buildQueryParam()
         )
           .then(res => {
             this.loadingData = false
@@ -156,22 +143,11 @@ export default {
      * @returns {Promise<any>}
      */
     getList () {
-      this.dateRange2queryParam()
       return new Promise((resolve, reject) => {
         this.loadingData = true
-        // 转化包含moment的时间类型
-        this.contentTransform(this.queryParam)
-        // 过滤掉不存在值的属性
-        let tempQueryParam = {}
-        // 合并自定义查询参数
-        merge(tempQueryParam, this.customQueryParam)
-        // 合并搜索参数
-        merge(tempQueryParam, this.queryParam)
-        // 改造查询条件（用于列表页扩展）
-        tempQueryParam = this.rebuildQuery(tempQueryParam)
         dibootApi.get(
           this.listApi ? this.listApi : `${this.baseApi}/list`,
-          tempQueryParam
+          this.buildQueryParam()
         ).then(res => {
           this.loadingData = false
           if (res.code === 0) {
@@ -207,23 +183,6 @@ export default {
      */
     rebuildQuery (query) {
       return query
-    },
-
-    /**
-     * 加载当前页面关联的对象或者字典
-     * @returns {Promise<*>}
-     */
-    async attachMore () {
-      const reqList = []
-      // 个性化接口
-      this.getMore === true && reqList.push(dibootApi.get(`${this.baseApi}/attachMore`))
-      // 通用获取当前对象关联的数据的接口
-      this.attachMoreList.length > 0 && reqList.push(dibootApi.post('/common/attachMore', this.attachMoreList))
-      if (reqList.length > 0) {
-        const resList = await Promise.all(reqList)
-        resList.forEach(res => res.code === 0 && Object.keys(res.data).forEach(key => { this.more[key] = res.data[key] }))
-        this.$forceUpdate()
-      }
     },
     /**
      * 重置
@@ -332,17 +291,8 @@ export default {
      * 导出数据至excel
      */
     exportData () {
-      // 转化包含moment的时间类型
-      this.contentTransform(this.queryParam)
-      let tempQueryParam = {}
-      // 合并自定义查询参数
-      merge(tempQueryParam, this.customQueryParam)
-      // 合并搜索参数
-      merge(tempQueryParam, this.queryParam)
-      // 改造查询条件（用于列表页扩展）
-      tempQueryParam = this.rebuildQuery(tempQueryParam)
       const exportApi = this.exportApi ? this.exportApi : '/excel/export'
-      dibootApi.download(`${this.baseApi}${exportApi}`, tempQueryParam).then(res => {
+      dibootApi.download(`${this.baseApi}${exportApi}`, this.buildQueryParam()).then(res => {
         if (res.filename) {
           this.downloadFile(res)
         } else {
@@ -353,15 +303,31 @@ export default {
       })
     },
     /**
+     * 构建查询参数
+     */
+    buildQueryParam () {
+      this.dateRange2queryParam()
+      // 转化包含moment的时间类型
+      this.contentTransform(this.queryParam)
+      let tempQueryParam = {}
+      // 合并自定义查询参数
+      merge(tempQueryParam, this.customQueryParam)
+      // 合并搜索参数
+      merge(tempQueryParam, this.queryParam)
+      // 改造查询条件（用于列表页扩展）
+      tempQueryParam = this.rebuildQuery(tempQueryParam)
+      return tempQueryParam
+    },
+    /**
      * 编辑表格结束后触发
      * @param value
      * @param oldValue
      */
     async handleEditTableRow (model) {
-      console.log(model)
-      if (this.editable) {
+      if (this.currentPrimaryValue) {
         try {
-          const res = await dibootApi.put(`${this.baseApi}/${model[this.primaryKey]}`, model)
+          const findModel = this.data.find(e => e[this.primaryKey] === this.currentPrimaryValue)
+          const res = await dibootApi.put(`${this.baseApi}/${findModel[this.primaryKey]}`, findModel)
           if (res.code === 0) {
             await this.getList()
           } else {
@@ -373,7 +339,11 @@ export default {
           this.reload = !this.reload
         }
       }
-      this.editable = !this.editable
+      if (this.currentPrimaryValue === model[this.primaryKey]) {
+        this.currentPrimaryValue = ''
+      } else {
+        this.currentPrimaryValue = model[this.primaryKey]
+      }
     },
     /**
      * 下载文件
@@ -440,13 +410,22 @@ export default {
     windowResize () {
       // 设置workPanel的高度
       this.windowHeight = window.innerHeight
+    },
+    /**
+     * 点击级联类型后，加载select数据
+     */
+    handleCascaderSelectNext (data, clearParams = []) {
+      // 将级联已经选中的统一清理
+      clearParams.forEach(param => delete this.queryParam[param])
+      // 选中的数据初始化
+      Object.assign(this.more, data)
+      this.$forceUpdate()
     }
   },
   async mounted () {
     if (this.getListFromMixin === true) {
       await this.getList()
     }
-    await this.attachMore()
   },
   computed: {
     tableScrollData: function () {

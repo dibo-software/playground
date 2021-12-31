@@ -84,7 +84,6 @@
         <a-col :span="12">
           <a-form-item label="类型">
             <a-select
-              v-if="more.orgTypeKvList !== undefined"
               :getPopupContainer="getPopupContainer"
               placeholder="请选择类型"
               v-decorator="[
@@ -96,11 +95,11 @@
               ]"
             >
               <a-select-option
-                v-for="(type, index) in more.orgTypeKvList"
+                v-for="(type, index) in more.orgTypeOptions"
                 :key="index"
-                :value="type.v"
+                :value="type.value"
               >
-                {{ type.k }}
+                {{ type.label }}
               </a-select-option>
             </a-select>
           </a-form-item>
@@ -141,7 +140,7 @@
     </a-form>
 
     <div class="drawer-footer">
-      <a-button :style="{marginRight: '8px'}" @click="close">取消</a-button>
+      <a-button @click="close">取消</a-button>
       <a-button @click="onSubmit" type="primary" :loading="state.confirmSubmit" :disabled="state.confirmSubmit">确定</a-button>
     </div>
     <user-select-modal ref="userSelectModal" @select="record => selectReportManager(record)"></user-select-modal>
@@ -160,7 +159,11 @@ export default {
   data () {
     return {
       baseApi: '/iam/org',
-      getMore: true,
+      attachMoreList: [
+        {
+          target: 'ORG_TYPE'
+        }
+      ],
       form: this.$form.createForm(this),
       orgList: []
     }

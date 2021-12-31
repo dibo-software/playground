@@ -71,7 +71,7 @@
                 }
               ]"
             >
-              <a slot="addonAfter" href="https://www.bejson.com/othertools/cron/" target="_blank">
+              <a slot="addonAfter" href="http://cron.ciding.cc/" target="_blank">
                 在线编辑器
               </a>
             </a-input>
@@ -168,7 +168,7 @@
       </a-row>
     </a-form>
     <div class="drawer-footer">
-      <a-button :style="{marginRight: '8px'}" @click="close">取消</a-button>
+      <a-button @click="close">取消</a-button>
       <a-button @click="onSubmit" type="primary" :loading="state.confirmSubmit" :disabled="state.confirmSubmit">确定</a-button>
     </div>
   </a-drawer>

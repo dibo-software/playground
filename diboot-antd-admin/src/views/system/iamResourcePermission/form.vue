@@ -31,17 +31,15 @@
         <a-col :span="12">
           <a-form-item label="当前菜单选取">
             <a-tree-select
-              v-if="routerTreeList.length > 0"
               placeholder="请选取当前菜单"
               :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
-              :treeData="routerTreeList"
+              :treeData="allRouterTreeList"
               treeNodeFilterProp="title"
               showSearch
               treeDefaultExpandAll
               v-model="currentMenu"
               @change="onMenuNameChange"
-            >
-            </a-tree-select>
+            />
           </a-form-item>
         </a-col>
       </a-row>
@@ -125,7 +123,7 @@
                   <a-row type="flex" align="middle" :gutter="16">
                     <a-col :span="19">
                       <a-select
-                        v-if="more.resourcePermissionCodeKvList && isSelect"
+                        v-if="isSelect"
                         showSearch
                         :filterOption="(input, option) => filterPermissionCodeOption(permission, input, option)"
                         @change="value => changePermissionName(permission, value)"
@@ -133,16 +131,16 @@
                         v-model="permission.resourceCode"
                       >
                         <a-select-option
-                          v-for="(item, i) in more.resourcePermissionCodeKvList"
-                          v-if="!existPermissionCodes.includes(item.v) || permission.resourceCode === item.v"
+                          v-for="(item, i) in more.resourcePermissionCodeOptions"
+                          v-if="!existPermissionCodes.includes(item.value) || permission.resourceCode === item.value"
                           :key="i"
-                          :value="item.v"
+                          :value="item.value"
                         >
-                          {{ item.k }}[{{ item.v }}]
+                          {{ item.label }}[{{ item.value }}]
                         </a-select-option>
                       </a-select>
                       <a-input
-                        v-if="!isSelect"
+                        v-else
                         placeholder="请输入按钮/权限名称"
                         v-model="permission.resourceCode"
                       />
@@ -160,7 +158,6 @@
                 </a-form-item>
                 <a-form-item label="当前按钮/权限所需接口列表">
                   <a-tree-select
-                    v-if="routerTreeList.length > 0"
                     placeholder="当前按钮/权限所需接口列表"
                     :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
                     :treeData="apiTreeList"
@@ -171,8 +168,7 @@
                     allowClear
                     @change="value => {permission.apiSetList = value; $forceUpdate()}"
                     v-model="permission.apiSetList"
-                  >
-                  </a-tree-select>
+                  />
                 </a-form-item>
               </a-tab-pane>
             </a-tabs>
@@ -185,7 +181,7 @@
     </a-form>
 
     <div class="drawer-footer">
-      <a-button :style="{marginRight: '8px'}" @click="close">取消</a-button>
+      <a-button @click="close">取消</a-button>
       <a-button @click="onSubmit" type="primary" :loading="state.confirmSubmit" :disabled="state.confirmSubmit">确定</a-button>
     </div>
   </a-drawer>
@@ -194,6 +190,7 @@
 <script>
 import form from '@/components/diboot/mixins/form'
 import { dibootApi } from '@/utils/request'
+import { asyncRouterMap } from '@/config/router.config'
 import { treeListFormatter, routersFormatter, treeList2list, apiListFormatter } from '@/utils/treeDataUtil'
 import { mapState } from 'vuex'
 import _ from 'lodash'
@@ -216,6 +213,11 @@ export default {
       baseApi: '/iam/resourcePermission',
       form: this.$form.createForm(this),
       getMore: true,
+      attachMoreList: [
+        {
+          target: 'RESOURCE_PERMISSION_CODE'
+        }
+      ],
       currentPermissionActiveKey: 0,
       currentMenu: '',
       apiSetList: [],
@@ -385,12 +387,14 @@ export default {
       this.permissionList.push(newPermission)
       this.currentPermissionActiveKey = this.permissionList.length - 1
       // 自动补全编码选项
-      if (this.more && this.more.resourcePermissionCodeKvList) {
-        const validKv = this.more.resourcePermissionCodeKvList.find(kv => {
-          return !this.existPermissionCodes.includes(kv.v)
+      if (this.more && this.more.resourcePermissionCodeOptions) {
+        const validOption = this.more.resourcePermissionCodeOptions.find(option => {
+          return !this.existPermissionCodes.includes(option.value)
         })
-        newPermission.resourceCode = validKv.v
-        this.changePermissionName(newPermission, validKv.v)
+        if (validOption) {
+          newPermission.resourceCode = validOption.value
+          this.changePermissionName(newPermission, validOption.value)
+        }
       }
     },
     removePermission (index) {
@@ -410,12 +414,12 @@ export default {
       return false
     },
     changePermissionName (permission, value) {
-      const validKv = this.more.resourcePermissionCodeKvList.find(item => {
-        return item.v === value
+      const validOption = this.more.resourcePermissionCodeOptions.find(item => {
+        return item.value === value
       })
       // 自动补全按钮/权限名称
-      if (validKv !== undefined) {
-        permission.displayName = validKv['k']
+      if (validOption !== undefined) {
+        permission.displayName = validOption.label
       }
       // 自动补全接口列表
       permission.apiSetList = []
@@ -485,16 +489,19 @@ export default {
     routerTreeList: function () {
       return routersFormatter(this.addRouters)
     },
+    allRouterTreeList () {
+      return routersFormatter(asyncRouterMap)
+    },
     routerList: function () {
-      return treeList2list(_.cloneDeep(this.routerTreeList))
+      return treeList2list(_.cloneDeep(this.allRouterTreeList))
     },
     apiList: function () {
       return treeList2list(_.cloneDeep(this.apiTreeList))
     },
     menuTreeData: function () {
       let menuTreeData = []
-      if (this.more && this.more.menuList) {
-        menuTreeData = treeListFormatter(this.more.menuList, 'id', 'displayName', true)
+      if (this.more && this.more.menuTree) {
+        menuTreeData = treeListFormatter(this.more.menuTree, 'id', 'displayName', true)
       }
       menuTreeData.splice(0, 0, { key: '0', value: '0', title: '顶级菜单' })
       return menuTreeData

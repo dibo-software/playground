@@ -17,12 +17,18 @@
       <a-descriptions-item label="模版内容">
         {{ model.content }}
       </a-descriptions-item>
+      <a-descriptions-item label="创建人">
+        {{ model.createByName }}
+      </a-descriptions-item>
       <a-descriptions-item label="创建时间">
         {{ model.createTime }}
       </a-descriptions-item>
+      <a-descriptions-item label="更新时间">
+        {{ model.updateTime }}
+      </a-descriptions-item>
     </a-descriptions>
     <div class="drawer-footer">
-      <a-button :style="{marginRight: '8px'}" @click="close">关闭</a-button>
+      <a-button @click="close">关闭</a-button>
     </div>
   </a-drawer>
 </template>

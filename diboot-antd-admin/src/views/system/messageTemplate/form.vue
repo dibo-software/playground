@@ -60,7 +60,7 @@
                 </a-tooltip>
               </span>
               <div class="variable-container">
-                <a-tag @click="handleInsertIntoContent(item)" class="variable-tag" color="blue" v-for="(item, index) in more.templateTemplateVariableList" :key="index">
+                <a-tag @click="handleInsertIntoContent(item)" class="variable-tag" color="blue" v-for="(item, index) in more.templateVariableList" :key="index">
                   {{ item }}
                 </a-tag>
               </div>
@@ -81,7 +81,7 @@
       </a-row>
     </a-form>
     <div class="drawer-footer">
-      <a-button :style="{marginRight: '8px'}" @click="close">取消</a-button>
+      <a-button @click="close">取消</a-button>
       <a-button @click="onSubmit" type="primary" :loading="state.confirmSubmit" :disabled="state.confirmSubmit">确定</a-button>
     </div>
   </a-drawer>

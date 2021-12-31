@@ -107,6 +107,12 @@ export const asyncRouterMap = [
             meta: { title: '定时任务管理', keepAlive: false, permission: ['ScheduleJob'] }
           },
           {
+            path: '/system/uploadFile/list',
+            name: 'UploadFileList',
+            component: () => import('@/views/system/uploadFile/list'),
+            meta: { title: '上传文件管理', keepAlive: true, permission: ['UploadFile'] }
+          },
+          {
             path: '/system/iamOperationLog/list',
             name: 'IamOperationLogIndex',
             component: () => import('@/views/system/iamOperationLog/list'),

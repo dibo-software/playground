@@ -23,14 +23,12 @@
               placeholder="请选择岗位列表"
               style="width: 160px;"
             >
-              <template v-if="positionKvList && positionKvList.length > 0">
-                <a-select-option
-                  v-for="kv in positionKvList"
-                  :key="kv.k"
-                  :value="kv.k">
-                  {{ kv.v }}
-                </a-select-option>
-              </template>
+              <a-select-option
+                v-for="(option, index) in more.iamPositionOptions"
+                :key="index"
+                :value="option.value">
+                {{ option.label }}
+              </a-select-option>
             </a-select>
           </a-form-model-item>
           <a-form-model-item
@@ -43,7 +41,7 @@
               :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
               :treeData="orgTreeList"
               treeNodeFilterProp="title"
-              showSearch
+              :showSearch="true"
               treeDefaultExpandAll
               v-model="item.orgId"
               style="width: 200px;"
@@ -71,12 +69,12 @@
     </a-form-model>
 
     <position-form
-      @complete="loadPositionKvList"
-      @changeKey="changeTargetId"
-      ref="positionForm"></position-form>
+      ref="positionForm"
+      @complete="attachMore"
+    />
 
     <div class="drawer-footer">
-      <a-button :style="{marginRight: '8px'}" @click="close">取消</a-button>
+      <a-button @click="close">取消</a-button>
       <a-button @click="onSubmit" type="primary" :loading="state.confirmLoading" :disabled="state.confirmLoading">确定</a-button>
     </div>
   </a-drawer>
@@ -101,9 +99,14 @@ export default {
   name: 'UserPositionRefForm',
   data () {
     return {
-      baseApi: 'iam/userPosition',
+      baseApi: '/iam/userPosition',
+      attachMoreList: [
+        {
+          target: 'IamPosition',
+          label: 'name'
+        }
+      ],
       user: {},
-      positionKvList: [],
       orgList: [],
       form: {
         userPositionList: []
@@ -114,7 +117,7 @@ export default {
     async open (user) {
       this.user = user
       this.state.visible = true
-      this.loadPositionKvList()
+      this.attachMore()
       this.loadUserPositionList(user.id)
       this.loadOrgList()
     },
@@ -130,13 +133,6 @@ export default {
     removeUserPosition (index) {
       this.form.userPositionList.splice(index, 1)
       this.$forceUpdate()
-    },
-    loadPositionKvList () {
-      dibootApi.get('/iam/position/kvList').then(res => {
-        if (res.code === 0) {
-          this.positionKvList = res.data
-        }
-      })
     },
     loadOrgList () {
       dibootApi.get('/iam/org/tree').then(res => {
@@ -210,21 +206,11 @@ export default {
         })
       })
     },
-    changeTargetId (obj) {
-      if (obj && obj.id) {
-        // 刷新岗位列表
-        this.loadPositionKvList()
-      }
-    },
-    close () {
-      this.state.visible = false
-      this.model = {}
+    afterClose () {
       this.user = {}
-      this.positionKvList = []
+      this.more.iamPositionOptions = []
       this.orgList = []
       this.form.userPositionList = []
-      this.__defaultFileWrapperKeys__()
-      this.afterClose()
     }
   },
   computed: {

@@ -48,10 +48,10 @@
           placeholder="请选择职级"
         >
           <a-select-option
-            v-for="kv in more.positionGradeKvList"
-            :key="kv.v"
-            :value="kv.v">
-            {{ kv.v }}
+            v-for="item in more.positionGradeOptions"
+            :key="item.value"
+            :value="item.value">
+            {{ item.label }}
           </a-select-option>
         </a-select>
       </a-form-item>
@@ -79,10 +79,10 @@
           placeholder="请选择数据权限类型"
         >
           <a-select-option
-            v-for="kv in more.dataPermissionTypeKvList"
-            :key="kv.v"
-            :value="kv.v">
-            {{ kv.k }}
+            v-for="item in more.dataPermissionTypeOptions"
+            :key="item.value"
+            :value="item.value">
+            {{ item.label }}
           </a-select-option>
         </a-select>
       </a-form-item>
@@ -100,7 +100,7 @@
     </a-form>
 
     <div class="drawer-footer">
-      <a-button :style="{marginRight: '8px'}" @click="close">取消</a-button>
+      <a-button @click="close">取消</a-button>
       <a-button @click="onSubmit" type="primary" :loading="state.confirmSubmit" :disabled="state.confirmSubmit">确定</a-button>
     </div>
   </a-drawer>
@@ -116,11 +116,9 @@ export default {
       baseApi: '/iam/position',
       attachMoreList: [
         {
-          type: 'D',
           target: 'POSITION_GRADE'
         },
         {
-          type: 'D',
           target: 'DATA_PERMISSION_TYPE'
         }
       ],
@@ -132,9 +130,9 @@ export default {
     afterOpen () {
     },
     onGradeValueChanged (value) {
-      if (value && this.positionGradeKvMap && this.positionGradeKvMap[value]) {
+      if (value && this.positionGradeMap && this.positionGradeMap[value]) {
         this.form.setFieldsValue({
-          gradeName: this.positionGradeKvMap[value]['k']
+          gradeName: this.positionGradeMap[value]['label']
         })
       }
     },
@@ -153,14 +151,14 @@ export default {
     }
   },
   computed: {
-    positionGradeKvMap: function () {
-      const positionGradeKvMap = {}
-      if (this.more && this.more.positionGradeKvList) {
-        this.more.positionGradeKvList.forEach(item => {
-          positionGradeKvMap[item.v] = item
+    positionGradeMap: function () {
+      const positionGradeMap = {}
+      if (this.more && this.more.positionGradeOptions) {
+        this.more.positionGradeOptions.forEach(item => {
+          positionGradeMap[item.value] = item
         })
       }
-      return positionGradeKvMap
+      return positionGradeMap
     }
   }
 }
