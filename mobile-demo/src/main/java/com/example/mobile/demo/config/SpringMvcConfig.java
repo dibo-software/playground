@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(basePackages={"com.example"})
+@ComponentScan(basePackages={"com.example.mobile"})
 @MapperScan(basePackages={"com.example.mobile.demo.mapper"})
 public class SpringMvcConfig {
 
