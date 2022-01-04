@@ -29,7 +29,6 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.22</version>
         </dependency>
 
         <!-- 依赖的Spring jar -->
@@ -91,6 +90,13 @@
             <version>1.6.2</version>
         </dependency>
 
+        <!-- Swagger接口文档
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi</artifactId>
+            <version>1.6.3</version>
+        </dependency>-->
+
     </dependencies>
 
     <build>
@@ -108,6 +114,16 @@
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
     </build>
 
 </project>

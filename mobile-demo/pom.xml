@@ -11,7 +11,7 @@
     <groupId>com.example</groupId>
     <artifactId>mobile-demo</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <name>demo</name>
+    <name>mobile-demo</name>
     <description>Mobile Demo project for Diboot</description>
 
     <properties>
