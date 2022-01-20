@@ -82,7 +82,16 @@
             <scope>provided</scope><!-- 只在开发过程依赖，打jar包时剔除。-->
             <!--注：IDEA某些版本下provided无效，需删除此行，打包前手动剔除devtools依赖 -->
         </dependency>
-
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.2.2</version>
+        </dependency>
         <!-- 默认的验证码组件，可按需替换 -->
         <dependency>
             <groupId>com.github.whvcse</groupId>
@@ -120,6 +129,14 @@
                 <includes>
                     <include>**/*.properties</include>
                     <include>**/*.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.properties</include>
                 </includes>
                 <filtering>false</filtering>
             </resource>
