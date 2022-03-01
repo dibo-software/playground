@@ -103,7 +103,7 @@
         <!-- Swagger接口文档
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi</artifactId>
+            <artifactId>springdoc-openapi-ui</artifactId>
             <version>1.6.3</version>
         </dependency>-->
 
