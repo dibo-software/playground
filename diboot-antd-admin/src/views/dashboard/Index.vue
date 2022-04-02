@@ -29,7 +29,7 @@ export default {
       attentionItems: [
         {
           title: '新手指南',
-          titleUrl: 'https://www.diboot.com/guide/newer/beginner.html',
+          titleUrl: 'https://www.diboot.com/guide/beginner/bootstrap.html',
           description: 'diboot新用户，先通读官网文档'
         },
         {
@@ -44,7 +44,7 @@ export default {
         },
         {
           title: '常用问题FAQ',
-          titleUrl: 'https://www.diboot.com/guide/notes/faq/main.html',
+          titleUrl: 'https://www.diboot.com/guide/spring-boot/faq.html',
           description:
             '使用中有疑问可参考FAQ 或 通过github/gitee查找技术交流群沟通'
         },

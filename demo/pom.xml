@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.3</version>
+        <version>2.6.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <diboot.version>2.4.0</diboot.version>
+        <diboot.version>2.5.0</diboot.version>
     </properties>
 
     <dependencies>
@@ -95,16 +95,20 @@
 
         <!-- 默认的验证码组件，可按需替换 -->
         <dependency>
-            <groupId>com.github.whvcse</groupId>
-            <artifactId>easy-captcha</artifactId>
-            <version>1.6.2</version>
+            <groupId>com.pig4cloud.plugin</groupId>
+            <artifactId>captcha-core</artifactId>
+            <version>2.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
         </dependency>
 
         <!-- Swagger接口文档
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.6.3</version>
+            <version>1.6.6</version>
         </dependency>-->
 
     </dependencies>

@@ -206,7 +206,12 @@ export default {
         })
       })
     },
-    afterClose () {
+    close () {
+      this.state.visible = false
+      this.state.formDataLoading = false
+      this.model = {}
+      this.__defaultFileWrapperKeys__()
+      this.$refs.form.resetFields()
       this.user = {}
       this.more.iamPositionOptions = []
       this.orgList = []
@@ -215,7 +220,7 @@ export default {
   },
   computed: {
     orgTreeList: function () {
-      if (this.orgList === undefined || this.orgList.length === 0) {
+      if (this.orgList == null || this.orgList.length === 0) {
         return []
       }
       const orgTreeList = treeListFormatter(_.cloneDeep(this.orgList), 'id', 'shortName', true)

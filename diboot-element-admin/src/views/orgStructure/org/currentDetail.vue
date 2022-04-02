@@ -1,7 +1,5 @@
 <template>
-  <div
-    v-if="currentNodeId !== '0' && model"
-  >
+  <div v-if="currentNodeId !== '0' && model">
     <el-form ref="form" label-width="80px">
       <el-row>
         <el-col :span="8">
@@ -60,7 +58,7 @@ export default {
   },
   computed: {
     parentName: function() {
-      if (this.model === undefined || !this.model.parentShortName) {
+      if (this.model == null || !this.model.parentShortName) {
         return '-无-'
       }
       return this.model.parentShortName

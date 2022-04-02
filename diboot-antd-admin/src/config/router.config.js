@@ -1,10 +1,6 @@
 // eslint-disable-next-line
-import { UserLayout, PageView, BasicLayout, BlankLayout } from '@/layouts'
-
-const RouteView = {
-  name: 'RouteView',
-  render: h => h('router-view')
-}
+import { UserLayout, PageView, BasicLayout, RouteView } from '@/layouts'
+import { callback } from '@/utils/sso'
 
 export const asyncRouterMap = [
   {
@@ -61,7 +57,7 @@ export const asyncRouterMap = [
       {
         path: '/system',
         redirect: '/system/dictionary/list',
-        component: PageView,
+        component: RouteView,
         meta: { title: '系统管理', icon: 'setting', permission: ['system'] },
         children: [
           {
@@ -111,6 +107,12 @@ export const asyncRouterMap = [
             name: 'UploadFileList',
             component: () => import('@/views/system/uploadFile/list'),
             meta: { title: '上传文件管理', keepAlive: true, permission: ['UploadFile'] }
+          },
+          {
+            path: '/system/config',
+            name: 'systemConfig',
+            component: () => import('@/views/system/config/index'),
+            meta: { title: '系统配置管理', keepAlive: true, permission: ['SystemConfig'] }
           },
           {
             path: '/system/iamOperationLog/list',
@@ -209,13 +211,28 @@ export const constantRouterMap = [
     redirect: '/user/login',
     hidden: true,
     children: [
-      { path: 'login',
+      {
+        path: 'login',
         name: 'login',
         component: () => import(/* webpackChunkName: "user" */ '@/views/user/Login')
       }
     ]
   },
-
+  {
+    path: '/callback',
+    name: 'callback',
+    component: {
+      created () {
+        callback()
+      },
+      render: h => h('h2', {
+        style: {
+          lineHeight: '100vh',
+          textAlign: 'center'
+        }
+      }, '登录中……')
+    }
+  },
   {
     path: '/404',
     redirect: '/'
