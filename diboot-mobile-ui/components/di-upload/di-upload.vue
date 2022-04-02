@@ -31,10 +31,10 @@
 	 * @property {Array} file-list 文件存储位置
 	 * @property {String} limit-count 上传数量限制，默认1，自动设置到config对象中
 	 * @property {Boolean} show-progress 是否显示进度条，默认true，自动设置到config对象中
-	 * @property {Number} max-size 选择单个文件的最大大小，单位B(byte)，默认不限制，自动设置到config对象中
+	 * @property {String} max-size 选择单个文件的最大大小，单位B(byte)，默认不限制，自动设置到config对象中
 	 * @property {Boolean} deletable 是否显示删除图片的按钮，默认true，自动设置到config对象中
-	 * @property {String Number} width 图片预览区域和添加图片按钮的宽度(单位：rpx)，默认200 ，自动设置到config对象中
-	 * @property {String Number} height 图片预览区域和添加图片按钮的高度(单位：rpx) ，默认200,自动设置到config对象中
+	 * @property {String} width 图片预览区域和添加图片按钮的宽度(单位：rpx)，默认200 ，自动设置到config对象中
+	 * @property {String} height 图片预览区域和添加图片按钮的高度(单位：rpx) ，默认200,自动设置到config对象中
 	 * @property {String} upload-text 上传框里面的文本 ，默认 ‘上传’,自动设置到config对象中
 	 * @property {Object} config 上传组件配置，优先级最低，单独的属性设置会覆盖对象的配置
 	 */

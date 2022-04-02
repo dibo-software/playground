@@ -13,6 +13,8 @@ export default {
 			createApi: '',
 			// 更新接口
 			updateApiPrefix: '',
+			// 标题
+			title: '',
 			// 存储当前对象form数据
 			form: {},
 			// 当前form是否包含上传
@@ -36,7 +38,7 @@ export default {
 			fileUuidList: [],
 			/**
 			 *
-			 * 激活的颜色：保持风格统一
+			 * 激活的颜色：主要用于checkbox、radio等，保持风格统一
 			 */
 			activeColor: this.$color.success
 		}
@@ -55,6 +57,8 @@ export default {
 		 */
 		async open(id) {
 			if (id === undefined) {
+				// 没有id数据则认为是新建
+				this.title = '新建'
 				this.afterOpen(id)
 			} else {
 				uni.showLoading({
@@ -65,6 +69,7 @@ export default {
 					const res = await dibootApi.get(`${this.baseApi}/${id}`)
 					if (res.code === 0) {
 						this.form = res.data
+						this.title = '更新'
 						this.afterOpen(id)
 					} else {
 						uni.showToast({
@@ -139,6 +144,7 @@ export default {
 		 * @returns {Promise<void>}
 		 */
 		async onSubmit() {
+			this.confirmSubmit = true
 			uni.showLoading({
 			    title: '提交中...'
 			});
@@ -157,14 +163,15 @@ export default {
 					// 更新该记录
 					result = await this.update(this.form)
 				}
-				// 执行提交失败后的一系列后续操作
+				// 执行提交成功后的一系列后续操作
 				this.submitSuccess(result)
 			} catch (e) {
-				// 执行一系列后续操作
+				// 执行提交失败后的一系列后续操作
 				this.submitFailed(e)
 				console.log(e)
 			} finally {
 				uni.hideLoading()
+				this.confirmSubmit = false
 			}
 		},
 		/** *
