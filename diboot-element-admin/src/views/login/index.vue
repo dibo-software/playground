@@ -60,10 +60,10 @@
         </el-col>
         <el-col :span="8" style="text-align: right;">
           <img
-            :src="`${baseURL}/auth/captcha?p=${captchaParam}`"
+            :src="`${baseURL}/auth/captcha?traceId=${loginForm.traceId}`"
             alt="验证码"
             style="height: 40px; margin-top: 4px; margin-right: 8px; cursor: pointer;"
-            @click="++captchaParam"
+            @click="refreshTraceId()"
           >
         </el-col>
       </el-row>
@@ -87,7 +87,8 @@ export default {
       loginForm: {
         username: '',
         password: '',
-        captcha: ''
+        captcha: '',
+        traceId: Math.random().toString(36).slice(-8) + Date.parse(new Date())
       },
       loginRules: {
         username: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
@@ -134,7 +135,7 @@ export default {
             this.loading = false
           }).catch(err => {
             this.loading = false
-            ++this.captchaParam
+            this.refreshTraceId()
             this.$message.error(err)
           })
         } else {
@@ -142,6 +143,9 @@ export default {
           return false
         }
       })
+    },
+    refreshTraceId() {
+      this.loginForm.traceId = Math.random().toString(36).slice(-8) + Date.parse(new Date())
     }
   }
 }
