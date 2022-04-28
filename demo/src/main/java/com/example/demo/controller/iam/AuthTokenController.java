@@ -38,7 +38,7 @@ public class AuthTokenController extends BaseController {
     private IamUserRoleService iamUserRoleService;
 
     @Autowired
-    private BaseCacheManager captchaCacheManager;
+    private BaseCacheManager baseCacheManager;
 
     /**
     * 获取验证码
@@ -52,7 +52,7 @@ public class AuthTokenController extends BaseController {
         // 算数验证码
         ArithmeticCaptcha captcha = new ArithmeticCaptcha();
         // 验证码存入缓存
-        captchaCacheManager.putCacheObj(Cons.CACHE_CAPTCHA, traceId, captcha.text());
+        baseCacheManager.putCacheObj(Cons.CACHE_CAPTCHA, traceId, captcha.text());
         // 输出图片流
         captcha.out(response.getOutputStream());
     }
@@ -68,8 +68,8 @@ public class AuthTokenController extends BaseController {
         // 获取缓存中的验证码
         String traceId = credential.getTraceId();
         String verCode = credential.getCaptcha();
-        String captcha = captchaCacheManager.getCacheString(Cons.CACHE_CAPTCHA, traceId);
-        captchaCacheManager.removeCacheObj(Cons.CACHE_CAPTCHA, traceId);
+        String captcha = baseCacheManager.getCacheString(Cons.CACHE_CAPTCHA, traceId);
+        baseCacheManager.removeCacheObj(Cons.CACHE_CAPTCHA, traceId);
         // 判断验证码
         if (verCode == null || !verCode.trim().toLowerCase().equals(captcha)) {
             return JsonResult.FAIL_VALIDATION("验证码错误");
