@@ -1,185 +1,224 @@
 <template>
   <a-drawer
     :title="title"
-    width="720"
+    width="1000"
     :visible="state.visible"
     @close="close"
     :body-style="{ paddingBottom: '80px' }"
   >
-    <a-form layout="vertical" :form="form" class="iamResourcePermissionForm">
-      <a-row :gutter="16">
-        <a-col :span="12">
-          <a-form-item label="上级菜单">
-            <a-tree-select
-              placeholder="请选择上级菜单"
-              :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
-              :treeData="menuTreeDataFilter(model.id)"
-              treeNodeFilterProp="title"
-              showSearch
-              treeDefaultExpandAll
-              v-decorator="[
-                'parentId',
-                {
-                  initialValue: model.parentId != null ? model.parentId.toString() : initParentId,
-                  rules: [{ required: true, message: '上级菜单不能为空', whitespace: true }]
-                }
-              ]"
-            >
-            </a-tree-select>
-          </a-form-item>
-        </a-col>
-        <a-col :span="12">
-          <a-form-item label="当前菜单选取">
-            <a-tree-select
-              placeholder="请选取当前菜单"
-              :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
-              :treeData="allRouterTreeList"
-              treeNodeFilterProp="title"
-              showSearch
-              treeDefaultExpandAll
-              v-model="currentMenu"
-              @change="onMenuNameChange"
-            />
-          </a-form-item>
-        </a-col>
-      </a-row>
-      <a-row :gutter="16">
-        <a-col :span="12">
-          <a-form-item label="菜单名称">
-            <a-input
-              placeholder="菜单名称"
-              v-decorator="[
-                'displayName',
-                {
-                  initialValue: model.displayName,
-                  rules: [{ required: true, message: '菜单名称不能为空', whitespace: true }]
-                }
-              ]"
-            />
-          </a-form-item>
-        </a-col>
-        <a-col :span="12">
-          <a-form-item label="菜单编码">
-            <a-input
-              placeholder="菜单编码"
-              v-decorator="[
-                'resourceCode',
-                {
-                  initialValue: model.resourceCode,
-                  rules: [
-                    { required: true, message: '菜单编码不能为空', whitespace: true },
-                    { validator: this.checkCodeDuplicate }
-                  ]
-                }
-              ]"
-            />
-          </a-form-item>
-        </a-col>
-      </a-row>
-      <a-form-item label="当前菜单页面接口列表">
-        <a-tree-select
-          v-if="apiTreeList.length > 0"
-          placeholder="请选取当前菜单页面接口列表"
-          :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
-          :treeData="apiTreeList"
-          treeNodeFilterProp="title"
-          showSearch
-          treeDefaultExpandAll
-          multiple
-          allowClear
-          v-model="apiSetList"
-        >
-        </a-tree-select>
-      </a-form-item>
-      <a-row :gutter="16">
-        <a-col :span="24">
-          <a-card size="small" title="按钮/权限列表">
-            <a-button-group slot="extra">
-              <a-button
-                @click="addNewPermission"
-                type="primary"
-                size="small"
-                icon="plus"
-              ></a-button>
-              <a-button
-                @click="removePermission(currentPermissionActiveKey)"
-                v-if="permissionList.length > 0"
-                type="danger"
-                size="small"
-                icon="delete"
-              ></a-button>
-            </a-button-group>
-
-            <a-tabs
-              v-if="permissionList.length > 0"
-              :defaultActiveKey="0"
-              v-model="currentPermissionActiveKey"
-            >
-              <a-tab-pane
-                v-for="(permission, index) in permissionList"
-                :tab="permission.displayName"
-                :key="index">
-                <a-form-item :required="true" label="按钮/权限编码">
-                  <a-row type="flex" align="middle" :gutter="16">
-                    <a-col :span="19">
-                      <a-select
-                        v-if="isSelect"
-                        showSearch
-                        :filterOption="(input, option) => filterPermissionCodeOption(permission, input, option)"
-                        @change="value => changePermissionName(permission, value)"
-                        placeholder="请选择按钮/权限编码"
-                        v-model="permission.resourceCode"
-                      >
-                        <a-select-option
-                          v-for="(item, i) in more.resourcePermissionCodeOptions"
-                          v-if="!existPermissionCodes.includes(item.value) || permission.resourceCode === item.value"
-                          :key="i"
-                          :value="item.value"
-                        >
-                          {{ item.label }}[{{ item.value }}]
-                        </a-select-option>
-                      </a-select>
-                      <a-input
-                        v-else
-                        placeholder="请输入按钮/权限名称"
-                        v-model="permission.resourceCode"
-                      />
-                    </a-col>
-                    <a-col :span="5">
-                      <a-button type="primary" icon="swap" size="small" @click="handleSwap(permission, index)">{{ isSelect ? '自定义输入' : '从字典选取' }}</a-button>
-                    </a-col>
-                  </a-row>
-                </a-form-item>
-                <a-form-item :required="true" label="按钮/权限名称">
-                  <a-input
-                    placeholder="按钮/权限名称"
-                    v-model="permission.displayName"
-                  />
-                </a-form-item>
-                <a-form-item label="当前按钮/权限所需接口列表">
+    <a-row :gutter="5">
+      <a-col class="transition-width" :span="showPermission ? 12 : 24">
+        <a-card title="基础配置">
+          <a-form layout="vertical" :form="form" class="iamResourcePermissionForm">
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item label="上级菜单">
                   <a-tree-select
-                    placeholder="当前按钮/权限所需接口列表"
+                    placeholder="请选择上级菜单"
                     :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
-                    :treeData="apiTreeList"
+                    :treeData="menuTreeDataFilter(model.id)"
                     treeNodeFilterProp="title"
                     showSearch
                     treeDefaultExpandAll
-                    multiple
-                    allowClear
-                    @change="value => {permission.apiSetList = value; $forceUpdate()}"
-                    v-model="permission.apiSetList"
+                    v-decorator="[
+                      'parentId',
+                      {
+                        initialValue: model.parentId != null ? model.parentId.toString() : initParentId,
+                        rules: [{ required: true, message: '上级菜单不能为空', whitespace: true }]
+                      }
+                    ]"
+                  >
+                  </a-tree-select>
+                </a-form-item>
+              </a-col>
+            </a-row>
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item>
+                  <div style="display: inline-block; width: 90%" slot="label">
+                    <span>菜单名称</span>
+                    <a-popover placement="bottom" trigger="hover">
+                      <template slot="content">
+                        <a-tree-select
+                          style="width: 200px"
+                          placeholder="选择菜单"
+                          :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
+                          :treeData="allRouterTreeList"
+                          treeNodeFilterProp="title"
+                          showSearch
+                          treeDefaultExpandAll
+                          v-model="currentMenu"
+                          @change="onMenuNameChange"
+                        />
+                      </template>
+                      <a style="float: right">选择</a>
+                    </a-popover>
+                  </div>
+                  <a-input
+                    placeholder="菜单名称"
+                    v-decorator="[
+                      'displayName',
+                      {
+                        initialValue: model.displayName,
+                        rules: [{ required: true, message: '菜单名称不能为空', whitespace: true }]
+                      }
+                    ]"
                   />
                 </a-form-item>
-              </a-tab-pane>
-            </a-tabs>
-            <template v-else>
-              无
-            </template>
-          </a-card>
-        </a-col>
-      </a-row>
-    </a-form>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item label="菜单编码">
+                  <a-input
+                    placeholder="菜单编码"
+                    v-decorator="[
+                      'resourceCode',
+                      {
+                        initialValue: model.resourceCode,
+                        rules: [
+                          { required: true, message: '菜单编码不能为空', whitespace: true },
+                          { validator: this.checkCodeDuplicate }
+                        ]
+                      }
+                    ]"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-item>
+                  <div style="display: inline-block; width: 100%" slot="label">
+                    <span>菜单权限接口</span>
+                    <a-button size="small" style="float: right" type="primary" @click="goPermissionConfig('Menu')">配置</a-button>
+                  </div>
+                  <div class="permission-tag-container" :gutter="12">
+                    <template v-if="permissionCodes && permissionCodes.length > 0">
+                      <a-tag
+                        v-for="(permissionCode, index) in permissionCodes"
+                        style="margin-bottom: 3px"
+                        :key="`menu_${index}`"
+                        color="green"
+                        closable
+                        @close.stop.prevent="(e) => handleRemovePermissionCode(permissionCode)"
+                      >{{ permissionCode }}</a-tag>
+                    </template>
+                    <template v-else>
+                      <span style="color: #d3d3d3">请点击右侧"配置按钮"选择权限接口</span>
+                    </template>
+                  </div>
+                </a-form-item>
+              </a-col>
+            </a-row>
+            <a-row :gutter="16">
+              <a-col :span="24">
+                <a-card size="small" title="按钮权限接口">
+                  <a-button-group slot="extra">
+                    <a-button
+                      @click="addNewPermission"
+                      type="primary"
+                      size="small"
+                      icon="plus"
+                    ></a-button>
+                    <a-button
+                      @click="removePermission(currentPermissionActiveKey)"
+                      v-if="permissionList.length > 0"
+                      type="danger"
+                      size="small"
+                      icon="delete"
+                    ></a-button>
+                  </a-button-group>
 
+                  <a-tabs
+                    v-if="permissionList.length > 0"
+                    :defaultActiveKey="0"
+                    v-model="currentPermissionActiveKey"
+                  >
+                    <a-tab-pane
+                      v-for="(permission, index) in permissionList"
+                      :tab="permission.displayName"
+                      :key="index">
+                      <a-form-item :required="true" label="按钮权限编码">
+                        <a-row type="flex" align="middle" :gutter="16">
+                          <a-col :span="16">
+                            <a-select
+                              v-if="isSelect"
+                              showSearch
+                              :filterOption="(input, option) => filterPermissionCodeOption(permission, input, option)"
+                              @change="value => changeResourceCode(permission, value)"
+                              placeholder="请选择按钮权限编码"
+                              v-model="permission.resourceCode"
+                            >
+                              <a-select-option
+                                v-for="(item, i) in more.resourcePermissionCodeOptions"
+                                v-if="!existPermissionCodes.includes(item.value) || permission.resourceCode === item.value"
+                                :key="i"
+                                :value="item.value"
+                              >
+                                {{ item.label }}[{{ item.value }}]
+                              </a-select-option>
+                            </a-select>
+                            <a-input
+                              v-else
+                              placeholder="请输入按钮权限编码"
+                              @change="value => changeResourceCode(permission, value.target.value)"
+                              v-model="permission.resourceCode"
+                            />
+                          </a-col>
+                          <a-col :span="8">
+                            <a-button type="primary" icon="swap" size="small" @click="handleSwap(permission, index)">{{ isSelect ? '自定义输入' : '从字典选取' }}</a-button>
+                          </a-col>
+                        </a-row>
+                      </a-form-item>
+                      <a-form-item :required="true" label="按钮权限名称">
+                        <a-input
+                          placeholder="按钮权限名称"
+                          @change="value => changePermissionConfig(permission, value.target.value)"
+                          v-model="permission.displayName"
+                        />
+                      </a-form-item>
+                      <a-form-item :required="true">
+                        <div style="display: inline-block; width: 95%" slot="label">
+                          <span>按钮权限接口配置</span>
+                          <a-button size="small" style="float: right" type="primary" @click="goPermissionConfig('Permission')">配置</a-button>
+                        </div>
+
+                        <div class="permission-tag-container">
+                          <template v-if="permission.permissionCodes && permission.permissionCodes.length > 0">
+                            <a-tag
+                              v-for="(permissionCode, i) in permission.permissionCodes"
+                              style="margin-bottom: 3px"
+                              :key="`permission_${i}`"
+                              color="green"
+                              closable
+                              @close.stop.prevent="handleRemovePermissionCode(permissionCode, permission)"
+                            >{{ permissionCode }}</a-tag>
+                          </template>
+                          <template v-else>
+                            <span style="color: #d3d3d3">请点击右侧"配置按钮"选择权限接口</span>
+                          </template>
+                        </div>
+                      </a-form-item>
+                    </a-tab-pane>
+                  </a-tabs>
+                  <template v-else>
+                    无
+                  </template>
+                </a-card>
+              </a-col>
+            </a-row>
+          </a-form>
+        </a-card>
+      </a-col>
+      <a-col class="transition-width" :span="showPermission ? 12 : 0">
+        <permission-list
+          ref="permissionList"
+          :title="currentPermissionTitle"
+          :current-permission-codes="currentPermissionCodes"
+          :config-code="currentConfigCode"
+          :menu-resource-code="form.getFieldValue('resourceCode')"
+          :origin-api-list="originApiList"
+          @changePermissionCodes="handleChangePermissionCodes"
+        />
+      </a-col>
+    </a-row>
     <div class="drawer-footer">
       <a-button @click="close">取消</a-button>
       <a-button @click="onSubmit" type="primary" :loading="state.confirmSubmit" :disabled="state.confirmSubmit">确定</a-button>
@@ -191,23 +230,24 @@
 import form from '@/components/diboot/mixins/form'
 import { dibootApi } from '@/utils/request'
 import { asyncRouterMap } from '@/config/router.config'
-import { treeListFormatter, routersFormatter, treeList2list, apiListFormatter } from '@/utils/treeDataUtil'
+import { treeListFormatter, routersFormatter, treeList2list } from '@/utils/treeDataUtil'
 import { mapState } from 'vuex'
 import _ from 'lodash'
 import ARow from 'ant-design-vue/es/grid/Row'
 import ACol from 'ant-design-vue/es/grid/Col'
+import PermissionList from '@/views/system/iamResourcePermission/permissionList'
 
 const NEW_PERMISSION_ITEM = {
   id: undefined,
   parentId: '',
   displayType: 'PERMISSION',
-  displayName: '新按钮/权限',
+  displayName: '新按钮权限',
   resourceCode: '',
-  apiSetList: []
+  permissionCodes: []
 }
 export default {
   name: 'IamResourcePermissionDrawer',
-  components: { ACol, ARow },
+  components: { PermissionList, ACol, ARow },
   data () {
     return {
       baseApi: '/iam/resourcePermission',
@@ -220,10 +260,14 @@ export default {
       ],
       currentPermissionActiveKey: 0,
       currentMenu: '',
-      apiSetList: [],
+      permissionCodes: [],
       permissionList: [],
-      apiTreeList: [],
-      isSelect: true
+      isSelect: true,
+      originApiList: [],
+      currentPermissionTitle: '菜单页面接口配置',
+      currentConfigCode: '',
+      currentPermissionCodes: [],
+      showPermission: false
     }
   },
   mixins: [ form ],
@@ -231,13 +275,14 @@ export default {
     async afterOpen (id) {
       if (id) {
         // 设置当前菜单项的接口列表
-        if (this.model.apiSetList && this.model.apiSetList.length > 0) {
-          this.apiSetList = this.model.apiSetList
+        if (this.model.permissionCodes && this.model.permissionCodes.length > 0) {
+          this.permissionCodes = this.model.permissionCodes
+          this.currentPermissionCodes = this.permissionCodes
         }
         // 设置当前菜单项的按钮/权限列表
         this.model.permissionList.forEach(item => {
-          if (!item.apiSetList || item.apiSetList.length === 0) {
-            item.apiSetList = []
+          if (!item.permissionCodes || item.permissionCodes.length === 0) {
+            item.permissionCodes = []
           }
         })
         this.permissionList = this.model.permissionList
@@ -245,7 +290,7 @@ export default {
 
       dibootApi.get(`${this.baseApi}/apiList`).then(res => {
         if (res.code === 0) {
-          this.apiTreeList = apiListFormatter(res.data)
+          this.originApiList = res.data
         } else {
           this.$message.error(res.msg)
         }
@@ -289,18 +334,12 @@ export default {
           resourceCode: currentMenu.value,
           displayName: currentMenu.title
         })
-        // 自动设置菜单页面所需接口
-        this.apiSetList = []
-        if (!currentMenu.value) {
-          return false
-        }
-        const currentApi = this.apiList.find(item => {
-          return item.value && item.value.toLowerCase().includes(currentMenu.value.toLowerCase())
-        })
-        if (currentApi == null || !currentApi.value) {
-          return false
-        }
-        this.apiSetList.push(currentApi.value)
+        // 重置接口权限
+        this.permissionCodes = []
+        this.currentPermissionCodes = []
+        this.permissionList = []
+        this.currentConfigCode = 'Menu'
+        this.$refs.permissionList.goScrollIntoView(this.$refs.permissionList.getAnchor())
       }
     },
     /***
@@ -331,13 +370,13 @@ export default {
               })
               // 收集验证错误信息
               if (notChangePerIdxList.length > 0) {
-                errMsgs.push(`第 ${notChangePerIdxList.join('、')} 个按钮/权限的名称没有更改`)
+                errMsgs.push(`第 ${notChangePerIdxList.join('、')} 个按钮权限的名称没有更改`)
               }
               if (nullDisplayNameIdxList.length > 0) {
-                errMsgs.push(`第 ${nullDisplayNameIdxList.join('、')} 个按钮/权限的名称没有填写`)
+                errMsgs.push(`第 ${nullDisplayNameIdxList.join('、')} 个按钮权限的名称没有填写`)
               }
               if (nullFrontendCodeIdxList.length > 0) {
-                errMsgs.push(`第 ${nullFrontendCodeIdxList.join('、')} 个按钮/权限的编码没有填写`)
+                errMsgs.push(`第 ${nullFrontendCodeIdxList.join('、')} 个按钮权限的编码没有填写`)
               }
             }
             if (errMsgs.length > 0) {
@@ -347,16 +386,14 @@ export default {
             }
 
             // 获取当前菜单的可用接口列表
-            const apiSetList = this.apiSetList.filter(api => {
-              return api != null && api !== ''
-            })
+            const permissionCodes = this.permissionCodes
 
             // 整理当前的按钮/权限列表以及对应的接口列表
             const permissionList = _.cloneDeep(this.permissionList)
             // 整理所有按钮/权限列表的可用接口列表，并设置菜单的id为当前的parentId
             permissionList.forEach(permission => {
-              permission.apiSetList = permission.apiSetList.filter(api => {
-                return api != null && api !== ''
+              permission.permissionCodes = permission.permissionCodes.filter(permissionCode => {
+                return permissionCode != null && permissionCode !== ''
               })
               if (this.model && this.model.id) {
                 permission.parentId = this.model.id
@@ -368,7 +405,7 @@ export default {
             const values = {
               ...fieldsValue,
               displayType,
-              apiSetList,
+              permissionCodes,
               permissionList
             }
 
@@ -393,13 +430,14 @@ export default {
         })
         if (validOption) {
           newPermission.resourceCode = validOption.value
-          this.changePermissionName(newPermission, validOption.value)
+          this.changeResourceCode(newPermission, validOption.value)
         }
       }
     },
     removePermission (index) {
       this.permissionList.splice(index, 1)
       this.currentPermissionActiveKey = this.currentPermissionActiveKey > 0 ? --this.currentPermissionActiveKey : 0
+      this.changePermissionConfig(this.permissionList[this.currentPermissionActiveKey])
     },
     filterPermissionCodeOption (permission, input, option) {
       const text = option.componentOptions.children[0].text.toLowerCase()
@@ -413,7 +451,29 @@ export default {
       permission.resourceCode = input
       return false
     },
-    changePermissionName (permission, value) {
+    /**
+     * 删除配置的权限
+     * @param permissionCode 被删除的权限code
+     * @param permission 如果是按钮权限会传入当前按钮的权限所有配置，不传入表示删除的是菜单权限
+     */
+    handleRemovePermissionCode (permissionCode, permission) {
+      if (!permission) {
+        this.permissionCodes = this.permissionCodes.filter(item => item !== permissionCode)
+      } else {
+        permission.permissionCodes = permission.permissionCodes.filter(item => item !== permissionCode)
+      }
+      // 重置权限配置
+      this.goPermissionConfig(permission ? 'Permission' : 'Menu')
+    },
+    goPermissionConfig (configCode) {
+      if (!this.showPermission) {
+        this.$refs.permissionList.initFuse()
+      }
+      this.showPermission = true
+      configCode === 'Menu' ? this.change2MenuPermissionConfig()
+        : this.changePermissionConfig(this.permissionList[this.currentPermissionActiveKey])
+    },
+    changeResourceCode (permission, value) {
       const validOption = this.more.resourcePermissionCodeOptions.find(item => {
         return item.value === value
       })
@@ -421,40 +481,44 @@ export default {
       if (validOption != null) {
         permission.displayName = validOption.label
       }
-      // 自动补全接口列表
-      permission.apiSetList = []
-      if (this.apiSetList.length === 0 || !value) {
-        return false
+      // 重新设置接口配置
+      this.changePermissionConfig(permission, permission.displayName || value)
+    },
+    /**
+     * 重置权限配置名称
+     * @param permission
+     * @param value
+     */
+    changePermissionConfig (permission, value) {
+      this.currentPermissionTitle = `${value || permission.displayName || permission.resourceCode} 按钮权限接口配置`
+      this.currentConfigCode = permission.resourceCode
+      this.currentPermissionCodes = permission.permissionCodes
+    },
+    /**
+     * 重置权限配置名称
+     * @param permission
+     * @param value
+     */
+    change2MenuPermissionConfig () {
+      this.currentPermissionTitle = '菜单页面接口配置'
+      this.currentConfigCode = 'Menu'
+      this.currentPermissionCodes = this.permissionCodes
+      if (!this.permissionCodes || this.permissionCodes.length === 0) {
+        this.$refs.permissionList.goScrollIntoView(this.$refs.permissionList.getAnchor())
       }
-      const matchStrList = this.apiSetList[0].match(/\/(\S*)\//)
-      if (!matchStrList || matchStrList.length < 2) {
-        return false
+    },
+    /**
+     * 更改值，tag回显位置跟着调整
+     * @param isMenu
+     */
+    handleChangePermissionCodes (permissionCodes) {
+      if (this.currentConfigCode === 'Menu') {
+        this.permissionCodes = permissionCodes
+      } else {
+        const permission = this.permissionList[this.currentPermissionActiveKey]
+        permission['permissionCodes'] = permissionCodes
+        this.$set(this.permissionList, this.currentPermissionActiveKey, permission)
       }
-      const matchStr = matchStrList[0]
-      let uri
-      if (value === 'detail') {
-        uri = `GET:${matchStr}{`
-      } else if (value === 'create') {
-        uri = `POST:${matchStr}`
-      } else if (value === 'update') {
-        uri = `PUT:${matchStr}{`
-      } else if (value === 'delete') {
-        uri = `DELETE:${matchStr}{`
-      } else if (value === 'export') {
-        uri = `POST:${matchStr}export`
-      } else if (value === 'import') {
-        uri = `POST:${matchStr}import`
-      }
-      if (!uri) {
-        return false
-      }
-      const matchApi = this.apiList.find(api => {
-        return api.value && api.value.includes(uri)
-      })
-      if (matchApi == null) {
-        return false
-      }
-      permission.apiSetList.push(matchApi.value)
     },
     async checkCodeDuplicate (rule, value, callback) {
       if (!value) {
@@ -473,13 +537,19 @@ export default {
       this.isSelect = !this.isSelect
       permission.resourceCode = ''
       permission.displayName = ''
+      this.changePermissionConfig(permission, '')
       this.$set(this.permissionList, index, permission)
     },
     afterClose () {
-      this.apiSetList = []
+      this.permissionCodes = []
       this.permissionList = []
       this.currentPermissionActiveKey = 0
       this.currentMenu = ''
+      this.currentPermissionTitle = '菜单页面接口配置'
+      this.currentConfigCode = ''
+      this.currentPermissionCodes = []
+      this.showPermission = false
+      this.$refs.permissionList.handleSearchChange()
     }
   },
   computed: {
@@ -494,9 +564,6 @@ export default {
     },
     routerList: function () {
       return treeList2list(_.cloneDeep(this.allRouterTreeList))
-    },
-    apiList: function () {
-      return treeList2list(_.cloneDeep(this.apiTreeList))
     },
     menuTreeData: function () {
       let menuTreeData = []
@@ -515,6 +582,11 @@ export default {
       })
     }
   },
+  watch: {
+    currentPermissionActiveKey (val) {
+      this.changePermissionConfig(this.permissionList[val])
+    }
+  },
   props: {
     initParentId: {
       type: String,
@@ -529,5 +601,14 @@ export default {
 <style scoped>
   .iamResourcePermissionForm .ant-form-item {
     margin-bottom: 10px;
+  }
+  .transition-width {
+    transition: width 0.3s;
+  }
+  .permission-tag-container {
+    border: 1px dashed #d9d9d9;
+    padding: 5px;
+    margin: 0 2px;
+    min-height: 32px
   }
 </style>
