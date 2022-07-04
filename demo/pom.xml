@@ -101,11 +101,12 @@
         </dependency>-->
 
         <!-- 依赖common包，可配置将Entity，VO，Service，Mapper等各层代码生成到common包下，以便其他模块依赖 -->
+        <!--
         <dependency>
             <groupId>com.example</groupId>
             <artifactId>demo-common</artifactId>
             <version>1.0-SNAPSHOT</version>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
     <build>
