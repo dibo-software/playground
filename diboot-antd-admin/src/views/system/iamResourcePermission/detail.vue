@@ -11,11 +11,13 @@
         <a-descriptions-item label="上级菜单">{{ model.parentDisplayName ? model.parentDisplayName : '无' }}</a-descriptions-item>
         <a-descriptions-item label="菜单名称">{{ model.displayName }}</a-descriptions-item>
         <a-descriptions-item label="菜单编码">{{ model.resourceCode }}</a-descriptions-item>
-        <a-descriptions-item label="页面接口列表">
-          <template v-if="model.apiSetList && model.apiSetList.length > 0">
-            <a-tag color="green" :key="i" v-for="(api,i) in model.apiSetList">
-              {{ api }}
-            </a-tag>
+        <a-descriptions-item label="菜单页权限码">
+          <template v-if="model.permissionCodes && model.permissionCodes.length > 0">
+            <template v-for="permissionCode in model.permissionCodes">
+              <a-tag color="green" :key="`menu_permission_${permissionCode}`" >
+                {{ permissionCode }}
+              </a-tag>
+            </template>
           </template>
           <template v-else>
             无
@@ -35,11 +37,13 @@
           <a-descriptions :column="1">
             <a-descriptions-item label="名称">{{ p.displayName }}</a-descriptions-item>
             <a-descriptions-item label="编码">{{ p.resourceCode }}</a-descriptions-item>
-            <a-descriptions-item label="接口列表">
-              <template v-if="p.apiSetList && p.apiSetList.length > 0">
-                <a-tag color="green" :key="j" v-for="(api,j) in p.apiSetList">
-                  {{ api }}
-                </a-tag>
+            <a-descriptions-item label="按钮权限码">
+              <template v-if="p.permissionCodes && p.permissionCodes.length > 0">
+                <template v-for="permissionCode in p.permissionCodes">
+                  <a-tag color="green" :key="`permission_${permissionCode}`" >
+                    {{ permissionCode }}
+                  </a-tag>
+                </template>
               </template>
               <template v-else>
                 无
@@ -58,14 +62,42 @@
 
 <script>
 import detail from '@/components/diboot/mixins/detail'
+import { dibootApi } from '@/utils/request'
 export default {
   name: 'IamResourcePermissionDetail',
   data () {
     return {
-      baseApi: '/iam/resourcePermission'
+      baseApi: '/iam/resourcePermission',
+      originApiList: []
     }
   },
-  mixins: [ detail ]
+  mixins: [ detail ],
+  computed: {
+    permissionCodeApiMap () {
+      const map = {}
+      this.originApiList.forEach(item => {
+        const apiPermissionList = item.apiPermissionList
+        if (apiPermissionList && apiPermissionList.length > 0) {
+          apiPermissionList.forEach(apiPermission => {
+            const permissionCode = apiPermission.code
+            map[permissionCode] = apiPermission.apiUriList
+          })
+        }
+      })
+      return map
+    }
+  },
+  methods: {
+    afterOpen () {
+      dibootApi.get(`${this.baseApi}/apiList`).then(res => {
+        if (res.code === 0) {
+          this.originApiList = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    }
+  }
 }
 </script>
 

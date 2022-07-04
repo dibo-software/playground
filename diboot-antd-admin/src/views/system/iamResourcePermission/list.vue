@@ -34,11 +34,6 @@
           </a-col>
           <a-col :md="9" :sm="24" style="text-align: right;">
             <a-button
-              v-if="canCorrectPermission"
-              @click="$refs.correct.open()"
-              icon="sync"
-              type="default">权限纠错</a-button>
-            <a-button
               v-action:sort
               @click="$refs.sort.open()"
               icon="drag"
@@ -111,12 +106,10 @@ import dibootForm from './form'
 import dibootDetail from './detail'
 import permissionTreeSort from './treeSort'
 import { clearNullChildren } from '@/utils/treeDataUtil'
-import CorrectPermission from './correct'
 
 export default {
   name: 'IamResourcePermissionList',
   components: {
-    CorrectPermission,
     dibootForm,
     dibootDetail,
     permissionTreeSort
@@ -125,7 +118,6 @@ export default {
   data () {
     return {
       baseApi: '/iam/resourcePermission',
-      canCorrectPermission: process.env.NODE_ENV !== 'production',
       customQueryParam: { displayType: 'MENU' },
       allowCanceledDelete: false,
       formParentId: '0',
@@ -141,7 +133,7 @@ export default {
           width: 160
         },
         {
-          title: '页面按钮/权限',
+          title: '页面按钮权限',
           dataIndex: 'permissionList',
           scopedSlots: { customRender: 'permissionList' }
         },
