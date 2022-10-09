@@ -142,8 +142,7 @@ const dibootApi = {
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
         'Content-Type': 'application/json;charset=UTF-8'
-      },
-      withCredentials: true
+      }
     })
   },
   /** *
@@ -175,8 +174,7 @@ const dibootApi = {
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
         'Content-Type': 'application/json;charset=UTF-8'
-      },
-      withCredentials: true
+      }
     })
   },
   /**
@@ -195,8 +193,7 @@ const dibootApi = {
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
         'Content-Type': 'application/json;charset=UTF-8'
-      },
-      withCredentials: true
+      }
     })
   }
 }
