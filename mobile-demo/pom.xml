@@ -44,6 +44,12 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>-->
 
+        <!-- diboot-core内核 -->
+        <dependency>
+            <groupId>com.diboot</groupId>
+            <artifactId>diboot-core-spring-boot-starter</artifactId>
+            <version>2.7.1</version>
+        </dependency>
         <!-- diboot-file文件处理组件 -->
         <dependency>
             <groupId>com.diboot</groupId>
