@@ -241,7 +241,7 @@ export default {
         description: msg
       })
     },
-    validateErrorToMsg(err) {
+    validateErrorToMsg (err) {
       return err.message
     },
     // 解决带有下拉框组件在滚动时下拉框不随之滚动的问题
