@@ -44,6 +44,11 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>-->
 
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.5.3</version>
+        </dependency>
         <!-- diboot-core内核 -->
         <dependency>
             <groupId>com.diboot</groupId>
