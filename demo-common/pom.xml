@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <diboot.version>2.8.0</diboot.version>
+        <diboot.version>2.9.0</diboot.version>
     </properties>
     <dependencies>
         <!-- 打包依赖的jar -->
