@@ -65,20 +65,19 @@
 
       </a-col>
       <a-col :md="24" :lg="8" :style="{ minHeight: '180px' }">
-        <div class="ant-upload-preview" @click="$refs.modal.edit(1)" style="display: none">
-          <a-icon type="cloud-upload-o" class="upload-icon"/>
+        <input ref="avatarFile" type="file" hidden accept=".jpg,.png" @change="selectFile" />
+        <div class="ant-upload-preview" @click="$refs.avatarFile.click()" >
           <div class="mask">
             <a-icon type="plus" />
           </div>
-          <img :src="option.img"/>
+          <img :src="avatar"/>
         </div>
       </a-col>
 
     </a-row>
 
-    <avatar-modal ref="modal">
+    <avatar-modal ref="modal" @cancel="$refs.avatarFile.value =''" />
 
-    </avatar-modal>
   </div>
 </template>
 
@@ -86,6 +85,7 @@
 import AvatarModal from './AvatarModal'
 import form from '@/components/diboot/mixins/form'
 import { dibootApi } from '@/utils/request'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'BaseSetting',
@@ -121,6 +121,9 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters(['avatar'])
+  },
   methods: {
     async getCurrentUserInfo () {
       const res = await dibootApi.get('/iam/user/getCurrentUserInfo')
@@ -153,6 +156,21 @@ export default {
         description: result.msg
       })
       this.$store.commit('SET_NAME', { name: this.form.getFieldValue('realname'), welcome: '' })
+    },
+    selectFile (event) {
+      const filepath = event.target.value
+      const file = event.target.files[0]
+      const fileTypes = ['.jpg', '.png']
+      const fileEnd = filepath.substring(filepath.lastIndexOf('.'))
+      if (fileTypes.indexOf(fileEnd) > -1) {
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = e => {
+          this.$refs.modal.edit(file.name, e.target.result)
+        }
+      } else {
+        this.$message.error('请上传图片文件！')
+      }
     }
   },
   mixins: [ form ],
