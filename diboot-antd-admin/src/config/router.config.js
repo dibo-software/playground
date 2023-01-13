@@ -238,3 +238,23 @@ export const constantRouterMap = [
     redirect: '/'
   }
 ]
+const generateRouterMap = [
+  {
+    path: '/testgen',
+    redirect: '/testgen/project/list',
+    component: RouteView,
+    name: 'testgen',
+    meta: { title: '测试生成', icon: 'null', permission: ['testgen'] },
+    children: [
+
+      {
+        path: '/testgen/project/list',
+        name: 'projectList',
+        component: () => import('@/views/testgen/project/list'),
+        meta: { title: '项目管理', keepAlive: true, permission: ['Project'] }
+      }
+
+    ]
+  }
+]
+asyncRouterMap[0].children.splice(1, 0, ...generateRouterMap)
