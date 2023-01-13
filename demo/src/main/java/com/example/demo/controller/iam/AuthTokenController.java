@@ -111,6 +111,7 @@ public class AuthTokenController extends BaseController {
             iamUserService.refreshUserInfo((IamUser)currentUser);
         }
         data.put("name", currentUser.getDisplayName());
+        data.put("info", currentUser);
         // 角色权限数据
         IamRoleVO roleVO = iamUserRoleService.buildRoleVo4FrontEnd(currentUser);
         data.put("role", roleVO);
