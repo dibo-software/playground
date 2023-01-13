@@ -30,6 +30,7 @@
     "screenfull": "4.2.0",
     "v-viewer": "^1.5.1",
     "vue": "2.6.10",
+    "vue-cropper": "0.4.9",
     "vue-qr": "^2.3.0",
     "vue-router": "3.0.6",
     "vuedraggable": "^2.24.3",
