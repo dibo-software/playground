@@ -1,6 +1,9 @@
-package com.example.demo.controller;
+package com.example.demo.controller.system;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.diboot.core.controller.BaseCrudRestController;
+import com.diboot.core.util.V;
 import com.diboot.core.vo.JsonResult;
 import com.diboot.core.vo.Pagination;
 import com.diboot.iam.annotation.BindPermission;
@@ -13,7 +16,6 @@ import com.diboot.message.vo.MessageTemplateDetailVO;
 import com.diboot.message.vo.MessageTemplateListVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,7 +29,7 @@ import javax.validation.Valid;
  * * Copyright © MyCompany
  */
 @RestController
-@RequestMapping("/messageTemplate")
+@RequestMapping("/message-template")
 @BindPermission(name = "消息通知模版")
 @Slf4j
 public class MessageTemplateController extends BaseCrudRestController<MessageTemplate> {
@@ -39,15 +41,15 @@ public class MessageTemplateController extends BaseCrudRestController<MessageTem
     /**
      * 查询ViewObject的分页数据
      * <p>
-     * url请求参数示例: /list?field=abc&pageIndex=1&orderBy=abc:DESC
+     * url请求参数示例: ?field=abc&pageIndex=1&orderBy=abc:DESC
      * </p>
      *
      * @return
      * @throws Exception
      */
     @Log(operation = OperationCons.LABEL_LIST)
-    @BindPermission(name = OperationCons.LABEL_LIST, code = OperationCons.CODE_LIST)
-    @GetMapping("/list")
+    @BindPermission(name = OperationCons.LABEL_LIST, code = OperationCons.CODE_READ)
+    @GetMapping
     public JsonResult getViewObjectListMapping(MessageTemplateDTO queryDto, Pagination pagination) throws Exception {
         return super.getViewObjectList(queryDto, pagination, MessageTemplateListVO.class);
     }
@@ -60,9 +62,9 @@ public class MessageTemplateController extends BaseCrudRestController<MessageTem
      * @throws Exception
      */
     @Log(operation = OperationCons.LABEL_DETAIL)
-    @BindPermission(name = OperationCons.LABEL_DETAIL, code = OperationCons.CODE_DETAIL)
+    @BindPermission(name = OperationCons.LABEL_DETAIL, code = OperationCons.CODE_READ)
     @GetMapping("/{id}")
-    public JsonResult getViewObjectMapping(@PathVariable("id") Long id) throws Exception {
+    public JsonResult getViewObjectMapping(@PathVariable("id") String id) throws Exception {
         return super.getViewObject(id, MessageTemplateDetailVO.class);
     }
 
@@ -74,8 +76,8 @@ public class MessageTemplateController extends BaseCrudRestController<MessageTem
      * @throws Exception
      */
     @Log(operation = OperationCons.LABEL_CREATE)
-    @BindPermission(name = OperationCons.LABEL_CREATE, code = OperationCons.CODE_CREATE)
-    @PostMapping("/")
+    @BindPermission(name = OperationCons.LABEL_CREATE, code = OperationCons.CODE_WRITE)
+    @PostMapping
     public JsonResult createEntityMapping(@Valid @RequestBody MessageTemplate entity) throws Exception {
         return super.createEntity(entity);
     }
@@ -88,9 +90,9 @@ public class MessageTemplateController extends BaseCrudRestController<MessageTem
      * @throws Exception
      */
     @Log(operation = OperationCons.LABEL_UPDATE)
-    @BindPermission(name = OperationCons.LABEL_UPDATE, code = OperationCons.CODE_UPDATE)
+    @BindPermission(name = OperationCons.LABEL_UPDATE, code = OperationCons.CODE_WRITE)
     @PutMapping("/{id}")
-    public JsonResult updateEntityMapping(@PathVariable("id") Long id, @Valid @RequestBody MessageTemplate entity) throws Exception {
+    public JsonResult updateEntityMapping(@PathVariable("id") String id, @Valid @RequestBody MessageTemplate entity) throws Exception {
         return super.updateEntity(id, entity);
     }
 
@@ -102,9 +104,9 @@ public class MessageTemplateController extends BaseCrudRestController<MessageTem
      * @throws Exception
      */
     @Log(operation = OperationCons.LABEL_DELETE)
-    @BindPermission(name = OperationCons.LABEL_DELETE, code = OperationCons.CODE_DELETE)
+    @BindPermission(name = OperationCons.LABEL_DELETE, code = OperationCons.CODE_WRITE)
     @DeleteMapping("/{id}")
-    public JsonResult deleteEntityMapping(@PathVariable("id") Long id) throws Exception {
+    public JsonResult deleteEntityMapping(@PathVariable("id") String id) throws Exception {
         return super.deleteEntity(id);
     }
 
@@ -114,22 +116,28 @@ public class MessageTemplateController extends BaseCrudRestController<MessageTem
      * @return
      * @throws Exception
      */
-    @GetMapping("/checkTempCodeDuplicate")
-    public JsonResult checkTempCodeDuplicate(@RequestParam(required = false) Long id, @RequestParam String code) throws Exception {
-        messageTemplateService.existCode(id, code);
+    @GetMapping("/check-temp-code-duplicate")
+    public JsonResult checkTempCodeDuplicate(@RequestParam(required = false) String id, @RequestParam String code) throws Exception {
+        if (V.isEmpty(code)) {
+            return JsonResult.OK();
+        }
+        LambdaQueryWrapper<MessageTemplate> wrapper = Wrappers.<MessageTemplate>lambdaQuery().eq(MessageTemplate::getCode, code);
+        // 如果id存在，那么需要排除当前id进行查询
+        wrapper.ne(V.notEmpty(id), MessageTemplate::getId, id);
+        if (messageTemplateService.exists(wrapper)) {
+            return JsonResult.FAIL_VALIDATION("模版编码[" + code + "]已存在");
+        }
         return JsonResult.OK();
     }
 
     /**
-     * 加载更多
+     * 获取变量列表
      *
      * @return
      * @throws Exception
      */
-    @GetMapping("/attachMore")
-    public JsonResult attachMore(ModelMap modelMap) throws Exception {
-        // 加载模版变量
-        modelMap.put("templateVariableList", messageTemplateService.getTemplateVariableList());
-        return JsonResult.OK(modelMap);
+    @GetMapping("/variable-list")
+    public JsonResult getVariableList() throws Exception {
+        return JsonResult.OK(messageTemplateService.getTemplateVariableList());
     }
 }

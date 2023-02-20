@@ -2,54 +2,59 @@ package com.example.demo.controller.iam;
 
 import com.diboot.core.cache.BaseCacheManager;
 import com.diboot.core.controller.BaseController;
+import com.diboot.core.vo.JsonResult;
 import com.diboot.iam.annotation.BindPermission;
 import com.diboot.iam.annotation.Log;
-import com.diboot.core.vo.*;
 import com.diboot.iam.auth.AuthServiceFactory;
 import com.diboot.iam.config.Cons;
 import com.diboot.iam.dto.PwdCredential;
 import com.diboot.iam.entity.BaseLoginUser;
+import com.diboot.iam.entity.IamRole;
 import com.diboot.iam.entity.IamUser;
+import com.diboot.iam.entity.route.RouteRecord;
+import com.diboot.iam.service.IamRoleResourceService;
 import com.diboot.iam.service.IamUserRoleService;
 import com.diboot.iam.service.IamUserService;
 import com.diboot.iam.util.IamSecurityUtils;
 import com.diboot.iam.util.TokenUtils;
-import com.diboot.iam.vo.IamRoleVO;
 import com.pig4cloud.captcha.ArithmeticCaptcha;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
-* IAM身份认证/申请Token接口
-* @author MyName
-* @version 1.0
-* @date 2022-12-30
-* Copyright © MyCompany
-*/
-@RestController
+ * IAM身份认证/申请Token接口
+ *
+ * @author MyName
+ * @version 1.0
+ * @date 2022-12-30
+ * Copyright © MyCompany
+ */
 @Slf4j
+@RestController
+@RequestMapping("/auth")
 @BindPermission(name = "登录认证", code = "AUTH")
 public class AuthTokenController extends BaseController {
     @Autowired
     private IamUserRoleService iamUserRoleService;
     @Autowired
     private IamUserService iamUserService;
+    @Autowired
+    private IamRoleResourceService iamRoleResourceService;
 
     @Autowired
     private BaseCacheManager baseCacheManager;
 
     /**
-    * 获取验证码
-    */
-    @GetMapping("/auth/captcha")
-    public void captcha(@RequestParam("traceId")String traceId, HttpServletResponse response) throws Exception {
+     * 获取验证码
+     */
+    @GetMapping("/captcha")
+    public void captcha(@RequestParam("traceId") String traceId, HttpServletResponse response) throws Exception {
         response.setContentType("image/gif");
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "no-cache");
@@ -63,13 +68,14 @@ public class AuthTokenController extends BaseController {
     }
 
     /**
-    * 用户登录获取token
-    * @param credential
-    * @return
-    * @throws Exception
-    */
-    @PostMapping("/auth/login")
-    public JsonResult login(@RequestBody PwdCredential credential) throws Exception{
+     * 用户登录获取token
+     * ·
+     *
+     * @param credential 登录凭证
+     * @return 响应（troken）
+     */
+    @PostMapping("/login")
+    public JsonResult<String> login(@RequestBody PwdCredential credential) {
         // 获取缓存中的验证码
         String traceId = credential.getTraceId();
         String verCode = credential.getCaptcha();
@@ -83,48 +89,59 @@ public class AuthTokenController extends BaseController {
     }
 
     /**
-    * 注销/退出
-    * @return
-    * @throws Exception
-    */
-		@Log(businessObj = "LoginUser", operation = "退出")
+     * 注销/退出
+     *
+     * @return
+     */
+    @Log(businessObj = "LoginUser", operation = "退出")
     @PostMapping("/logout")
-    public JsonResult logout() throws Exception{
+    public JsonResult<?> logout() {
         String accessToken = TokenUtils.getRequestToken(request);
         IamSecurityUtils.logoutByToken(accessToken);
         return JsonResult.OK();
     }
 
     /**
-    * 获取用户角色权限信息
-    * @return
-    */
-    @GetMapping("/auth/userInfo")
-    public JsonResult getUserInfo(@RequestParam(value = "refresh", required = false) boolean refresh){
+     * 获取用户角色权限信息
+     *
+     * @return 响应（用户信息）
+     */
+    @GetMapping("/user-info")
+    public JsonResult<Map<String, Object>> getUserInfo(@RequestParam(value = "refresh", required = false) boolean refresh) {
         Map<String, Object> data = new HashMap<>();
         // 获取当前登录用户对象
         BaseLoginUser currentUser = IamSecurityUtils.getCurrentUser();
-        if(currentUser == null){
+        if (currentUser == null) {
             return JsonResult.OK();
         }
         if(refresh && currentUser instanceof IamUser) {
             iamUserService.refreshUserInfo((IamUser)currentUser);
         }
-        data.put("name", currentUser.getDisplayName());
         data.put("info", currentUser);
         // 角色权限数据
-        IamRoleVO roleVO = iamUserRoleService.buildRoleVo4FrontEnd(currentUser);
-        data.put("role", roleVO);
+        List<IamRole> roles = iamUserRoleService.getUserRoleList(IamUser.class.getSimpleName(), currentUser.getId());
+        data.put("roles", roles);
         return JsonResult.OK(data);
     }
 
-    /***
-    * 心跳接口
-    * @return
-    * @throws Exception
-    */
-    @PostMapping("/iam/ping")
-    public JsonResult ping() throws Exception{
+    /**
+     * 获取前端路由
+     *
+     * @return
+     */
+    @GetMapping("/route")
+    public JsonResult<List<RouteRecord>> getRouteRecord() {
+        List<RouteRecord> routeRecords = iamRoleResourceService.getRouteRecords();
+        return JsonResult.OK(routeRecords);
+    }
+
+    /**
+     * 心跳接口
+     *
+     * @return
+     */
+    @GetMapping("/ping")
+    public JsonResult<?> ping() {
         return JsonResult.OK();
     }
 }

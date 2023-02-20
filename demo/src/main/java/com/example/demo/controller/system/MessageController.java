@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.demo.controller.system;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -36,9 +36,40 @@ import java.util.List;
 @BindPermission(name = "消息通知")
 @Slf4j
 public class MessageController extends BaseCrudRestController<Message> {
+
     @Autowired
     private MessageService messageService;
-    
+
+    /**
+     * 查询ViewObject的分页数据
+     * <p>
+     * url请求参数示例: ?field=abc&pageIndex=1&orderBy=abc:DESC
+     * </p>
+     *
+     * @return
+     * @throws Exception
+     */
+    @Log(operation = OperationCons.LABEL_LIST)
+    @BindPermission(name = OperationCons.LABEL_LIST, code = OperationCons.CODE_READ)
+    @GetMapping
+    public JsonResult getViewObjectListMapping(MessageDTO queryDto, Pagination pagination) throws Exception {
+        return super.getViewObjectList(queryDto, pagination, MessageListVO.class);
+    }
+
+    /**
+     * 根据资源id查询ViewObject
+     *
+     * @param id ID
+     * @return
+     * @throws Exception
+     */
+    @Log(operation = OperationCons.LABEL_DETAIL)
+    @BindPermission(name = OperationCons.LABEL_DETAIL, code = OperationCons.CODE_READ)
+    @GetMapping("/{id}")
+    public JsonResult getViewObjectMapping(@PathVariable("id") String id) throws Exception {
+        return super.getViewObject(id, MessageDetailVO.class);
+    }
+
     /**
      * 获取当前登录用的消息
      *
@@ -56,6 +87,7 @@ public class MessageController extends BaseCrudRestController<Message> {
         queryWrapper.eq(Message::getReceiver, IamSecurityUtils.getUserTypeAndId());
         queryWrapper.ne(unread, Message::getStatus, Cons.MESSAGE_STATUS.READ.name());
         queryWrapper.eq(V.notEmpty(businessCode), Message::getBusinessCode, businessCode);
+        queryWrapper.orderByDesc(Message::getId);
         List<MessageListVO> viewObjectList = messageService.getViewObjectList(queryWrapper, pagination, MessageListVO.class);
         return JsonResult.OK(viewObjectList).bindPagination(pagination);
     }
@@ -67,40 +99,10 @@ public class MessageController extends BaseCrudRestController<Message> {
      * @return
      */
     @PostMapping("/read")
-    public JsonResult<?> markRead(@RequestBody List<Long> ids) {
+    public JsonResult<?> markRead(@RequestBody List<String> ids) {
         LambdaUpdateWrapper<Message> updateWrapper = Wrappers.lambdaUpdate();
         updateWrapper.in(Message::getId, ids).set(Message::getStatus, Cons.MESSAGE_STATUS.READ.name());
         return new JsonResult<>(messageService.updateEntity(updateWrapper));
-    }
-
-    /**
-     * 查询ViewObject的分页数据
-     * <p>
-     * url请求参数示例: /list?field=abc&pageIndex=1&orderBy=abc:DESC
-     * </p>
-     *
-     * @return
-     * @throws Exception
-     */
-    @Log(operation = OperationCons.LABEL_LIST)
-    @BindPermission(name = OperationCons.LABEL_LIST, code = OperationCons.CODE_READ)
-    @GetMapping("/list")
-    public JsonResult getViewObjectListMapping(MessageDTO queryDto, Pagination pagination) throws Exception {
-    return super.getViewObjectList(queryDto, pagination, MessageListVO.class);
-    }
-
-    /**
-     * 根据资源id查询ViewObject
-     *
-     * @param id ID
-     * @return
-     * @throws Exception
-     */
-    @Log(operation = OperationCons.LABEL_DETAIL)
-    @BindPermission(name = OperationCons.LABEL_DETAIL, code = OperationCons.CODE_READ)
-    @GetMapping("/{id}")
-    public JsonResult getViewObjectMapping(@PathVariable("id") Long id) throws Exception {
-        return super.getViewObject(id, MessageDetailVO.class);
     }
 
 }

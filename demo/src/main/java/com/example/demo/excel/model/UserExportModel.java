@@ -8,13 +8,15 @@ import lombok.Setter;
 
 /**
  * 用户导出model定义
+ *
  * @author MyName
  * @version 1.0
  * @date 2022-12-30
  * Copyright © MyCompany
  */
-@Getter @Setter
-public class IamUserExportModel extends BaseExcelModel {
+@Getter
+@Setter
+public class UserExportModel extends BaseExcelModel {
 
     @ExcelProperty(value = "姓名")
     private String realname;

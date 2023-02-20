@@ -1,16 +1,16 @@
-package com.example.demo.controller;
+package com.example.demo.controller.system;
 
 import com.diboot.core.controller.BaseCrudRestController;
 import com.diboot.core.util.S;
 import com.diboot.core.vo.JsonResult;
 import com.diboot.core.vo.LabelValue;
+import com.diboot.iam.annotation.BindPermission;
+import com.diboot.iam.annotation.Log;
+import com.diboot.iam.annotation.OperationCons;
 import com.diboot.iam.config.SystemConfigType;
 import com.diboot.iam.entity.SystemConfig;
 import com.diboot.iam.service.SystemConfigService;
 import com.diboot.iam.vo.SystemConfigVO;
-import com.diboot.iam.annotation.BindPermission;
-import com.diboot.iam.annotation.Log;
-import com.diboot.iam.annotation.OperationCons;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +28,7 @@ import java.util.Map;
  */
 @BindPermission(name = "系统配置")
 @RestController
-@RequestMapping("/systemConfig")
+@RequestMapping("/system-config")
 public class SystemConfigController extends BaseCrudRestController<SystemConfig> {
 
     @Autowired
@@ -41,7 +41,7 @@ public class SystemConfigController extends BaseCrudRestController<SystemConfig>
      */
     @Log(operation = OperationCons.LABEL_LIST)
     @BindPermission(name = OperationCons.LABEL_LIST, code = OperationCons.CODE_READ)
-    @GetMapping("/typeList")
+    @GetMapping("/type-list")
     public JsonResult<List<LabelValue>> getTypeListMapping() {
         return JsonResult.OK(systemConfigService.getTypeList());
     }
@@ -101,7 +101,7 @@ public class SystemConfigController extends BaseCrudRestController<SystemConfig>
         systemConfigService.configTest(type, data);
         return JsonResult.OK();
     }
-    
+
     /**
      * 获取配置值 用于前端获取配置值
      *

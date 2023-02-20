@@ -2,6 +2,7 @@ package com.example.demo.controller.iam;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.diboot.core.binding.Binder;
 import com.diboot.core.controller.BaseCrudRestController;
 import com.diboot.core.exception.BusinessException;
 import com.diboot.core.util.BeanUtils;
@@ -14,20 +15,20 @@ import com.diboot.iam.annotation.Log;
 import com.diboot.iam.annotation.OperationCons;
 import com.diboot.iam.config.Cons;
 import com.diboot.iam.dto.IamRoleFormDTO;
-import com.diboot.iam.entity.IamResourcePermission;
 import com.diboot.iam.entity.IamRole;
-import com.diboot.iam.service.IamResourcePermissionService;
+import com.diboot.iam.entity.IamUserRole;
 import com.diboot.iam.service.IamRoleResourceService;
 import com.diboot.iam.service.IamRoleService;
-import com.diboot.iam.vo.IamResourcePermissionListVO;
+import com.diboot.iam.service.IamUserRoleService;
+import com.diboot.iam.vo.IamResourceListVO;
 import com.diboot.iam.vo.IamRoleVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.Serializable;
 import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 角色相关Controller
@@ -41,13 +42,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/iam/role")
 @Slf4j
 @BindPermission(name = "角色")
-public class IamRoleController extends BaseCrudRestController<IamRole> {
-
+public class RoleController extends BaseCrudRestController<IamRole> {
     @Autowired
     private IamRoleService iamRoleService;
-
     @Autowired
-    private IamResourcePermissionService iamResourcePermissionService;
+    private IamUserRoleService iamUserRoleService;
 
     @Autowired
     private IamRoleResourceService iamRoleResourceService;
@@ -55,7 +54,7 @@ public class IamRoleController extends BaseCrudRestController<IamRole> {
     /**
      * 查询ViewObject的分页数据
      * <p>
-     * url请求参数示例: /list?field=abc&pageSize=20&pageIndex=1&orderBy=id
+     * url请求参数示例: ?field=abc&pageSize=20&pageIndex=1&orderBy=id
      * </p>
      *
      * @return
@@ -63,9 +62,20 @@ public class IamRoleController extends BaseCrudRestController<IamRole> {
      */
     @Log(operation = OperationCons.LABEL_LIST)
     @BindPermission(name = OperationCons.LABEL_LIST, code = OperationCons.CODE_READ)
-    @GetMapping("/list")
-    public JsonResult getViewObjectListMapping(IamRole entity, Pagination pagination) throws Exception{
+    @GetMapping
+    public JsonResult getViewObjectListMapping(IamRole entity, Pagination pagination) throws Exception {
         return super.getViewObjectList(entity, pagination, IamRoleVO.class);
+    }
+
+    /**
+     * 根据 Ids 获取列表
+     *
+     * @param ids
+     * @return
+     */
+    @PostMapping("/ids")
+    public JsonResult getObjectListByIds(@RequestBody List<String> ids) {
+        return JsonResult.OK(iamRoleService.getEntityListByIds(ids));
     }
 
     /**
@@ -78,17 +88,11 @@ public class IamRoleController extends BaseCrudRestController<IamRole> {
     @Log(operation = OperationCons.LABEL_DETAIL)
     @BindPermission(name = OperationCons.LABEL_DETAIL, code = OperationCons.CODE_READ)
     @GetMapping("/{id}")
-    public JsonResult getViewObjectMapping(@PathVariable("id")Long id) throws Exception{
+    public JsonResult getViewObjectMapping(@PathVariable("id") String id) throws Exception {
         IamRoleVO roleVO = iamRoleService.getViewObject(id, IamRoleVO.class);
-        if (V.notEmpty(roleVO.getPermissionList())){
-            List<Long> permissionIdList = BeanUtils.collectIdToList(roleVO.getPermissionList());
-            List<IamResourcePermissionListVO> permissionVOList = iamResourcePermissionService.getViewObjectList(
-                Wrappers.<IamResourcePermission>lambdaQuery().in(IamResourcePermission::getId, permissionIdList),
-                null,
-                IamResourcePermissionListVO.class
-            );
-            permissionVOList = BeanUtils.buildTree(permissionVOList);
-            roleVO.setPermissionVOList(permissionVOList);
+        if (V.notEmpty(roleVO.getPermissionList())) {
+            List<IamResourceListVO> resourceVoList = Binder.convertAndBindRelations(roleVO.getPermissionList(), IamResourceListVO.class);
+            roleVO.setPermissionVOList(BeanUtils.buildTree(resourceVoList, Cons.TREE_ROOT_ID));
         }
         return JsonResult.OK(roleVO);
     }
@@ -100,9 +104,9 @@ public class IamRoleController extends BaseCrudRestController<IamRole> {
      * @return
      * @throws Exception
      */
-		@Log(operation = OperationCons.LABEL_CREATE)
+    @Log(operation = OperationCons.LABEL_CREATE)
     @BindPermission(name = OperationCons.LABEL_CREATE, code = OperationCons.CODE_WRITE)
-    @PostMapping("/")
+    @PostMapping
     public JsonResult createEntityMapping(@Valid @RequestBody IamRoleFormDTO roleFormDTO) throws Exception {
         return super.createEntity(roleFormDTO);
     }
@@ -114,10 +118,10 @@ public class IamRoleController extends BaseCrudRestController<IamRole> {
      * @return JsonResult
      * @throws Exception
      */
-		@Log(operation = OperationCons.LABEL_UPDATE)
+    @Log(operation = OperationCons.LABEL_UPDATE)
     @BindPermission(name = OperationCons.LABEL_UPDATE, code = OperationCons.CODE_WRITE)
     @PutMapping("/{id}")
-    public JsonResult updateEntityMapping(@PathVariable("id") Long id, @Valid @RequestBody IamRoleFormDTO roleFormDTO) throws Exception {
+    public JsonResult updateEntityMapping(@PathVariable("id") String id, @Valid @RequestBody IamRoleFormDTO roleFormDTO) throws Exception {
         return super.updateEntity(id, roleFormDTO);
     }
 
@@ -128,10 +132,14 @@ public class IamRoleController extends BaseCrudRestController<IamRole> {
      * @return
      * @throws Exception
      */
-		@Log(operation = OperationCons.LABEL_DELETE)
+    @Log(operation = OperationCons.LABEL_DELETE)
     @BindPermission(name = OperationCons.LABEL_DELETE, code = OperationCons.CODE_WRITE)
     @DeleteMapping("/{id}")
-    public JsonResult deleteEntityMapping(@PathVariable("id")Long id) throws Exception {
+    public JsonResult deleteEntityMapping(@PathVariable("id") String id) throws Exception {
+        boolean hasUser = iamUserRoleService.exists(IamUserRole::getRoleId, id);
+        if (hasUser) {
+            return JsonResult.FAIL_OPERATION("该角色下存在有效用户，解除关系后方可删除");
+        }
         return super.deleteEntity(id);
     }
 
@@ -142,36 +150,35 @@ public class IamRoleController extends BaseCrudRestController<IamRole> {
      * @param code
      * @return
      */
-    @GetMapping("/checkCodeDuplicate")
-    public JsonResult checkCodeDuplicate(@RequestParam(required = false) Long id, @RequestParam String code) {
+    @GetMapping("/check-code-duplicate")
+    public JsonResult checkCodeDuplicate(@RequestParam(required = false) String id, @RequestParam String code) {
         if (V.notEmpty(code)) {
             LambdaQueryWrapper<IamRole> wrapper = Wrappers.<IamRole>lambdaQuery()
-                .select(IamRole::getId).eq(IamRole::getCode, code);
+                    .select(IamRole::getId).eq(IamRole::getCode, code);
             if (V.notEmpty(id)) {
                 wrapper.ne(IamRole::getId, id);
             }
             boolean exists = iamRoleService.exists(wrapper);
             if (exists) {
-                return JsonResult.FAIL_VALIDATION("编码已存在: "+code);
+                return JsonResult.FAIL_VALIDATION("编码已存在: " + code);
             }
         }
         return JsonResult.OK();
     }
 
     @Override
-    protected String beforeUpdate(IamRole entity) throws Exception {
-        if (Cons.ROLE_SUPER_ADMIN.equals(entity.getCode())){
+    protected void beforeUpdate(IamRole entity) throws Exception {
+        super.beforeUpdate(entity);
+        if (Cons.ROLE_SUPER_ADMIN.equals(entity.getCode())) {
             throw new BusinessException(Status.FAIL_OPERATION, "不能更新超级管理员角色");
         }
-        return null;
     }
 
     @Override
-    protected String beforeDelete(IamRole entity) throws Exception {
-        if (Cons.ROLE_SUPER_ADMIN.equals(entity.getCode())){
+    protected void beforeDelete(Serializable id) throws Exception {
+        if (Cons.ROLE_SUPER_ADMIN.equals(getService().getEntity(id).getCode())) {
             throw new BusinessException(Status.FAIL_OPERATION, "不能删除超级管理员角色");
         }
-        return null;
     }
 
     @Override

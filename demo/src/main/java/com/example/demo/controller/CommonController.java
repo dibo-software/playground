@@ -1,16 +1,19 @@
 package com.example.demo.controller;
 
 import com.diboot.core.controller.BaseController;
-import com.diboot.core.dto.AttachMoreDTO;
-import com.diboot.core.entity.ValidList;
+import com.diboot.core.dto.RelatedDataDTO;
+import com.diboot.core.service.DictionaryService;
+import com.diboot.core.util.S;
 import com.diboot.core.vo.JsonResult;
 import com.diboot.core.vo.LabelValue;
 import com.diboot.iam.config.Cons;
 import com.diboot.iam.util.IamSecurityUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,50 +31,66 @@ import java.util.Map;
 public class CommonController extends BaseController {
 
     /**
-     * 获取附加属性的通用Options接口，用于初始化前端下拉框选项。
-     * <p>
-     * 如数据量过大，请调用通用Options过滤接口：{@link #attachMoreFilter(AttachMoreDTO, String, String)}
-     *
-     * @param attachMoreDTOList 关联数据列表
-     * @return Options集合
+     * 字典service
      */
-    @PostMapping("/attachMore")
-    public JsonResult<Map<String, List<LabelValue>>> attachMore(@Valid @RequestBody ValidList<AttachMoreDTO> attachMoreDTOList) {
-        return JsonResult.OK(super.attachMoreRelatedData(attachMoreDTOList));
+    @Autowired
+    protected DictionaryService dictionaryService;
+
+    /**
+     * 获取绑定字典数据
+     * @param dictTypes
+     * @return
+     */
+    @PostMapping("/load-related-dict")
+    public JsonResult<Map<String, List<LabelValue>>> bindDict(@RequestBody List<String> dictTypes) {
+        Map<String, List<LabelValue>> map = new HashMap<>(dictTypes.size());
+        for (String dictType : dictTypes) {
+            map.computeIfAbsent(S.toLowerCaseCamel(dictType) + "Options", k -> dictionaryService.getLabelValueList(dictType));
+        }
+        return JsonResult.OK(map);
     }
 
     /**
-     * 获取附加属性的通用Options过滤接口，用于前端下拉框选择远程搜索 或 异步加载（树|级联）数据。
-     * <p>
-     * 适用于数据量大时远程过滤获取选项数据，或分层级获取数据
-     *
-     * @param attachMoreDTO
-     * @param parentType
-     * @param parentValue
+     * 获取绑定对象数据
+     * @param map
      * @return
      */
-    @PostMapping({"/attachMoreFilter", "/attachMoreFilter/{parentValue}", "/attachMoreFilter/{parentType}/{parentValue}"})
-    public JsonResult<List<LabelValue>> attachMoreFilter(@Valid @RequestBody AttachMoreDTO attachMoreDTO,
-                                                         @PathVariable(value = "parentValue", required = false) String parentValue,
-                                                         @PathVariable(value = "parentType", required = false) String parentType) {
-        return JsonResult.OK(super.attachMoreRelatedData(attachMoreDTO, parentValue, parentType));
+    @PostMapping("/load-related-data")
+    public JsonResult<Map<String, List<LabelValue>>> bindData(@RequestBody @Valid Map<String, RelatedDataDTO> map) {
+        Map<String, List<LabelValue>> resultMap = new HashMap<>(map.size());
+        map.forEach((k, v) -> resultMap.put(k, loadRelatedData(v)));
+        return JsonResult.OK(resultMap);
     }
+
     /**
-     * attachMore对象 自定义权限检查点
+     * 异步获取绑定对象数据，支持远程搜索
+     * @param relatedDataDTO
+     * @param keyword
+     * @param parentId
+     * @return
+     */
+    @GetMapping({"/load-related-data", "/load-related-data/{parentId}"})
+    public JsonResult<List<LabelValue>> bindDataFilter(@Valid RelatedDataDTO relatedDataDTO, String keyword,
+                                                       @PathVariable(required = false) String parentId) {
+        return JsonResult.OK(loadRelatedData(relatedDataDTO, parentId, keyword));
+    }
+
+    /**
+     * relatedData 自定义权限检查点
      *
-     * @param attachMore
+     * @param relatedDataDTO
      * @return 返回true放行
      */
     @Override
-    protected boolean attachMoreSecurityCheck(AttachMoreDTO attachMore) {
+    protected boolean relatedDataSecurityCheck(RelatedDataDTO relatedDataDTO) {
         // 超级管理员
         if (IamSecurityUtils.getSubject().hasRole(Cons.ROLE_SUPER_ADMIN)) {
             return true;
         }
         try {
-            IamSecurityUtils.getSubject().checkPermission(attachMore.getTarget() + ":read");
+            IamSecurityUtils.getSubject().checkPermission(relatedDataDTO.getType() + ":read");
         } catch (Exception e) {
-            log.warn("无权获取attachMore: {}", attachMore.getTarget());
+            log.warn("无权获取 relatedData: {}", relatedDataDTO.getType());
             return false;
         }
         return true;

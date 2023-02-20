@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.diboot.core.controller.BaseCrudRestController;
-import com.diboot.core.entity.BaseEntity;
+import com.diboot.core.entity.AbstractEntity;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -13,6 +13,6 @@ import lombok.extern.slf4j.Slf4j;
  * Copyright © MyCompany
  */
 @Slf4j
-public class BaseCustomCrudRestController<E extends BaseEntity> extends BaseCrudRestController<E> {
+public class BaseCustomCrudRestController<E extends AbstractEntity<?>> extends BaseCrudRestController<E> {
 
 }

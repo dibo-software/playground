@@ -1,15 +1,20 @@
-package com.example.demo.controller;
+package com.example.demo.controller.system;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import org.springframework.web.bind.annotation.*;
-
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.diboot.core.config.Cons;
+import com.diboot.core.controller.BaseCrudRestController;
+import com.diboot.core.entity.Dictionary;
+import com.diboot.core.service.DictionaryService;
+import com.diboot.core.service.DictionaryServiceExtProvider;
 import com.diboot.core.util.V;
 import com.diboot.core.vo.*;
-import com.diboot.core.entity.Dictionary;
-import com.diboot.core.controller.BaseCrudRestController;
-import com.diboot.iam.annotation.OperationCons;
 import com.diboot.iam.annotation.BindPermission;
+import com.diboot.iam.annotation.OperationCons;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 import java.util.List;
 
@@ -27,19 +32,27 @@ import java.util.List;
 @Slf4j
 public class DictionaryController extends BaseCrudRestController<Dictionary> {
 
+    @Autowired
+    protected DictionaryService dictionaryService;
+    @Autowired
+    protected DictionaryServiceExtProvider dictionaryServiceExtProvider;
+
     /**
      * 查询ViewObject的分页数据
      * <p>
-     * url请求参数示例: /list?name=abc&pageSize=20&pageIndex=1&orderBy=name
+     * url请求参数示例: ?name=abc&pageSize=20&pageIndex=1&orderBy=name
      * </p>
      *
      * @return
      * @throws Exception
      */
     @BindPermission(name = OperationCons.LABEL_LIST, code = OperationCons.CODE_READ)
-    @GetMapping("/list")
+    @GetMapping
     public JsonResult getViewObjectListMapping(Dictionary entity, Pagination pagination) throws Exception{
-        return super.getViewObjectList(entity, pagination, DictionaryVO.class);
+        QueryWrapper<Dictionary> queryWrapper = super.buildQueryWrapperByDTO(entity);
+        queryWrapper.isNull(Cons.ColumnName.parent_id.name()).orderByDesc(Cons.ColumnName.id.name());
+        List<DictionaryVO> voList = dictionaryService.getViewObjectList(queryWrapper, pagination, DictionaryVO.class);
+        return JsonResult.OK(voList).bindPagination(pagination);
     }
 
     /**
@@ -51,7 +64,7 @@ public class DictionaryController extends BaseCrudRestController<Dictionary> {
      */
     @BindPermission(name = OperationCons.LABEL_DETAIL, code = OperationCons.CODE_READ)
     @GetMapping("/{id}")
-    public JsonResult getViewObjectMapping(@PathVariable("id") Long id) throws Exception{
+    public JsonResult getViewObjectMapping(@PathVariable("id") String id) throws Exception{
         return super.getViewObject(id, DictionaryVO.class);
     }
 
@@ -63,13 +76,13 @@ public class DictionaryController extends BaseCrudRestController<Dictionary> {
      * @throws Exception
      */
     @BindPermission(name = OperationCons.LABEL_CREATE, code = OperationCons.CODE_WRITE)
-    @PostMapping("/")
+    @PostMapping
     public JsonResult createEntityMapping(@RequestBody @Valid DictionaryVO entityVO) throws Exception {
         boolean success = dictionaryService.createDictAndChildren(entityVO);
         if(!success){
             return JsonResult.FAIL_OPERATION("保存数据字典失败！");
         }
-        return JsonResult.OK();
+        return JsonResult.OK(entityVO.getId());
     }
 
     /**
@@ -81,7 +94,7 @@ public class DictionaryController extends BaseCrudRestController<Dictionary> {
      */
     @BindPermission(name = OperationCons.LABEL_UPDATE, code = OperationCons.CODE_WRITE)
     @PutMapping("/{id}")
-    public JsonResult updateEntityMapping(@PathVariable("id")Long id, @Valid @RequestBody DictionaryVO entityVO) throws Exception {
+    public JsonResult updateEntityMapping(@PathVariable("id")String id, @Valid @RequestBody DictionaryVO entityVO) throws Exception {
         entityVO.setId(id);
         boolean success = dictionaryService.updateDictAndChildren(entityVO);
         if(!success){
@@ -99,9 +112,9 @@ public class DictionaryController extends BaseCrudRestController<Dictionary> {
      */
     @BindPermission(name = OperationCons.LABEL_DELETE, code = OperationCons.CODE_WRITE)
     @DeleteMapping("/{id}")
-    public JsonResult deleteEntityMapping(@PathVariable("id")Long id) throws Exception {
+    public JsonResult deleteEntityMapping(@PathVariable("id") String id) throws Exception {
         boolean success = dictionaryService.deleteDictAndChildren(id);
-        if(!success){
+        if (!success) {
             return JsonResult.FAIL_OPERATION("删除数据字典失败！");
         }
         return JsonResult.OK();
@@ -124,23 +137,32 @@ public class DictionaryController extends BaseCrudRestController<Dictionary> {
     }
 
     /**
+     * 获取字典定义列表
+     *
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/definition-list")
+    public JsonResult getDictDefinitionList() throws Exception {
+        return JsonResult.OK(dictionaryServiceExtProvider.getDictDefinitionList());
+    }
+
+    /**
      * 校验类型编码是否重复
      *
      * @param id
      * @param type
      * @return
      */
-    @GetMapping("/checkTypeDuplicate")
-    public JsonResult checkTypeDuplicate(@RequestParam(required = false) Long id, @RequestParam String type) {
+    @GetMapping("/check-type-duplicate")
+    public JsonResult checkTypeDuplicate(@RequestParam(required = false) String id, @RequestParam String type) {
         if (V.notEmpty(type)) {
             LambdaQueryWrapper<Dictionary> wrapper = new LambdaQueryWrapper();
-            wrapper.select(Dictionary::getId).eq(Dictionary::getType, type).eq(Dictionary::getParentId, 0);
-            if (V.notEmpty(id)) {
-                wrapper.ne(Dictionary::getId, id);
-            }
+            wrapper.select(Dictionary::getId).eq(Dictionary::getType, type).isNull(Dictionary::getParentId);
+            wrapper.ne(V.notEmpty(id), Dictionary::getId, id);
             boolean alreadyExists = dictionaryService.exists(wrapper);
             if (alreadyExists) {
-                return new JsonResult(Status.FAIL_OPERATION, "类型编码已存在");
+                return JsonResult.FAIL_VALIDATION( "类型编码已存在");
             }
         }
         return JsonResult.OK();

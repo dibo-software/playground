@@ -7,28 +7,28 @@ import com.diboot.core.util.BeanUtils;
 import com.diboot.core.util.ContextHelper;
 import com.diboot.core.util.S;
 import com.diboot.core.util.V;
+import com.diboot.file.excel.listener.FixedHeadExcelListener;
 import com.diboot.iam.entity.IamAccount;
 import com.diboot.iam.entity.IamUserRole;
 import com.diboot.iam.service.IamAccountService;
 import com.diboot.iam.service.IamUserRoleService;
 import com.diboot.iam.util.IamSecurityUtils;
-import com.example.demo.excel.model.IamUserImportModel;
-import com.diboot.file.excel.listener.FixedHeadExcelListener;
 import com.diboot.iam.entity.IamUser;
 import com.diboot.iam.service.IamUserService;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.example.demo.excel.model.UserImportModel;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 用户导入Excel listener
  */
-public class IamUserImportExcelListener extends FixedHeadExcelListener<IamUserImportModel> {
-    private static final String USER_NUM_FIELD_NAME = BeanUtils.convertToFieldName(IamUserImportModel::getUserNum);
-    private static final String PASSWORD_FIELD_NAME = BeanUtils.convertToFieldName(IamUserImportModel::getPassword);
-    private static final String USERNAME_FIELD_NAME = BeanUtils.convertToFieldName(IamUserImportModel::getUsername);
+public class UserImportExcelListener extends FixedHeadExcelListener<UserImportModel> {
+    private static final String USER_NUM_FIELD_NAME = BeanUtils.convertToFieldName(UserImportModel::getUserNum);
+    private static final String PASSWORD_FIELD_NAME = BeanUtils.convertToFieldName(UserImportModel::getPassword);
+    private static final String USERNAME_FIELD_NAME = BeanUtils.convertToFieldName(UserImportModel::getUsername);
 
     /**
      * 附加校验
@@ -37,11 +37,11 @@ public class IamUserImportExcelListener extends FixedHeadExcelListener<IamUserIm
      * @param requestParams
      */
     @Override
-    protected void additionalValidate(List<IamUserImportModel> dataList, Map<String, Object> requestParams) {
+    protected void additionalValidate(List<UserImportModel> dataList, Map<String, Object> requestParams) {
         // 对 用户编号、用户名 是否重复进行校验
         List<String> userNumList = new ArrayList<>();
         List<String> usernameList = new ArrayList<>();
-        for (IamUserImportModel userExcelModel : dataList) {
+        for (UserImportModel userExcelModel : dataList) {
             if (userNumList.contains(userExcelModel.getUserNum())) {
                 userExcelModel.addComment(USER_NUM_FIELD_NAME, "编号重复");
             }
@@ -88,15 +88,15 @@ public class IamUserImportExcelListener extends FixedHeadExcelListener<IamUserIm
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
-    protected void saveData(List<IamUserImportModel> dataList, Map<String, Object> requestParams) {
+    protected void saveData(List<UserImportModel> dataList, Map<String, Object> requestParams) {
         if (V.isEmpty(dataList)) {
             return;
         }
-        Long orgId = Long.valueOf(S.defaultIfEmpty(requestParams.get(BeanUtils.convertToFieldName(IamUser::getOrgId)).toString(), "0"));
+        String orgId = S.defaultIfEmpty(S.valueOf(requestParams.get("orgId")), "0");
         List<IamUser> iamUserList = new ArrayList<>();
         Map<IamUser, IamAccount> accountMap = new HashMap<>();
         Map<IamUser, IamUserRole> userRoleMap = new HashMap<>();
-        for (IamUserImportModel data : dataList) {
+        for (UserImportModel data : dataList) {
             IamUser iamUser = new IamUser();
             BeanUtils.copyProperties(data, iamUser);
             iamUser.setOrgId(orgId);

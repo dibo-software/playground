@@ -17,15 +17,17 @@ import javax.validation.constraints.NotNull;
 
 /**
  * 用户导入model定义
+ *
  * @author MyName
  * @version 1.0
  * @date 2022-12-30
  * Copyright © MyCompany
  */
-@Getter @Setter
+@Getter
+@Setter
 @ExcelIgnoreUnannotated
 @HeadStyle(fillPatternType = FillPatternTypeEnum.SOLID_FOREGROUND, fillForegroundColor = 1)
-public class IamUserImportModel extends BaseExcelModel {
+public class UserImportModel extends BaseExcelModel {
 
     @NotNull(message = "姓名不能为空")
     @HeadStyle(fillForegroundColor = 13)
@@ -50,11 +52,11 @@ public class IamUserImportModel extends BaseExcelModel {
     @ExcelProperty(value = "邮箱")
     private String email;
 
-    @ExcelBindField(entity = IamRole.class, field = "name",setIdField = "roleId")
+    @ExcelBindField(entity = IamRole.class, field = "name", setIdField = "roleId")
     @ExcelProperty("角色")
     private String role;
 
-    private Long roleId;
+    private String roleId;
 
     @ExcelProperty("用户名")
     private String username;

@@ -6,20 +6,19 @@ import com.diboot.core.controller.BaseCrudRestController;
 import com.diboot.core.util.V;
 import com.diboot.core.vo.JsonResult;
 import com.diboot.core.vo.Pagination;
-import com.diboot.core.vo.Status;
-import com.diboot.iam.dto.IamPositionFormDTO;
-import com.diboot.iam.dto.IamUserPositionBatchDTO;
-import com.diboot.iam.entity.IamPosition;
-import com.diboot.iam.entity.IamUserPosition;
-import com.diboot.iam.service.IamPositionService;
-import com.diboot.iam.vo.IamPositionVO;
 import com.diboot.iam.annotation.BindPermission;
 import com.diboot.iam.annotation.Log;
 import com.diboot.iam.annotation.OperationCons;
+import com.diboot.iam.dto.IamPositionFormDTO;
+import com.diboot.iam.entity.IamPosition;
+import com.diboot.iam.entity.IamUserPosition;
+import com.diboot.iam.service.IamPositionService;
+import com.diboot.iam.service.IamUserPositionService;
+import com.diboot.iam.vo.IamPositionVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import lombok.extern.slf4j.Slf4j;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -35,14 +34,16 @@ import java.util.List;
 @RequestMapping("/iam/position")
 @BindPermission(name = "岗位")
 @Slf4j
-public class IamPositionController extends BaseCrudRestController<IamPosition> {
+public class PositionController extends BaseCrudRestController<IamPosition> {
     @Autowired
     private IamPositionService iamPositionService;
+    @Autowired
+    private IamUserPositionService iamUserPositionService;
 
     /**
      * 查询ViewObject的分页数据
      * <p>
-     * url请求参数示例: /list?field=abc&pageIndex=1&orderBy=abc:DESC
+     * url请求参数示例: ?field=abc&pageIndex=1&orderBy=abc:DESC
      * </p>
      *
      * @return
@@ -50,9 +51,20 @@ public class IamPositionController extends BaseCrudRestController<IamPosition> {
      */
     @Log(operation = OperationCons.LABEL_LIST)
     @BindPermission(name = OperationCons.LABEL_LIST, code = OperationCons.CODE_READ)
-    @GetMapping("/list")
+    @GetMapping
     public JsonResult getViewObjectListMapping(IamPosition entity, Pagination pagination) throws Exception{
         return super.getViewObjectList(entity, pagination, IamPositionVO.class);
+    }
+
+    /**
+     * 根据 Ids 获取列表
+     *
+     * @param ids
+     * @return
+     */
+    @PostMapping("/ids")
+    public JsonResult getObjectListByIds(@RequestBody List<String> ids) {
+        return JsonResult.OK(iamPositionService.getEntityListByIds(ids));
     }
 
     /**
@@ -65,23 +77,8 @@ public class IamPositionController extends BaseCrudRestController<IamPosition> {
     @Log(operation = OperationCons.LABEL_DETAIL)
     @BindPermission(name = OperationCons.LABEL_DETAIL, code = OperationCons.CODE_READ)
     @GetMapping("/{id}")
-    public JsonResult getViewObjectWithMapping(@PathVariable("id") Long id) throws Exception{
+    public JsonResult getViewObjectWithMapping(@PathVariable("id") String id) throws Exception{
         return super.getViewObject(id, IamPositionVO.class);
-    }
-    
-    /**
-     * 根据用户信息获取岗位列表
-     *
-     * @param userType
-     * @param userId
-     * @return
-     */
-    @Log(operation = "根据用户信息获取岗位列表")
-    @BindPermission(name = "根据用户信息获取岗位列表", code = OperationCons.CODE_READ)
-    @GetMapping("/listUserPositions/{userType}/{userId}")
-    public JsonResult listUserPositionsByUser(@PathVariable("userType") String userType, @PathVariable("userId") Long userId) {
-        List<IamUserPosition> userPositionList = iamPositionService.getUserPositionListByUser(userType, userId);
-        return JsonResult.OK(userPositionList);
     }
 
     /**
@@ -93,7 +90,7 @@ public class IamPositionController extends BaseCrudRestController<IamPosition> {
      */
     @Log(operation = OperationCons.LABEL_CREATE)
     @BindPermission(name = OperationCons.LABEL_CREATE, code = OperationCons.CODE_WRITE)
-    @PostMapping("/")
+    @PostMapping
     public JsonResult createEntityWithMapping(@RequestBody @Valid IamPositionFormDTO entity) throws Exception {
         return super.createEntity(entity);
     }
@@ -108,7 +105,7 @@ public class IamPositionController extends BaseCrudRestController<IamPosition> {
     @Log(operation = OperationCons.LABEL_UPDATE)
     @BindPermission(name = OperationCons.LABEL_UPDATE, code = OperationCons.CODE_WRITE)
     @PutMapping("/{id}")
-    public JsonResult updateEntityWithMapping(@PathVariable("id")Long id, @Valid @RequestBody IamPositionFormDTO entity) throws Exception {
+    public JsonResult updateEntityWithMapping(@PathVariable("id") String id, @Valid @RequestBody IamPositionFormDTO entity) throws Exception {
         return super.updateEntity(id, entity);
     }
 
@@ -122,7 +119,11 @@ public class IamPositionController extends BaseCrudRestController<IamPosition> {
     @Log(operation = OperationCons.LABEL_DELETE)
     @BindPermission(name = OperationCons.LABEL_DELETE, code = OperationCons.CODE_WRITE)
     @DeleteMapping("/{id}")
-    public JsonResult deleteEntity(@PathVariable("id")Long id) throws Exception {
+    public JsonResult deleteEntity(@PathVariable("id") String id) throws Exception {
+        boolean hasUser = iamUserPositionService.exists(IamUserPosition::getPositionId, id);
+        if (hasUser) {
+            return JsonResult.FAIL_OPERATION("该岗位下存在有效用户，解除关系后方可删除");
+        }
         return super.deleteEntity(id);
     }
 
@@ -133,8 +134,8 @@ public class IamPositionController extends BaseCrudRestController<IamPosition> {
      * @param code
      * @return
      */
-    @GetMapping("/checkCodeDuplicate")
-    public JsonResult checkCodeDuplicate(@RequestParam(required = false) Long id, @RequestParam String code) {
+    @GetMapping("/check-code-duplicate")
+    public JsonResult checkCodeDuplicate(@RequestParam(required = false) String id, @RequestParam String code) {
         if (V.notEmpty(code)) {
             LambdaQueryWrapper<IamPosition> wrapper = Wrappers.<IamPosition>lambdaQuery()
                     .select(IamPosition::getId).eq(IamPosition::getCode, code);
@@ -143,24 +144,9 @@ public class IamPositionController extends BaseCrudRestController<IamPosition> {
             }
             boolean exists = iamPositionService.exists(wrapper);
             if (exists) {
-                return new JsonResult(Status.FAIL_OPERATION, "编码已存在: "+code);
+                return JsonResult.FAIL_VALIDATION( "编码已存在: "+code);
             }
         }
-        return JsonResult.OK();
-    }
-
-    /**
-     * 批量更新关联关系
-     *
-     * @param userPositionBatchDTO
-     * @return
-     * @throws Exception
-     */
-    @Log(operation = "设置用户岗位关系")
-    @BindPermission(name = "设置用户岗位关系", code = OperationCons.CODE_WRITE)
-    @PostMapping("/batchUpdateUserPositionRelations")
-    public JsonResult batchUpdate(@RequestBody IamUserPositionBatchDTO userPositionBatchDTO) throws Exception {
-        iamPositionService.updateUserPositionRelations(userPositionBatchDTO.getUserType(), userPositionBatchDTO.getUserId(), userPositionBatchDTO.getUserPositionList());
         return JsonResult.OK();
     }
 

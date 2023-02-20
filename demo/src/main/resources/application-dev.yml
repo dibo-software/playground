@@ -1,0 +1,58 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  #datasource config
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/playground-v3?characterEncoding=utf8&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true
+    username: diboot
+    password: 123456
+    hikari:
+      maximum-pool-size: 5
+      max-lifetime: 60000 # 连接的最大生命周期
+
+# Redis config
+#  redis:
+#    database: 0
+#    port: 6379
+#    host: localhost
+#    password:
+
+logging:
+  level:
+    root: debug
+    org:
+      apache: info
+      hibernate:
+        validator: info
+      springframework: info
+    _org:
+      springframework: info
+    com:
+      zaxxer:
+        hikari: info
+
+# Diboot Configuration
+diboot:
+#  id:
+#    data-center-id: 3
+  init-sql: true
+  core:
+    # 开启国际化
+    i18n: true
+  file:
+    # upload path
+    storage-directory: D:/temp/playground
+
+  iam:
+    # token-expires-minutes: 60
+    enable-permission-check: true
+    # Shiro的匿名urls，用逗号分隔，开发环境可配置/**，方便调试
+    anon-urls:
+      - /swagger**/**
+      - /webjars/**
+      - /v3/**
+      - /doc.html
