@@ -62,10 +62,10 @@
             <artifactId>diboot-scheduler-spring-boot-starter</artifactId>
             <version>${diboot.version}</version>
         </dependency>
-        <!-- diboot-message消息通知组件 -->
+        <!-- diboot-notification通知组件 -->
         <dependency>
             <groupId>com.diboot</groupId>
-            <artifactId>diboot-message-spring-boot-starter</artifactId>
+            <artifactId>diboot-notification-spring-boot-starter</artifactId>
             <version>${diboot.version}</version>
         </dependency>
 
