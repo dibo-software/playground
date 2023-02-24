@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.diboot.core.config.BaseConfig;
 import com.diboot.core.util.BeanUtils;
-import com.diboot.core.util.ContextHelper;
+import com.diboot.core.util.ContextHolder;
 import com.diboot.core.util.S;
 import com.diboot.core.util.V;
 import com.diboot.file.excel.listener.FixedHeadExcelListener;
@@ -12,7 +12,6 @@ import com.diboot.iam.entity.IamAccount;
 import com.diboot.iam.entity.IamUserRole;
 import com.diboot.iam.service.IamAccountService;
 import com.diboot.iam.service.IamUserRoleService;
-import com.diboot.iam.util.IamSecurityUtils;
 import com.diboot.iam.entity.IamUser;
 import com.diboot.iam.service.IamUserService;
 
@@ -56,7 +55,7 @@ public class UserImportExcelListener extends FixedHeadExcelListener<UserImportMo
             usernameList.add(userExcelModel.getUsername());
         }
         // 对用户编号在系统中是否重复进行校验
-        List<String> duplicateUserNumList = ContextHelper.getBean(IamUserService.class).filterDuplicateUserNums(userNumList);
+        List<String> duplicateUserNumList = ContextHolder.getBean(IamUserService.class).filterDuplicateUserNums(userNumList);
         for (String userNum : duplicateUserNumList) {
             dataList.get(userNumList.indexOf(userNum)).addComment(USER_NUM_FIELD_NAME, "该编号在系统中已存在");
         }
@@ -66,7 +65,7 @@ public class UserImportExcelListener extends FixedHeadExcelListener<UserImportMo
         if (collect.isEmpty()) {
             return;
         }
-        IamAccountService accountService = ContextHelper.getBean(IamAccountService.class);
+        IamAccountService accountService = ContextHolder.getBean(IamAccountService.class);
         int totalSize = collect.size(), batchSize = BaseConfig.getBatchSize();
         int startInx = 0;
         while (startInx < totalSize) {
@@ -105,25 +104,24 @@ public class UserImportExcelListener extends FixedHeadExcelListener<UserImportMo
                 IamAccount account = new IamAccount();
                 account.setAuthAccount(data.getUsername().trim());
                 account.setAuthSecret(data.getPassword());
-                IamSecurityUtils.encryptPwd(account);
                 accountMap.put(iamUser, account);
             }
             if (data.getRoleId() != null) {
                 userRoleMap.put(iamUser, new IamUserRole().setRoleId(data.getRoleId()));
             }
         }
-        ContextHelper.getBean(IamUserService.class).createEntities(iamUserList);
+        ContextHolder.getBean(IamUserService.class).createEntities(iamUserList);
 
         // 创建账户
         if (!accountMap.isEmpty()) {
             List<IamAccount> accountList = accountMap.entrySet().stream().map(map -> map.getValue().setUserId(map.getKey().getId())).collect(Collectors.toList());
-            ContextHelper.getBean(IamAccountService.class).createEntities(accountList);
+            ContextHolder.getBean(IamAccountService.class).createEntities(accountList);
         }
 
         // 创建用户角色关联关系
         if (!userRoleMap.isEmpty()) {
             List<IamUserRole> userRoleList = userRoleMap.entrySet().stream().map(map -> map.getValue().setUserId(map.getKey().getId())).collect(Collectors.toList());
-            ContextHelper.getBean(IamUserRoleService.class).createEntities(userRoleList);
+            ContextHolder.getBean(IamUserRoleService.class).createEntities(userRoleList);
         }
     }
 }
