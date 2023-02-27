@@ -6,6 +6,7 @@ import com.diboot.core.vo.Pagination;
 import com.diboot.iam.annotation.BindPermission;
 import com.diboot.iam.annotation.Log;
 import com.diboot.iam.annotation.OperationCons;
+import com.diboot.iam.dto.IamLoginTraceDTO;
 import com.diboot.iam.entity.IamLoginTrace;
 import com.diboot.iam.vo.IamLoginTraceVO;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +37,7 @@ public class LoginTraceController extends BaseCrudRestController<IamLoginTrace> 
     @Log(operation = OperationCons.LABEL_LIST)
     @BindPermission(name = OperationCons.LABEL_LIST, code = OperationCons.CODE_READ)
     @GetMapping
-    public JsonResult getViewObjectListMapping(IamLoginTrace entity, Pagination pagination) throws Exception {
+    public JsonResult getViewObjectListMapping(IamLoginTraceDTO entity, Pagination pagination) throws Exception {
         return super.getViewObjectList(entity, pagination, IamLoginTraceVO.class);
     }
 
