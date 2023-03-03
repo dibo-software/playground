@@ -1,19 +1,33 @@
-# playground 新手体验项目
-[diboot 基础介绍 看这里](https://gitee.com/dibo_software/diboot)
-## 项目介绍
-diboot 新手体验项目：
+# playground V3 新手体验项目
+* [v3 前端项目 视频介绍](教程地址)
 
-* [手把手教程 看这里](https://www.diboot.com/guide/newer/bootstrap.html)
-* 项目代码说明：
-    * demo项目为PC端后端rest接口示例，mobile-demo项目为移动端后端rest接口示例
-    * 后端项目启动后从控制台链接进入devtools后需先生成diboot组件的基础代码
-    > 如启动前端出现无法显示验证码，检查是否生成了各组件的基础代码并重启了demo项目
-    * diboot-antd-admin 和 diboot-element-admin 为两个前端项目，实际体验中根据个人习惯选择一个即可
-    > 注: 默认devtools生成的前端路径指向antd，如果选择element，则需修改application-dev.properties中的diboot.devtools.output-path-frontend参数指向element。
-  
-## 技术交流
-  体验过程中如遇到相关技术问题，欢迎加群交流：
-  
+> Diboot v3目前为 beta 版本，不建议使用于生产环境
+
+## 项目启动配置
+> 环境配置: 
+  * JDK 8
+  * MySQL 8
+  * Node v14.8+
+  * pnpm
+
+> 项目代码说明：
+* demo项目为PC端后端接口项目示例（Spring boot + Diboot v3），配置启动步骤：
+  * 修改 `application-dev.yml` 中的数据库连接信息，改为本地连接
+  * 配置IDEA服务（`DemoApplication`为启动类），运行demo后台程序，此时diboot各starter会自动执行初始化SQL
+
+* diboot-admin-ui为前端项目（Vue3+TypeScript+Vite+Pinia+ElementPlus），配置启动步骤：
+  * 切换到 diboot-admin-ui 目录下，
+  执行install命令安装依赖组件
+  ```cmd
+  pnpm install
+  ```
+  执行run dev命令运行
+  ```cmd
+  pnpm run dev
+  ```
+  * 前端启动后登录系统(默认管理员登录账号： `admin` 密码：`123456`)
+
+## 技术交流：
   * **VIP技术支持QQ群**（捐助/付费用户尊享）: [931266830]()
   
   * 技术交流QQ群: [731690096]() 

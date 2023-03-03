@@ -1,0 +1,115 @@
+:root {
+  --el-font-size-dynamic: 14px;
+  --el-icon-size-dynamic: 20px;
+  //  .el-dialog {
+  //    --el-dialog-margin-top: 10vh;
+  //  }
+
+  .el-drawer {
+    .el-drawer__header {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.hide {
+  display: none;
+}
+
+.el-descriptions__label {
+  color: var(--el-text-color-regular) !important;
+  font-weight: bold;
+}
+
+.el-select,
+.el-date-editor,
+.el-input-number,
+.el-cascader {
+  width: 100% !important;
+
+  .el-input__wrapper {
+    width: -moz-available;
+    width: -webkit-fill-available;
+  }
+}
+
+.full-height-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.list-page {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .el-header {
+    height: auto;
+    padding: 10px;
+    border-bottom: 1px solid var(--el-border-color);
+  }
+
+  .list-search {
+    .el-row {
+      margin: 9px 0 -9px !important;
+    }
+  }
+
+  .list-operation {
+    margin-bottom: 0;
+    padding: 10px 0 10px 12px;
+    width: 100%;
+    box-sizing: border-box;
+
+    >div:last-child {
+      margin-left: auto;
+    }
+
+    .search-input {
+      width: 200px;
+    }
+  }
+
+  .el-pagination {
+    margin: 7px;
+  }
+}
+
+.long-text {
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+// 树节点扁平化
+.el-tree-node.is-expanded.flat-tree-node-container>.el-tree-node__children {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+// 自定义树节点
+.custom-tree-node {
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  .operation-container {
+    display: none;
+    margin-left: auto;
+    margin-right: 8px;
+
+    .el-button+.el-button {
+      margin-left: 8px;
+    }
+  }
+
+  &:hover .operation-container {
+    display: inline-block;
+  }
+}
+
+.el-tag {
+  border-width: 0 !important;
+}

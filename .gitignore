@@ -6,3 +6,4 @@ gradle/
 target/
 .DS_Store
 .github/
+node_modules/
