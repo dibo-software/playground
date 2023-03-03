@@ -12,6 +12,7 @@
 
 > 项目代码说明：
 * demo项目为PC端后端接口项目示例（Spring boot + Diboot v3），配置启动步骤：
+  * 因后端项目尚未发布到 maven 库，体验后端需先[手动下载 diboot 基础组件代码](https://gitee.com/dibo_software/diboot/tree/dev-feature/) 并本地执行 maven install
   * 修改 `application-dev.yml` 中的数据库连接信息，改为本地连接
   * 配置IDEA服务（`DemoApplication`为启动类），运行demo后台程序，此时diboot各starter会自动执行初始化SQL
 
