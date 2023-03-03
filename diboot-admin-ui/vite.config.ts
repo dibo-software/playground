@@ -6,7 +6,7 @@ import eslintPlugin from 'vite-plugin-eslint'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
-import { viteMockServe } from 'vite-plugin-mock'
+// import { viteMockServe } from 'vite-plugin-mock'
 import { fileURLToPath, URL } from 'url'
 import fs from 'fs'
 const optimizeDepsElementPlusIncludes = [
@@ -82,21 +82,21 @@ export default defineConfig(({ command }) => {
         dts: 'types/components.d.ts',
         // 导入路径变换
         importPathTransform: path => path.replace(/^.+\/src/g, '@')
-      }),
-      viteMockServe({
-        // 忽略以_开头的文件及目录
-        ignore: /^_|\/_/,
-        // 开发打包开关(默认开启)
-        localEnabled: command === 'serve',
-        // 生产打包开关(默认不打包)
-        prodEnabled: command !== 'serve',
-        // 注入代码(用于生产需要mock)
-        injectCode: `
-        import { setupProdMockServer } from '../mock/server-config/_prod';
-
-        setupProdMockServer();
-        `
       })
+      // viteMockServe({
+      //   // 忽略以_开头的文件及目录
+      //   ignore: /^_|\/_/,
+      //   // 开发打包开关(默认开启)
+      //   localEnabled: command === 'serve',
+      //   // 生产打包开关(默认不打包)
+      //   prodEnabled: command !== 'serve',
+      //   // 注入代码(用于生产需要mock)
+      //   injectCode: `
+      //   import { setupProdMockServer } from '../mock/server-config/_prod';
+      //
+      //   setupProdMockServer();
+      //   `
+      // })
     ],
     css: {
       preprocessorOptions: {
@@ -115,12 +115,12 @@ export default defineConfig(({ command }) => {
         '#': fileURLToPath(new URL('./types', import.meta.url)),
         'vue-i18n': 'vue-i18n/dist/vue-i18n.cjs.js'
       }
+    },
+    server: {
+      host: true,
+      proxy: {
+        '/api': 'http://localhost:8080'
+      }
     }
-    // server: {
-    //   host: true,
-    //   proxy: {
-    //     '/api': 'http://localhost:8080'
-    //   }
-    // }
   }
 })
