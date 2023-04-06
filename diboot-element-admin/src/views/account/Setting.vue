@@ -139,6 +139,7 @@ export default {
   margin: 0 auto;
   width: 100%;
   max-width: 180px;
+  height: 180px;
   border-radius: 50%;
   box-shadow: 0 0 4px #ccc;
 
@@ -181,5 +182,9 @@ img, .mask {
   border-radius: 50%;
   overflow: hidden;
 }
+  img {
+    line-height: 180px;
+    height: max-content;
+  }
 }
 </style>
