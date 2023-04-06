@@ -19,9 +19,10 @@ public class MybatisPlusConfig {
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
         // 数据权限拦截器
-        //interceptor.addInnerInterceptor(new DataAccessControlInteceptor());
+        // interceptor.addInnerInterceptor(new DataPermissionInterceptor(new DataAccessControlHandler()));
+        // 分页拦截器
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
         return interceptor;
     }
 
