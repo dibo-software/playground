@@ -36,6 +36,7 @@
       fit
       highlight-current-row
       row-key="id"
+      height="100%"
       @sort-change="appendSorterParam"
     >
       <el-table-column label="角色名称" prop="name" />
@@ -68,7 +69,7 @@
               @command="command => menuCommand(command, row)"
             >
               <el-button type="text">
-                更多<i class="el-icon-arrow-down el-icon--right"/>
+                更多<i class="el-icon-arrow-down el-icon--right" />
               </el-button>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item

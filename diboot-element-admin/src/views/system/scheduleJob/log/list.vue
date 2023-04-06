@@ -37,6 +37,7 @@
         fit
         highlight-current-row
         row-key="id"
+        height="100%"
         @sort-change="appendSorterParam"
       >
         <el-table-column align="center" label="任务名称">
