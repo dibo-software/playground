@@ -2,7 +2,6 @@ package com.example.demo.config;
 
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.diboot.core.handler.DataAccessControlInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,7 +20,7 @@ public class MybatisPlusConfig {
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         // 数据权限拦截器
-        //interceptor.addInnerInterceptor(new DataAccessControlInterceptor());
+        // interceptor.addInnerInterceptor(new DataPermissionInterceptor(new DataAccessControlHandler()));
         // 分页拦截器
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
         return interceptor;
