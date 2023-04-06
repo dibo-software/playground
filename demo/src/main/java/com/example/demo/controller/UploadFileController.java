@@ -9,14 +9,13 @@ import com.diboot.core.entity.Dictionary;
 import com.diboot.core.vo.*;
 import com.diboot.core.util.S;
 
-import com.diboot.file.util.HttpHelper;
+import com.diboot.file.service.FileStorageService;
 import com.diboot.file.util.ImageHelper;
 import com.diboot.file.vo.UploadFileVO;
 import com.diboot.iam.annotation.BindPermission;
 import com.diboot.iam.annotation.Log;
 import com.diboot.iam.annotation.OperationCons;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +39,10 @@ import java.util.List;
 @Slf4j
 public class UploadFileController extends BaseFileController {
 
-		/**
+    @Autowired
+    private FileStorageService fileStorageService;
+
+    /**
      * 查询ViewObject的分页数据
      * <p>
      * url请求参数示例: /list?field=abc&pageIndex=1&orderBy=abc:DESC
@@ -125,7 +127,7 @@ public class UploadFileController extends BaseFileController {
             return new JsonResult(Status.FAIL_VALIDATION, "文件不存在");
         }
         // 下载
-        HttpHelper.downloadLocalFile(uploadFile.getStoragePath(), uploadFile.getFileName(), response);
+        fileStorageService.download(uploadFile, response);
         return null;
     }
     
@@ -150,7 +152,7 @@ public class UploadFileController extends BaseFileController {
             log.warn("非图片文件:{}", fileUuid);
             return JsonResult.FAIL_VALIDATION("非图片文件");
         }
-        IOUtils.copy(FileUtils.openInputStream(new File(uploadFile.getStoragePath())), response.getOutputStream());
+        fileStorageService.download(uploadFile, response);
         return null;
     }
     

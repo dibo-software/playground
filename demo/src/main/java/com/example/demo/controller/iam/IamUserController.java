@@ -126,7 +126,7 @@ public class IamUserController extends BaseCrudRestController<IamUser> {
     @BindPermission(name = OperationCons.LABEL_DELETE, code = OperationCons.CODE_WRITE)
     @DeleteMapping("/{id}")
     public JsonResult deleteEntityMapping(@PathVariable("id")Long id) throws Exception {
-        iamUserService.deleteUserAndAccount(id);
+        iamUserService.deleteUserAndRelatedInfo(id);
         return JsonResult.OK();
     }
 
