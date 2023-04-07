@@ -86,8 +86,9 @@ const actions = {
 
         commit('SET_NAME', name)
         commit('SET_INFO', info)
-        const isExternal = /^(https?:|mailto:|tel:|\/\/)/.test(info.avatarUrl)
-        commit('SET_AVATAR', isExternal ? info.avatarUrl : info.avatarUrl ? baseURL + info.avatarUrl : null)
+        const avatarUrl = info && info.avatarUrl ? info.avatarUrl : null
+        const isExternal = /^(https?:|mailto:|tel:|\/\/)/.test(avatarUrl)
+        commit('SET_AVATAR', isExternal ? avatarUrl : avatarUrl ? baseURL + avatarUrl : null)
         resolve(data)
       }).catch(error => {
         reject(error)
