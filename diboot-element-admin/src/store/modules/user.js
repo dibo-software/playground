@@ -5,6 +5,7 @@ import { permissionListToPermissions } from '@/utils/permissions'
 import defaultAvatar from '@/assets/logo.png'
 import { logout as ssoLogout } from '@/utils/sso'
 import { baseURL } from '@/utils/request'
+import avatar from 'element-ui/packages/avatar'
 
 const state = {
   token: getToken(),

@@ -10095,7 +10095,7 @@ vm-browserify@^1.0.1:
 
 vue-cropper@0.4.9:
   version "0.4.9"
-  resolved "https://registry.npmmirror.com/vue-cropper/-/vue-cropper-0.4.9.tgz#fe650f32516ecf29014bbd4a9079191c8dc5a5ae"
+  resolved "https://registry.npmjs.org/vue-cropper/-/vue-cropper-0.4.9.tgz#fe650f32516ecf29014bbd4a9079191c8dc5a5ae"
   integrity sha512-Uf1i/sCh+ZqSM9hb2YTGRENzJFH+mvDuv8N2brGLjK7UBuF7XDP7zbis8g/dcqZiMojAcBDtObFCn4ERFbRMxQ==
 
 vue-eslint-parser@^2.0.3:
