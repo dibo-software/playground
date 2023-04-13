@@ -74,13 +74,18 @@
         </dependency>
 
         <!-- 依赖diboot-devtools -->
-<!--        <dependency>-->
-<!--            <groupId>com.diboot</groupId>-->
-<!--            <artifactId>diboot-devtools-spring-boot-starter</artifactId>-->
-<!--            <version>${diboot.version}</version>-->
-<!--            <scope>provided</scope>&lt;!&ndash; 只在开发过程依赖，打jar包时剔除。&ndash;&gt;-->
-<!--            &lt;!&ndash;注：IDEA某些版本下provided无效，需删除此行，打包前手动剔除devtools依赖 &ndash;&gt;-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.diboot</groupId>
+            <artifactId>diboot-devtools-spring-boot-starter</artifactId>
+            <version>${diboot.version}</version>
+            <scope>provided</scope><!-- 只在开发过程依赖，打jar包时剔除。-->
+            <!--注：IDEA某些版本下provided无效，需删除此行，打包前手动剔除devtools依赖 -->
+        </dependency>
+        <dependency>
+            <groupId>org.mitre.dsmiley.httpproxy</groupId>
+            <artifactId>smiley-http-proxy-servlet</artifactId>
+            <version>1.12.1</version>
+        </dependency>
 
         <!-- 默认的验证码组件，可按需替换 -->
         <dependency>
