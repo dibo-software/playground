@@ -1,52 +1,50 @@
 <template>
-  <a-modal
+  <el-dialog
     title="修改头像"
     :visible="visible"
-    :maskClosable="false"
-    :confirmLoading="confirmLoading"
-    :width="800"
-    @cancel="cancelHandel">
-    <a-row>
-      <a-col :xs="24" :md="12" :style="{height: '350px'}">
+    :confirm-loading="confirmLoading"
+    destroy-on-close
+    width="800"
+    @close="cancelHandel"
+  >
+    <el-row>
+      <el-col :xs="24" :md="12" :style="{height: '350px'}">
         <vue-cropper
           ref="cropper"
           :img="options.img"
           :info="true"
-          :autoCrop="options.autoCrop"
-          :autoCropWidth="options.autoCropWidth"
-          :autoCropHeight="options.autoCropHeight"
-          :fixedBox="options.fixedBox"
+          :auto-crop="options.autoCrop"
+          :auto-crop-width="options.autoCropWidth"
+          :auto-crop-height="options.autoCropHeight"
+          :fixed-box="options.fixedBox"
           @realTime="realTime"
-        >
-        </vue-cropper>
-      </a-col>
-      <a-col :xs="24" :md="12" :style="{height: '350px'}">
+        />
+      </el-col>
+      <el-col :xs="24" :md="12" :style="{height: '350px'}">
         <div class="avatar-upload-preview">
-          <img :src="previews.url" :style="previews.img"/>
+          <img :src="previews.url" :style="previews.img">
         </div>
-      </a-col>
-    </a-row>
+      </el-col>
+    </el-row>
 
     <template slot="footer">
-      <a-button key="back" @click="cancelHandel">取消</a-button>
-      <a-button key="submit" type="primary" :loading="confirmLoading" @click="okHandel">保存</a-button>
+      <el-button key="back" @click="cancelHandel">取消</el-button>
+      <el-button key="submit" type="primary" :loading="confirmLoading" @click="okHandel">保存</el-button>
     </template>
-  </a-modal>
+  </el-dialog>
 </template>
 <script>
-// import { VueCropper } from 'vue-cropper'
-
+import { VueCropper } from 'vue-cropper'
 import { baseURL, dibootApi } from '@/utils/request'
-import cloneDeep from 'lodash.clonedeep'
+import _ from 'lodash'
 import { mapGetters } from 'vuex'
 
 export default {
-  /*
+  name: 'AvatarDialog',
   components: {
     VueCropper
   },
-  */
-  data () {
+  data() {
     return {
       baseApi: '/iam/user',
       visible: false,
@@ -54,7 +52,7 @@ export default {
       confirmLoading: false,
 
       options: {
-        img: '/avatar2.jpg',
+        img: '',
         autoCrop: true,
         autoCropWidth: 200,
         autoCropHeight: 200,
@@ -64,18 +62,18 @@ export default {
     }
   },
   methods: {
-    ...mapGetters(['userInfo']),
-    edit (filename, imgSrc) {
+    ...mapGetters(['info']),
+    edit(filename, imgSrc) {
       this.options.img = imgSrc
       this.filename = filename
       this.visible = true
     },
-    cancelHandel () {
+    cancelHandel() {
       this.$emit('cancel')
       this.visible = false
     },
 
-    dataURLtoFile (dataurl, filename) {
+    dataURLtoFile(dataurl, filename) {
       const arr = dataurl.split(',')
       const test = arr[0].match(/:(.*?);/)
       if (test) {
@@ -89,20 +87,19 @@ export default {
         return new File([u8arr], filename, { type: mime })
       }
     },
-    okHandel () {
+    okHandel() {
       const vm = this
       vm.confirmLoading = true
       this.$refs.cropper.getCropData(data => {
         const file = this.dataURLtoFile(data, this.filename)
-        console.log('file', file)
         const formData = new FormData()
         formData.set('file', file)
         dibootApi.upload('/uploadFile/upload/dto', formData).then(res => {
-          const data = cloneDeep(this.userInfo().info)
+          const data = _.cloneDeep(this.info())
           data.avatarUrl = res.data.accessUrl
           dibootApi.post(`${this.baseApi}/updateCurrentUserInfo`, data).then(response => {
             vm.$message.success('上传头像成功')
-            vm.$store.commit('SET_AVATAR', `${baseURL}${response.data.avatarUrl}`)
+            vm.$store.commit('user/SET_AVATAR', `${baseURL}${response.data.avatarUrl}`)
             vm.confirmLoading = false
             vm.cancelHandel()
           }).catch(() => {
@@ -116,14 +113,14 @@ export default {
       })
     },
 
-    realTime (data) {
+    realTime(data) {
       this.previews = data
     }
   }
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 
 .avatar-upload-preview {
   position: absolute;

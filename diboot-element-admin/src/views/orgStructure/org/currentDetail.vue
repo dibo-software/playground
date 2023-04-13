@@ -1,24 +1,12 @@
 <template>
   <div v-if="currentNodeId !== '0' && model">
     <el-descriptions>
-      <el-descriptions-item label="简称">
-        {{ model.shortName }}
-      </el-descriptions-item>
-      <el-descriptions-item style="margin-bottom: 0;" label="全称">
-        {{ model.name }}
-      </el-descriptions-item>
-      <el-descriptions-item style="margin-bottom: 0;" label="编码">
-        {{ model.code }}
-      </el-descriptions-item>
-      <el-descriptions-item style="margin-bottom: 0;" label="上级部门">
-        {{ parentName }}
-      </el-descriptions-item>
-      <el-descriptions-item style="margin-bottom: 0;" label="类型">
-        {{ model.typeLabel }}
-      </el-descriptions-item>
-      <el-descriptions-item style="margin-bottom: 0;" label="负责人">
-        {{ model.managerName || '-' }}
-      </el-descriptions-item>
+      <el-descriptions-item label="简称">{{ model.shortName }}</el-descriptions-item>
+      <el-descriptions-item label="全称">{{ model.name }}</el-descriptions-item>
+      <el-descriptions-item label="编码">{{ model.code }}</el-descriptions-item>
+      <el-descriptions-item label="上级部门">{{ parentName }}</el-descriptions-item>
+      <el-descriptions-item label="类型">{{ model.typeLabel }}</el-descriptions-item>
+      <el-descriptions-item label="负责人">{{ model.managerName || '-' }}</el-descriptions-item>
     </el-descriptions>
   </div>
 </template>

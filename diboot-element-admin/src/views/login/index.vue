@@ -99,7 +99,6 @@ export default {
       passwordType: 'password',
       redirect: undefined,
       baseURL: process.env.VUE_APP_BASE_API,
-      captchaParam: 0,
       // 启用SSO
       enableSso: isEnableSso()
     }

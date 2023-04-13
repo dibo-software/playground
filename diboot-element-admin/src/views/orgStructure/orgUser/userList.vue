@@ -98,6 +98,7 @@
       fit
       highlight-current-row
       row-key="id"
+      height="100%"
       @sort-change="appendSorterParam"
     >
       <el-table-column label="部门">
@@ -129,17 +130,27 @@
           {{ scope.row.genderLabel }}
         </template>
       </el-table-column>
-      <el-table-column label="电话" align="center">
+      <el-table-column label="电话">
         <template slot-scope="scope">
           <span>{{ scope.row.mobilePhone }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="邮箱" align="center">
+      <el-table-column label="邮箱">
         <template slot-scope="scope">
           <span>{{ scope.row.email }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column label="帐号状态" align="center">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.accountStatus === 'A'" type="success">
+            {{ scope.row.accountStatusLabel }}
+          </el-tag>
+          <el-tag v-else type="danger">
+            {{ scope.row.accountStatusLabel }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button
             v-permission="['detail']"
