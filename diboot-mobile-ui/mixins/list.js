@@ -115,7 +115,7 @@ export default {
 				console.log(e)
 				this.showToast('网络异常！')
 			} finally {
-				this.page.pageIndex = 1
+				this.page.pageIndex = this.page.pageIndex - 1
 				this.setQueryParamPage()
 				this.getList(true)
 				this.handleCancelDel()
