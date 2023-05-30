@@ -1,5 +1,5 @@
 <script setup lang="ts" name="DiList">
-import { Plus, Delete, Search, CircleClose, ArrowUp, ArrowDown } from '@element-plus/icons-vue'
+import { Plus, Delete, Search, ArrowUp, ArrowDown } from '@element-plus/icons-vue'
 import { buildOptionProps, buildGetRelatedData } from './utils'
 import type { FormConfig, ListConfig, ListOperation, TableColumn } from '@/components/di/type'
 
@@ -8,6 +8,8 @@ interface ListProps extends ListConfig {
   model: string
   // 左树父级ID
   parent?: string
+  // 不自动加载列表数据
+  notLoadAuto?: boolean
 
   // vue语法限制导致只能在当前文件中再次定义
   // https://cn.vuejs.org/guide/typescript/composition-api.html#typing-component-props
@@ -47,12 +49,16 @@ const {
   batchRemove
 } = useList<Record<string, unknown>>({ baseApi: props.baseApi })
 
+if (!props.notLoadAuto) getList()
+
 // 监听左树节点变化
 watch(
   () => props.parent,
   value => {
-    if (props.relatedKey) queryParam[props.relatedKey] = value
-    onSearch()
+    if (props.relatedKey) {
+      queryParam[props.relatedKey] = value
+      onSearch()
+    }
   },
   { immediate: true }
 )
@@ -119,7 +125,7 @@ const multiple = inject<boolean | undefined>(
             :loading="asyncLoading"
             :lazy-load="async (parentId: string) => await lazyLoadRelatedData(item.prop, parentId)"
             @change="onSearch"
-            @remote-filter="(value: string) => remoteRelatedDataFilter(item.prop, value)"
+            @remote-filter="(value?: string) => remoteRelatedDataFilter(item.prop, value)"
           />
         </el-col>
       </el-row>
@@ -168,13 +174,13 @@ const multiple = inject<boolean | undefined>(
               :loading="asyncLoading"
               :lazy-load="async (parentId: string) => await lazyLoadRelatedData(item.prop, parentId)"
               @change="onSearch"
-              @remote-filter="(value: string) => remoteRelatedDataFilter(item.prop, value)"
+              @remote-filter="(value?: string) => remoteRelatedDataFilter(item.prop, value)"
             />
           </template>
         </span>
         <template v-if="searchArea?.propList?.length">
           <el-button :icon="Search" type="primary" @click="onSearch">搜索</el-button>
-          <el-button :icon="CircleClose" title="重置搜索条件" @click="resetFilter" />
+          <el-button title="重置搜索条件" @click="resetFilter">重置</el-button>
         </template>
         <el-button
           v-if="(searchArea?.propList?.length ?? 0) > 1"

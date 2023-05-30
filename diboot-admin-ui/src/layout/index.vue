@@ -12,11 +12,9 @@ import { iconSizeNumber } from '@/utils/theme'
 import Logo from '@/assets/logo.png'
 
 import useAppStore from '@/store/app'
-import useAuthStore from '@/store/auth'
 import { getMenuTree } from '@/utils/route'
 
 const appStore = useAppStore()
-const authStore = useAuthStore()
 
 const menuTree = getMenuTree()
 
@@ -52,7 +50,10 @@ const isMobile = ref(document.body.clientWidth < 992)
 window.addEventListener('resize', () => (isMobile.value = document.body.clientWidth < 992))
 
 const showMenu = ref(false)
-watch(router.currentRoute, () => (showMenu.value = false))
+watch(
+  () => router.currentRoute.value.fullPath,
+  () => (showMenu.value = false)
+)
 
 // 拖拽指令
 const vDrag: Directive<HTMLElement> = {
@@ -149,9 +150,7 @@ const vDrag: Directive<HTMLElement> = {
           </el-header>
           <app-tabs>
             <template #default="{ fullScreen }">
-              <watermark ref="watermarkRef" :text="authStore.realname" :rotate="-45">
-                <app-main :full-screen="fullScreen" />
-              </watermark>
+              <app-main :full-screen="fullScreen" />
             </template>
           </app-tabs>
         </el-main>
@@ -182,9 +181,7 @@ const vDrag: Directive<HTMLElement> = {
         <el-main style="padding: 0">
           <app-tabs>
             <template #default="{ fullScreen }">
-              <watermark ref="watermarkRef" :text="authStore.realname" :rotate="-45">
-                <app-main :full-screen="fullScreen" />
-              </watermark>
+              <app-main :full-screen="fullScreen" />
             </template>
           </app-tabs>
         </el-main>
@@ -204,9 +201,7 @@ const vDrag: Directive<HTMLElement> = {
       <el-main style="padding: 0">
         <app-tabs>
           <template #default="{ fullScreen }">
-            <watermark ref="watermarkRef" :text="authStore.realname" :rotate="-45">
-              <app-main :full-screen="fullScreen" />
-            </watermark>
+            <app-main :full-screen="fullScreen" />
           </template>
         </app-tabs>
       </el-main>
@@ -225,9 +220,7 @@ const vDrag: Directive<HTMLElement> = {
         <el-main style="padding: 0">
           <app-tabs>
             <template #default="{ fullScreen }">
-              <watermark ref="watermarkRef" :text="authStore.realname" :rotate="-45">
-                <app-main :full-screen="fullScreen" />
-              </watermark>
+              <app-main :full-screen="fullScreen" />
             </template>
           </app-tabs>
         </el-main>

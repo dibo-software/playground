@@ -1,8 +1,7 @@
 <script setup lang="ts" name="DiInput">
 import { Plus, Upload as UploadIcon } from '@element-plus/icons-vue'
 import type { FormItem, Upload } from './type'
-import type { FormItemRule } from 'element-plus/es/tokens/form'
-import type { UploadRawFile, UploadFile } from 'element-plus'
+import type { UploadRawFile, UploadFile, FormItemRule } from 'element-plus'
 
 const props = defineProps<{
   config: FormItem
@@ -19,7 +18,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:modelValue', value?: unknown): void
   (e: 'change', value?: unknown): void
-  (e: 'remoteFilter', value?: unknown): void
+  (e: 'remoteFilter', value?: string): void
   (e: 'preview', accessUrl: string, isImage: boolean): void
 }>()
 
@@ -44,8 +43,7 @@ watch(
 const requiredRule = {
   required: true,
   message: '不能为空',
-  whitespace: true,
-  type: props.config.type === 'input-number' ? 'number' : undefined
+  ...(props.config.type === 'input-number' ? {} : { whitespace: true })
 }
 const checkUniqueRule = {
   validator: (rule: unknown, value: unknown, callback: (error?: string | Error) => void) => {
@@ -79,7 +77,7 @@ const rules = (
 
 const handleChange = (value?: unknown) => emit('change', value)
 
-const remoteFilter = (value?: unknown) => emit('remoteFilter', value)
+const remoteFilter = (value?: unknown) => emit('remoteFilter', value as string | undefined)
 
 const lazyLoad = ({ data }: { data: LabelValue }, resolve: (data: LabelValue[]) => void) =>
   props.lazyLoad ? props.lazyLoad(data.value).then(list => resolve(list)) : resolve([])

@@ -1,5 +1,5 @@
 <script setup lang="ts" name="FileRecord">
-import { Search, CircleClose } from '@element-plus/icons-vue'
+import { Search } from '@element-plus/icons-vue'
 import Form from './Form.vue'
 import type { SystemConfig } from '@/views/system/config/type'
 
@@ -37,8 +37,8 @@ const refresh = () => {
         <el-select v-model="queryParam.category" filterable clearable @change="onSearch">
           <el-option v-for="item in categoryList" :key="item" :label="item" :value="item" />
         </el-select>
-        <el-button :icon="Search" type="primary" @click="onSearch">搜索</el-button>
-        <el-button :icon="CircleClose" title="重置搜索条件" @click="resetFilter" />
+        <el-button :icon="Search" type="primary" @click="onSearch">查询</el-button>
+        <el-button title="重置搜索条件" @click="resetFilter">重置</el-button>
       </el-space>
     </el-space>
 

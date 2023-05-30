@@ -1,5 +1,5 @@
 <script setup lang="ts" name="Dictionary">
-import { ArrowUp, ArrowDown, Search, CircleClose, Plus } from '@element-plus/icons-vue'
+import { ArrowUp, ArrowDown, Search, Plus } from '@element-plus/icons-vue'
 import FormPage from './Form.vue'
 import DetailPage from './Detail.vue'
 import type { Dictionary } from '@/views/system/dictionary/type'
@@ -73,8 +73,8 @@ function rowClick(row: DictionaryTableExpand) {
           placeholder="类型名称"
           @change="onSearch"
         />
-        <el-button :icon="Search" type="primary" @click="onSearch">搜索</el-button>
-        <el-button :icon="CircleClose" title="重置搜索条件" @click="resetFilter" />
+        <el-button :icon="Search" type="primary" @click="onSearch">查询</el-button>
+        <el-button title="重置搜索条件" @click="resetFilter">重置</el-button>
         <el-button
           :icon="searchState ? ArrowUp : ArrowDown"
           :title="searchState ? '收起' : '展开'"
@@ -186,5 +186,7 @@ function rowClick(row: DictionaryTableExpand) {
 
 .dict-item {
   margin-right: 8px;
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
 </style>

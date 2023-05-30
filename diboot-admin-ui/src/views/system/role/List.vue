@@ -1,5 +1,5 @@
 <script setup lang="ts" name="Role">
-import { Search, ArrowDown, ArrowUp, CircleClose, Plus } from '@element-plus/icons-vue'
+import { Search, ArrowDown, ArrowUp, Plus } from '@element-plus/icons-vue'
 import type { Role } from './type'
 import Detail from './Detail.vue'
 import Form from './Form.vue'
@@ -49,8 +49,8 @@ const deletePermission = checkPermission('delete')
       </el-button>
       <el-space>
         <el-input v-show="!searchState" v-model="queryParam.name" clearable placeholder="名称" @change="onSearch" />
-        <el-button :icon="Search" type="primary" @click="onSearch">搜索</el-button>
-        <el-button :icon="CircleClose" title="重置搜索条件" @click="resetFilter" />
+        <el-button :icon="Search" type="primary" @click="onSearch">查询</el-button>
+        <el-button title="重置搜索条件" @click="resetFilter">重置</el-button>
         <el-button
           :icon="searchState ? ArrowUp : ArrowDown"
           :title="searchState ? '收起' : '展开'"
@@ -66,7 +66,8 @@ const deletePermission = checkPermission('delete')
       <el-table-column prop="updateTime" label="更新时间" />
       <el-table-column label="操作" width="160" fixed="right">
         <template #default="{ row }">
-          <el-space>
+          <el-space v-if="row.superAdmin === true"> - </el-space>
+          <el-space v-else>
             <el-button v-has-permission="'detail'" text bg type="primary" size="small" @click="openDetail(row.id)">
               {{ $t('operation.detail') }}
             </el-button>

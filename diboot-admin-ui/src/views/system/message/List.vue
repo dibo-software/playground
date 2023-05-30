@@ -1,5 +1,5 @@
 <script setup lang="ts" name="Message">
-import { Search, CircleClose, ArrowUp, ArrowDown } from '@element-plus/icons-vue'
+import { Search, ArrowUp, ArrowDown } from '@element-plus/icons-vue'
 import type { Message } from './type'
 import Detail from '@/views/system/message/Detail.vue'
 
@@ -70,8 +70,8 @@ initRelatedData()
     <el-space wrap class="list-operation">
       <el-space>
         <el-input v-show="!searchState" v-model="queryParam.title" clearable @change="onSearch" />
-        <el-button :icon="Search" type="primary" @click="onSearch">搜索</el-button>
-        <el-button :icon="CircleClose" title="重置搜索条件" @click="resetFilter" />
+        <el-button :icon="Search" type="primary" @click="onSearch">查询</el-button>
+        <el-button title="重置搜索条件" @click="resetFilter">重置</el-button>
         <el-button
           :icon="searchState ? ArrowUp : ArrowDown"
           :title="searchState ? '收起' : '展开'"
@@ -87,7 +87,7 @@ initRelatedData()
       <el-table-column prop="receiverName" label="接收方" />
       <el-table-column prop="channelLabel" label="发送通道">
         <template #default="{ row }">
-          <el-tag type="info">{{ row.channelLabel }}</el-tag>
+          <el-tag type="info" effect="dark">{{ row.channelLabel }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="statusLabel" label="发送状态">
@@ -96,7 +96,7 @@ initRelatedData()
           <el-tag v-else-if="row.status === 'DELIVERY' || row.status === 'READ'" type="success">
             {{ row.statusLabel }}
           </el-tag>
-          <el-tag v-else type="info">{{ row.statusLabel }}</el-tag>
+          <el-tag v-else type="info" effect="dark">{{ row.statusLabel }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="createTime" label="创建时间" width="165" />

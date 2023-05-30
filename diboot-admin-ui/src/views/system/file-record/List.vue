@@ -1,5 +1,5 @@
 <script setup lang="ts" name="FileRecord">
-import { Search, ArrowDown, ArrowUp, CircleClose } from '@element-plus/icons-vue'
+import { Search, ArrowDown, ArrowUp } from '@element-plus/icons-vue'
 import Detail from './Detail.vue'
 import Form from './Form.vue'
 
@@ -76,8 +76,8 @@ const openDetail = (id: string) => {
           placeholder="文件名称"
           @change="onSearch"
         />
-        <el-button :icon="Search" type="primary" @click="onSearch">搜索</el-button>
-        <el-button :icon="CircleClose" title="重置搜索条件" @click="resetFilter" />
+        <el-button :icon="Search" type="primary" @click="onSearch">查询</el-button>
+        <el-button title="重置搜索条件" @click="resetFilter">重置</el-button>
         <el-button
           :icon="searchState ? ArrowUp : ArrowDown"
           :title="searchState ? '收起' : '展开'"

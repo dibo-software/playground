@@ -75,7 +75,7 @@ const addChildNode = (parent?: Resource) => {
     displayType: parent ? 'MENU' : 'CATALOGUE',
     displayName: '新建',
     resourceCode: '',
-    sortId: (children?.length ? Number(children[children.length - 1].sortId) : 0) + 1 + '',
+    sortId: (children?.length ? Number(children[children.length - 1].sortId ?? children.length) : 0) + 1 + '',
     status: 'A',
     routeMeta: {}
   })
@@ -137,7 +137,7 @@ const treeNodeClass = (data: Resource) => {
                 <el-icon v-if="data.routeMeta.icon" style="margin-right: 5px">
                   <Icon :name="data.routeMeta.icon" />
                 </el-icon>
-                <span>{{ node.label }}</span>
+                <span :style="data.routeMeta.icon ? '' : 'margin-left: 19px'">{{ node.label }}</span>
               </span>
               <span class="operation-container">
                 <el-tooltip :show-after="1000" content="添加子菜单">

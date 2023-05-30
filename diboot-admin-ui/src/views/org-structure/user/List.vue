@@ -1,5 +1,5 @@
 <script setup lang="ts" name="UserList">
-import { Search, ArrowUp, ArrowDown, CircleClose, Plus } from '@element-plus/icons-vue'
+import { Search, ArrowUp, ArrowDown, Plus } from '@element-plus/icons-vue'
 import type { UserPosition } from '../position/type'
 import type { UserModel } from './type'
 import Detail from './Detail.vue'
@@ -40,7 +40,7 @@ const openDetail = (id: string) => {
 
 const formRef = ref()
 const openForm = (id?: string) => {
-  formRef.value?.open(id)
+  formRef.value?.open(id, props.orgId)
 }
 
 const loadListByOrgId = (orgId: string) => {
@@ -96,8 +96,8 @@ const buildRoleList = (roleList?: Role[]) => roleList?.map(e => e.name).join('�
       />
       <el-space>
         <el-input v-show="!searchState" v-model="queryParam.realname" clearable placeholder="姓名" @change="onSearch" />
-        <el-button :icon="Search" type="primary" @click="onSearch">搜索</el-button>
-        <el-button :icon="CircleClose" title="重置搜索条件" @click="resetFilter" />
+        <el-button :icon="Search" type="primary" @click="onSearch">查询</el-button>
+        <el-button title="重置搜索条件" @click="resetFilter">重置</el-button>
         <el-button
           :icon="searchState ? ArrowUp : ArrowDown"
           :title="searchState ? '收起' : '展开'"

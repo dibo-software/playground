@@ -1,5 +1,5 @@
 <script setup lang="ts" name="LoginTrace">
-import { Search, CircleClose, ArrowUp, ArrowDown } from '@element-plus/icons-vue'
+import { Search, ArrowUp, ArrowDown } from '@element-plus/icons-vue'
 import type { LoginTrace } from './type'
 
 const { queryParam, dateRangeQuery, loading, dataList, pagination, getList, onSearch, resetFilter } =
@@ -46,8 +46,8 @@ getList()
           clearable
           @change="onSearch"
         />
-        <el-button :icon="Search" type="primary" @click="onSearch">搜索</el-button>
-        <el-button :icon="CircleClose" title="重置搜索条件" @click="resetFilter" />
+        <el-button :icon="Search" type="primary" @click="onSearch">查询</el-button>
+        <el-button title="重置搜索条件" @click="resetFilter">重置</el-button>
         <el-button
           :icon="searchState ? ArrowUp : ArrowDown"
           :title="searchState ? '收起' : '展开'"
