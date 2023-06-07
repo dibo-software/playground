@@ -1,13 +1,13 @@
 # playground V3 新手体验项目
-* [v3 前端项目 视频介绍](教程地址)
+* [v3 前端项目 使用文档](https://www.diboot.com)
 
-> Diboot v3目前为 beta 版本，不建议使用于生产环境
+> Diboot v3.0.0版本体验环境（该版本代码生成功能尚未发布，敬请期待）
 
 ## 项目启动配置
 > 环境配置: 
   * JDK 8
   * MySQL 8
-  * Node v14.8+
+  * Node v16
   * pnpm
 
 > 项目代码说明：
