@@ -63,6 +63,10 @@ div:focus {
 // main-container global css
 .app-container {
   padding: 20px;
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 // 搜索框容器
@@ -178,4 +182,9 @@ div:focus {
 // 分页内边距（默认值：32px 16px）
 .pagination-container {
   padding: 16px !important;
+}
+
+// 页面左侧是树时，右侧列表的高度
+.right-table {
+  height: calc(100vh - 124px);
 }

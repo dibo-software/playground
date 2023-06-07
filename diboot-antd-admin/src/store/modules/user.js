@@ -5,6 +5,7 @@ import { permissionListToPermissions } from '@/utils/permissions'
 import { welcome } from '@/utils/util'
 import defaultAvatar from '@/assets/logo.png'
 import { logout as ssoLogout } from '@/utils/sso'
+import { baseURL } from '@/utils/request'
 
 const user = {
   state: {
@@ -26,7 +27,7 @@ const user = {
     },
     SET_AVATAR: (state, avatar) => {
       if (avatar) {
-        state.avatar = avatar
+        state.avatar = avatar + '/image'
       } else {
         state.avatar = defaultAvatar
       }
@@ -76,7 +77,9 @@ const user = {
           }
 
           commit('SET_NAME', { name: result.name, welcome: welcome() })
-          commit('SET_AVATAR', result.avatar)
+          const avatarUrl = result && result.info && result.info.avatarUrl
+          const isExternal = /^(https?:|mailto:|tel:|\/\/)/.test(avatarUrl)
+          commit('SET_AVATAR', isExternal ? avatarUrl : avatarUrl ? baseURL + avatarUrl : null)
 
           resolve(response)
         }).catch(error => {
@@ -87,12 +90,12 @@ const user = {
 
     // 登出
     Logout ({ commit, state }) {
-      ssoLogout()
       return new Promise((resolve) => {
         const reset = () => {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
           storage.remove(ACCESS_TOKEN)
+          ssoLogout()
           resolve()
         }
 

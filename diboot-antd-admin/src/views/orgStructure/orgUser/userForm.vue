@@ -97,6 +97,30 @@
           </a-form-item>
         </a-col>
       </a-row>
+      <a-row>
+        <a-col :span="12">
+          <a-form-item label="账号状态" v-if="systemUser">
+            <a-select
+              :getPopupContainer="getPopupContainer"
+              placeholder="请选择"
+              v-decorator="[
+                'accountStatus',
+                {
+                  initialValue: model.accountStatus? model.accountStatus : 'A',
+                }
+              ]"
+            >
+              <a-select-option
+                v-for="(status, index) in more.accountStatusOptions"
+                :key="index"
+                :value="status.value"
+              >
+                {{ status.label }}
+              </a-select-option>
+            </a-select>
+          </a-form-item>
+        </a-col>
+      </a-row>
       <a-row :gutter="16">
         <a-col :span="12">
           <a-form-item label="姓名">
@@ -222,7 +246,8 @@
     </a-form>
     <div class="drawer-footer">
       <a-button @click="close">取消</a-button>
-      <a-button @click="onSubmit" type="primary" :loading="state.confirmSubmit" :disabled="state.confirmSubmit">确定</a-button>
+      <a-button v-if="!model.id" @click="onSubmit(true)" type="primary" :loading="state.confirmSubmit" :disabled="state.confirmSubmit">保存并继续</a-button>
+      <a-button @click="onSubmit(false)" type="primary" :loading="state.confirmSubmit" :disabled="state.confirmSubmit">保存</a-button>
     </div>
     <user-select-modal ref="userSelectModal" @select="record => selectReportManager(record)"></user-select-modal>
   </a-drawer>
@@ -247,6 +272,9 @@ export default {
       attachMoreList: [
         {
           target: 'USER_STATUS'
+        },
+        {
+          target: 'ACCOUNT_STATUS'
         },
         {
           target: 'GENDER'
@@ -330,7 +358,6 @@ export default {
     },
     afterClose () {
       this.systemUser = false
-      this.setPassword = false
     }
   },
   computed: {

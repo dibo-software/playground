@@ -4,12 +4,15 @@ import router, { resetRouter } from '@/router'
 import { permissionListToPermissions } from '@/utils/permissions'
 import defaultAvatar from '@/assets/logo.png'
 import { logout as ssoLogout } from '@/utils/sso'
+import { baseURL } from '@/utils/request'
+import avatar from 'element-ui/packages/avatar'
 
 const state = {
   token: getToken(),
   name: '',
   avatar: '',
-  roles: {}
+  roles: {},
+  info: {}
 }
 
 const mutations = {
@@ -21,13 +24,16 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     if (avatar) {
-      state.avatar = avatar
+      state.avatar = avatar + '/image'
     } else {
       state.avatar = defaultAvatar
     }
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_INFO: (state, info) => {
+    state.info = info
   }
 }
 
@@ -77,10 +83,13 @@ const actions = {
           reject('认证失败，请重新登录！')
         }
 
-        const { name, avatar } = data
+        const { name, info } = data
 
         commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
+        commit('SET_INFO', info)
+        const avatarUrl = info && info.avatarUrl ? info.avatarUrl : null
+        const isExternal = /^(https?:|mailto:|tel:|\/\/)/.test(avatarUrl)
+        commit('SET_AVATAR', isExternal ? avatarUrl : avatarUrl ? baseURL + avatarUrl : null)
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -90,12 +99,12 @@ const actions = {
 
   // user logout
   logout({ commit, state }) {
-    ssoLogout()
     return new Promise((resolve) => {
       const reset = () => {
         commit('SET_TOKEN', '')
         removeToken()
         resetRouter()
+        ssoLogout()
         resolve()
       }
 

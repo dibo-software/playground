@@ -72,6 +72,19 @@
           placeholder="请输入密码"
         />
       </el-form-item>
+      <el-form-item v-if="systemUser" label="账号状态" prop="accountStatus">
+        <el-select
+          v-model="form.accountStatus"
+          placeholder="请选择账号状态"
+        >
+          <el-option
+            v-for="(item, index) in more.accountStatusOptions"
+            :key="index"
+            :value="item.value"
+            :label="item.label"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="姓名" prop="realname">
         <el-input v-model="form.realname" placeholder="请输入姓名" />
       </el-form-item>
@@ -118,8 +131,11 @@
       <el-button @click="close">
         取消
       </el-button>
-      <el-button type="primary" :loading="state.confirmSubmit" :disabled="state.confirmSubmit" @click="onSubmit">
-        确定
+      <el-button v-if="!form.id" type="primary" :loading="state.confirmSubmit" :disabled="state.confirmSubmit" @click="onSubmit(true)">
+        保存并继续
+      </el-button>
+      <el-button type="primary" :loading="state.confirmSubmit" :disabled="state.confirmSubmit" @click="onSubmit(false)">
+        保存
       </el-button>
     </div>
   </el-dialog>
@@ -156,6 +172,7 @@ export default {
         realname: '',
         gender: '',
         status: '',
+        accountStatus: 'A',
         mobilePhone: '',
         email: ''
       },
@@ -174,6 +191,9 @@ export default {
       attachMoreList: [
         {
           target: 'USER_STATUS'
+        },
+        {
+          target: 'ACCOUNT_STATUS'
         },
         {
           target: 'GENDER'
