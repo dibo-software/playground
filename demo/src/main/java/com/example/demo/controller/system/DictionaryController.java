@@ -2,6 +2,7 @@ package com.example.demo.controller.system;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.diboot.core.config.Cons;
 import com.diboot.core.controller.BaseCrudRestController;
 import com.diboot.core.entity.Dictionary;
@@ -50,7 +51,7 @@ public class DictionaryController extends BaseCrudRestController<Dictionary> {
     @GetMapping
     public JsonResult getViewObjectListMapping(Dictionary entity, Pagination pagination) throws Exception{
         QueryWrapper<Dictionary> queryWrapper = super.buildQueryWrapperByDTO(entity);
-        queryWrapper.isNull(Cons.ColumnName.parent_id.name()).orderByDesc(Cons.ColumnName.id.name());
+        queryWrapper.isNull(Cons.ColumnName.parent_id.name()).or().eq(Cons.ColumnName.parent_id.name(), Cons.ID_PREVENT_NULL).orderByDesc(Cons.ColumnName.id.name());
         List<DictionaryVO> voList = dictionaryService.getViewObjectList(queryWrapper, pagination, DictionaryVO.class);
         return JsonResult.OK(voList).bindPagination(pagination);
     }
@@ -144,7 +145,11 @@ public class DictionaryController extends BaseCrudRestController<Dictionary> {
      */
     @GetMapping("/definition-list")
     public JsonResult getDictDefinitionList() throws Exception {
-        return JsonResult.OK(dictionaryServiceExtProvider.getDictDefinitionList());
+        LambdaQueryWrapper<Dictionary> queryWrapper = Wrappers.<Dictionary>lambdaQuery()
+                .isNull(Dictionary::getParentId).or().eq(Dictionary::getParentId, Cons.ID_PREVENT_NULL)
+                .orderByDesc(Dictionary::getId);
+        List<Dictionary> dictionaryList = dictionaryService.getEntityList(queryWrapper);
+        return JsonResult.OK(dictionaryList);
     }
 
     /**
