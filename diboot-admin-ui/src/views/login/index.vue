@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormInstance } from 'element-plus'
 import useAuthStore from '@/store/auth'
-import { JSEncrypt } from 'jsencrypt/lib/JSEncrypt'
+import JSEncrypt from 'jsencrypt'
 
 const encryptor = new JSEncrypt()
 encryptor.setPublicKey(`MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzPy1UcwzgRT8dRUpAW0H
@@ -147,7 +147,7 @@ const submitForm = async () => {
     width: 330px;
     padding: 20px;
     border-radius: 16px;
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--el-color-primary-light-9);
     backdrop-filter: blur(10px);
     box-shadow: 3px 3px 6px rgb(100, 100, 100, 0.1);
   }

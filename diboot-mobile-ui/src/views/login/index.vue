@@ -13,7 +13,9 @@ BwIDAQAB`)
 
 const authStore = useAuthStore()
 const loading = ref(false)
-const model = reactive({ username: '', password: '', captcha: '', traceId: '' })
+const PROCESS_USERNAME = 'maql'
+const PASSWORD = 'Dibo306!'
+const model = reactive({ username: PROCESS_USERNAME, password: PASSWORD, captcha: '', traceId: '' })
 
 const refreshTraceId = () => {
   model.traceId = Math.random().toString(36).slice(-8) + +new Date()

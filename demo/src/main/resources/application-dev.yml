@@ -6,10 +6,13 @@ server:
 spring:
   #datasource config
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/playground_v3?characterEncoding=utf8&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true
-    username: diboot
-    password: 123456
+    url: jdbc:oracle:thin:@116.62.107.16:1521:XE
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    username: system
+    #    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/playground_v3?characterEncoding=utf8&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true
+#    username: diboot
+    password: db20230703
     hikari:
       maximum-pool-size: 5
       max-lifetime: 60000 # 连接的最大生命周期
@@ -37,19 +40,24 @@ logging:
 
 # Diboot Configuration
 diboot:
-#  id:
-#    data-center-id: 3
-  init-sql: true
+  init-sql: true #自动初始化SQL，开发环境下初次启动开启，初始化后可关闭
   file:
-    # upload path
+    # 文件存储路径（本地存储方式）
     storage-directory: D:/temp/playground
-
   iam:
     # token-expires-minutes: 60
-    enable-permission-check: true
-    # Shiro的匿名urls，用逗号分隔，开发环境可配置/**，方便调试
+    # Shiro的匿名urls，用逗号分隔
     anon-urls:
       - /swagger**/**
       - /webjars/**
       - /v3/**
       - /doc.html
+      - /diboot/** # 允许devtools直接访问
+    lcdp:
+      #license: 订阅用户配置该项
+      devtools:
+        codes-author: MyName
+        codes-copyright: MyCorp
+        codes-version: 1.0
+        output-path: demo/src/main/java/com/example/demo/
+        output-path-admin-ui: diboot-admin-ui/
