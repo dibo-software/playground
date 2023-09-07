@@ -95,7 +95,7 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>-->
 
-        <!-- 依赖 devtools 代码生成工具
+        <!-- 依赖 devtools 代码生成工具 -->
         <dependency>
             <groupId>com.diboot</groupId>
             <artifactId>lcdp-devtools</artifactId>
@@ -108,7 +108,7 @@
             <artifactId>mybatis-dynamic-sql</artifactId>
             <version>1.5.0</version>
             <scope>provided</scope>
-        </dependency>-->
+        </dependency>
 
     </dependencies>
     <build>

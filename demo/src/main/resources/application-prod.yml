@@ -15,17 +15,22 @@ spring:
       max-lifetime: 60000 # 连接的最大生命周期
 
   # Redis config
-  redis:
-    database: 0
-    port: 6379
-    host: localhost
-    password:
+#  redis:
+#    database: 0
+#    port: 6379
+#    host: localhost
+#    password:
 
 logging:
   level:
     root: info
+  file:
+    name: /www/logs/app.log
+  logback:
+    rollingpolicy:
+      max-history: 10
+      max-file-size: 20MB
 
-# Diboot Configuration
 # Diboot Configuration
 diboot:
   init-sql: false #生产环境需关闭

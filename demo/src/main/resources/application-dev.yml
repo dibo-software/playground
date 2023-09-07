@@ -6,13 +6,10 @@ server:
 spring:
   #datasource config
   datasource:
-    url: jdbc:oracle:thin:@116.62.107.16:1521:XE
-    driver-class-name: oracle.jdbc.driver.OracleDriver
-    username: system
-    #    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/playground_v3?characterEncoding=utf8&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true
-#    username: diboot
-    password: db20230703
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/playground_v3?characterEncoding=utf8&serverTimezone=GMT%2B8
+    username: diboot
+    password: diboot
     hikari:
       maximum-pool-size: 5
       max-lifetime: 60000 # 连接的最大生命周期
@@ -35,6 +32,8 @@ logging:
     _org:
       springframework: info
     com:
+      diboot:
+        lcdp: info
       zaxxer:
         hikari: info
 
@@ -53,11 +52,11 @@ diboot:
       - /v3/**
       - /doc.html
       - /diboot/** # 允许devtools直接访问
-    lcdp:
-      #license: 订阅用户配置该项
-      devtools:
-        codes-author: MyName
-        codes-copyright: MyCorp
-        codes-version: 1.0
-        output-path: demo/src/main/java/com/example/demo/
-        output-path-admin-ui: diboot-admin-ui/
+  lcdp:
+    #license: 订阅用户配置该项
+    devtools:
+      codes-author: MyName
+      codes-copyright: MyCorp
+      codes-version: 1.0
+      output-path: demo/src/main/java/com/example/demo/
+      output-path-admin-ui: diboot-admin-ui/
