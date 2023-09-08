@@ -2,7 +2,9 @@ package com.example.demo.controller.iam;
 
 import com.diboot.core.cache.BaseCacheManager;
 import com.diboot.core.controller.BaseController;
+import com.diboot.core.exception.BusinessException;
 import com.diboot.core.vo.JsonResult;
+import com.diboot.core.vo.Status;
 import com.diboot.iam.annotation.BindPermission;
 import com.diboot.iam.annotation.Log;
 import com.diboot.iam.auth.AuthServiceFactory;
@@ -20,9 +22,15 @@ import com.diboot.iam.util.TokenUtils;
 import com.pig4cloud.captcha.ArithmeticCaptcha;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import javax.crypto.Cipher;
 import javax.servlet.http.HttpServletResponse;
+import java.security.KeyFactory;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +57,9 @@ public class AuthTokenController extends BaseController {
 
     @Autowired
     private BaseCacheManager baseCacheManager;
+
+    @Value("${rsa-encryptor.private-key}")
+    private String rsaPrivateKey;
 
     /**
      * 获取验证码
@@ -85,7 +96,30 @@ public class AuthTokenController extends BaseController {
         if (verCode == null || !verCode.trim().toLowerCase().equals(captcha)) {
             return JsonResult.FAIL_VALIDATION("验证码错误");
         }
+        credential.setPassword(decrypt(credential.getPassword()));
         return JsonResult.OK(AuthServiceFactory.getAuthService(Cons.DICTCODE_AUTH_TYPE.PWD.name()).applyToken(credential));
+    }
+
+    /**
+     * RSA 解密
+     *
+     * @param content
+     * @return
+     */
+    private String decrypt(String content) {
+        try {
+            byte[] decode = Base64.getDecoder().decode(content);
+            // base64编码的私钥
+            byte[] decoded = Base64.getDecoder().decode(rsaPrivateKey);
+            RSAPrivateKey priKey = (RSAPrivateKey) KeyFactory.getInstance("RSA")
+                    .generatePrivate(new PKCS8EncodedKeySpec(decoded));
+            // RSA解密
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.DECRYPT_MODE, priKey);
+            return new String(cipher.doFinal(decode));
+        } catch (Exception e) {
+            throw new BusinessException(Status.FAIL_OPERATION, "解密数据失败！");
+        }
     }
 
     /**
