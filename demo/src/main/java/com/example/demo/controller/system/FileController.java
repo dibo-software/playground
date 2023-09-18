@@ -31,7 +31,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/file")
-@BindPermission(name = "文件")
+@BindPermission(name = "文件", code = "File")
 public class FileController {
     @Autowired
     private FileRecordService fileRecordService;
