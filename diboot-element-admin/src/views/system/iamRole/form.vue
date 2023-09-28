@@ -32,8 +32,8 @@
       </el-form-item>
       <el-form-item label="拥有权限" prop="permissionList">
         <flat-tree
-          :key="visible"
           v-if="permissionTreeList && permissionTreeList.length > 0"
+          :key="visible"
           ref="tree"
           class="filter-tree"
           node-key="id"
@@ -51,8 +51,11 @@
       <el-button @click="close">
         取消
       </el-button>
-      <el-button type="primary" :loading="state.confirmSubmit" :disabled="state.confirmSubmit" @click="onSubmit">
-        确定
+      <el-button v-if="!form.id" type="primary" :loading="state.confirmSubmit" :disabled="state.confirmSubmit" @click="onSubmit(true)">
+        保存并继续
+      </el-button>
+      <el-button type="primary" :loading="state.confirmSubmit" :disabled="state.confirmSubmit" @click="onSubmit(false)">
+        保存
       </el-button>
     </div>
   </el-dialog>
