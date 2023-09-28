@@ -90,6 +90,7 @@
           type="password"
           placeholder="请输入密码"
         />
+        <password-strength v-if="setPassword" ref="passwordStrength" :password="form.password" @confirm="onSubmit" />
       </el-form-item>
       <el-form-item label="电话" prop="mobilePhone">
         <el-input v-model="form.mobilePhone" placeholder="请输入电话" />
@@ -102,11 +103,8 @@
       <el-button @click="close">
         取消
       </el-button>
-      <el-button v-if="!form.id" type="primary" :loading="state.confirmSubmit" :disabled="state.confirmSubmit" @click="onSubmit(true)">
-        保存并继续
-      </el-button>
-      <el-button type="primary" :loading="state.confirmSubmit" :disabled="state.confirmSubmit" @click="onSubmit(false)">
-        保存
+      <el-button type="primary" :loading="state.confirmSubmit" :disabled="state.confirmSubmit" @click="$refs.passwordStrength.checkPasswordStrength()">
+        确定
       </el-button>
     </div>
   </el-dialog>
@@ -116,9 +114,13 @@ import form from '@/components/diboot/mixins/form'
 import { dibootApi } from '@/utils/request'
 import _ from 'lodash'
 import { treeListFormatter, treeList2IndentList } from '@/utils/treeDataUtil'
+import passwordStrength from '@/components/diboot/components/passwordStrength'
 
 export default {
   name: 'IamUserForm',
+  components: {
+    passwordStrength
+  },
   mixins: [form],
   props: {
     currentNodeId: {

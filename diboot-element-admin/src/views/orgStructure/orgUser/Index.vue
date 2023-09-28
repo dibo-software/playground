@@ -41,11 +41,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.OrgUserIndex {
-  padding: 15px;
-}
-.right-table {
-  height: calc(100vh - 124px);
-}
+  .OrgUserIndex {
+    padding: 15px;
+  }
+  .right-table {
+    height: calc(100vh - 124px);
+  }
 </style>
 

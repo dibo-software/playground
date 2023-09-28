@@ -150,7 +150,7 @@ export default {
      * 表单提交事件
      * @returns {Promise<void>}
      */
-    async onSubmit(isContinueAdd) {
+    async onSubmit() {
       this.state.confirmSubmit = true
       try {
         const values = await this.validate()
@@ -164,7 +164,7 @@ export default {
           result = await this.update(values)
         }
         // 执行提交失败后的一系列后续操作
-        this.submitSuccess(result, isContinueAdd)
+        this.submitSuccess(result)
       } catch (e) {
         // 执行一系列后续操作
         this.submitFailed(e)
@@ -175,23 +175,11 @@ export default {
      * 提交成功之后的处理
      * @param msg
      */
-    submitSuccess(result, isContinueAdd) {
+    submitSuccess(result) {
       this.$message.success(result.msg)
-      if (isContinueAdd) {
-        this.resetForm()
-      } else {
-        this.close()
-      }
+      this.close()
       this.$emit('complete')
       this.$emit('changeKey', result.data)
-    },
-    /**
-     * 点击保存并继续后重置表单
-     */
-    resetForm() {
-      this.__defaultFileWrapperKeys__()
-      this.clearForm()
-      this.afterClose()
     },
     /** *
      * 提交失败之后的处理
