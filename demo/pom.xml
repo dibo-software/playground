@@ -119,7 +119,7 @@
                     <excludes><!-- 在开发环境中依赖，打包发布时剔除 -->
                         <exclude>
                             <groupId>com.diboot</groupId>
-                            <artifactId>lcdp-devtools-starter</artifactId>
+                            <artifactId>diboot-lcdp-devtools</artifactId>
                         </exclude>
                         <exclude>
                             <groupId>org.mybatis.dynamic-sql</groupId>
