@@ -87,7 +87,7 @@ public class UserImportExcelListener extends FixedHeadExcelListener<UserImportMo
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
-    protected void saveData(List<UserImportModel> dataList, Map<String, Object> requestParams) {
+    public void saveData(List<UserImportModel> dataList, Map<String, Object> requestParams) {
         if (V.isEmpty(dataList)) {
             return;
         }
