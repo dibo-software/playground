@@ -51,7 +51,7 @@ diboot:
       - /webjars/**
       - /v3/**
       - /doc.html
-      - /diboot/** # 允许devtools直接访问
+      - /diboot-devtools/** # 允许devtools直接访问
   lcdp:
     #license: 订阅用户配置该项
     devtools:
