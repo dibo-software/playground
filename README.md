@@ -59,10 +59,13 @@
 -> URL: http://localhost:8080/api/diboot/index.html
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ~~~
-> 注：如您为订阅用户，请配置 `diboot.lcdp.devtools.license` 以便使用devtools全部功能。
+> 注：
+> 1. 如您为订阅用户，请配置 `diboot.lcdp.devtools.license` 以便使用devtools全部功能。
+> 2. 如启动过程报错：javax.net.ssl.SSLHandshakeException，无法连接devtools服务器：需升级到JDK8的最新小版本 [下载最新版 JDK8](https://www.oracle.com/java/technologies/downloads/)。
+
 
 ## 其他参考文档
-* [V3 技术文档](http://v3.diboot.com)
+* [V3 技术文档](http://www.diboot.com)
 
 ## 技术交流：
   * **VIP技术支持QQ群**（捐助/付费用户尊享）: [931266830]()
