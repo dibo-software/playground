@@ -45,7 +45,7 @@ diboot:
     storage-directory: D:/temp/playground
   iam:
     # token-expires-minutes: 60
-    # Shiro的匿名urls，用逗号分隔
+    # Shiro的匿名urls
     anon-urls:
       - /swagger**/**
       - /webjars/**
