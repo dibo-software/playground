@@ -2,6 +2,7 @@ package com.example.demo.controller.system;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.diboot.core.controller.BaseCrudRestController;
+import com.diboot.core.util.V;
 import com.diboot.core.vo.JsonResult;
 import com.diboot.core.vo.Pagination;
 import com.diboot.core.vo.Status;
@@ -148,6 +149,9 @@ public class ScheduleJobController extends BaseCrudRestController<ScheduleJob> {
     @GetMapping("/log")
     public JsonResult getJobLogVOListMapping(ScheduleJobLog entity, Pagination pagination) throws Exception {
         QueryWrapper<ScheduleJobLog> queryWrapper = super.buildQueryWrapperByQueryParams(entity);
+        if (pagination != null && V.isEmpty(pagination.getOrderBy())) {
+            pagination.setOrderBy(Pagination.ORDER_BY_ID_DESC);
+        }
         List<ScheduleJobLogVO> logList = scheduleJobLogService.getViewObjectList(queryWrapper, pagination, ScheduleJobLogVO.class);
         return JsonResult.OK(logList).bindPagination(pagination);
     }
