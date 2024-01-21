@@ -31,6 +31,9 @@ logging:
       springframework: info
     _org:
       springframework: info
+    sun:
+      net:
+        www: info
     com:
       diboot:
         lcdp: info
@@ -53,7 +56,7 @@ diboot:
       - /doc.html
       - /diboot-devtools/** # 允许devtools直接访问
   lcdp:
-    #license: 订阅用户配置该项
+    #license: 订阅用户配置此项，使用VIP专属功能
     devtools:
       codes-author: MyName
       codes-copyright: MyCorp
