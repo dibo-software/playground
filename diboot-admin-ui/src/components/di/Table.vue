@@ -78,8 +78,7 @@ const onSelectionChange = (rows: Array<Record<string, unknown>>) => {
   if (!selectedRows.value) return
   const ids = selectedRows.value.map(e => e.value)
   const rowIds = rows.map(e => e[props.primaryKey])
-  const delIds =
-    props.dataList?.filter(e => !rowIds.includes(e[props.primaryKey])).map(e => e[props.primaryKey] as string) ?? []
+  const delIds = props.dataList?.map(e => e[props.primaryKey] as string).filter(e => !rowIds.includes(e)) ?? []
   const allSelectedRows = selectedRows.value.filter(e => !delIds.includes(e.value))
   allSelectedRows.push(
     ...rows
@@ -117,6 +116,7 @@ if (selectedRows.value) {
       () => props.dataList,
       value => {
         const ids = selectedRows.value?.map(e => e.value) ?? []
+        tableRef.value?.clearSelection()
         value?.forEach(item => {
           if (ids.includes(item[props.primaryKey] as string)) tableRef.value?.toggleRowSelection(item, true)
         })
@@ -129,9 +129,12 @@ if (selectedRows.value) {
     value => {
       const ids = value?.map(e => e.value) ?? []
       if (props.multiple)
-        props.dataList?.forEach(item =>
-          tableRef.value?.toggleRowSelection(item, ids.includes(item[props.primaryKey] as string))
-        )
+        if (ids.length === 0) tableRef.value?.clearSelection()
+        else {
+          props.dataList?.forEach(item =>
+            tableRef.value?.toggleRowSelection(item, ids.includes(item[props.primaryKey] as string))
+          )
+        }
       else single.value = value?.length ? value[0].value : undefined
     },
     { deep: true, immediate: true }
