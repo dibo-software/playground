@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <diboot.version>3.2.0-beta1</diboot.version>
+        <diboot.version>3.2.0</diboot.version>
     </properties>
 
     <dependencies>
@@ -69,6 +69,13 @@
             <version>${diboot.version}</version>
         </dependency>
 
+        <!-- diboot-tenant 多租户组件，启用多租户开启此依赖 -->
+        <dependency>
+            <groupId>com.diboot</groupId>
+            <artifactId>diboot-tenant-spring-boot-starter</artifactId>
+            <version>${diboot.version}</version>
+        </dependency>
+
         <!-- 默认的验证码组件，可按需替换 -->
         <dependency>
             <groupId>com.pig4cloud.plugin</groupId>
@@ -101,7 +108,7 @@
             <artifactId>lcdp-devtools</artifactId>
             <version>${diboot.version}</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/diboot-lcdp-devtools-3.2.0-beta1.jar</systemPath>
+            <systemPath>${project.basedir}/libs/diboot-lcdp-devtools-3.2.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.mybatis.dynamic-sql</groupId>
