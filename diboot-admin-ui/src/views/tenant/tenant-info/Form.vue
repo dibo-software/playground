@@ -54,6 +54,10 @@ const { submitting, submit } = useForm({
 // 保存之前判断是否确认并继续添加
 const beforeSubmit = (value: boolean) => {
   isContinueAdd.value = value
+  if (model.value.validDate && model.value.validDate.length > 0) {
+    model.value.startDate = model.value.validDate[0]
+    model.value.endDate = model.value.validDate[1]
+  }
   submit(model.value, formRef.value)
 }
 const checkCodeDuplicate = checkValue(`${baseApi}/check-code-duplicate`, 'code', () => model.value?.id)
@@ -94,15 +98,15 @@ const rules: FormRules = {
           </el-form-item>
         </el-col>
         <el-col :md="12" :sm="24">
-          <el-form-item prop="validDate" label="有效日期">
+          <el-form-item prop="validDate" label="有效期">
             <el-date-picker
               v-model="model.validDate"
               type="daterange"
               format="YYYY-MM-DD"
               value-format="YYYY-MM-DD"
               unlink-panels
-              start-placeholder="有效开始日期"
-              end-placeholder="有效结束日期"
+              start-placeholder="起始日期"
+              end-placeholder="截止日期"
             />
           </el-form-item>
         </el-col>

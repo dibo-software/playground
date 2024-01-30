@@ -70,11 +70,11 @@
         </dependency>
 
         <!-- diboot-tenant 多租户组件，启用多租户开启此依赖 -->
-<!--        <dependency>-->
-<!--            <groupId>com.diboot</groupId>-->
-<!--            <artifactId>diboot-tenant-spring-boot-starter</artifactId>-->
-<!--            <version>${diboot.version}</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.diboot</groupId>
+            <artifactId>diboot-tenant-spring-boot-starter</artifactId>
+            <version>${diboot.version}</version>
+        </dependency>
 
         <!-- 默认的验证码组件，可按需替换 -->
         <dependency>

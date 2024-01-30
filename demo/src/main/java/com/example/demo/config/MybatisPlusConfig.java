@@ -3,7 +3,7 @@ package com.example.demo.config;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
-import com.diboot.tenant.handler.TenantHandler;
+import com.diboot.tenant.handler.DefaultTenantHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,7 +22,7 @@ public class MybatisPlusConfig {
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         // 租户拦截器
-        // interceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new TenantHandler()));
+        interceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new DefaultTenantHandler()));
         // 数据权限拦截器
         // interceptor.addInnerInterceptor(new DataPermissionInterceptor(new DataAccessControlHandler()));
         // 分页拦截器
