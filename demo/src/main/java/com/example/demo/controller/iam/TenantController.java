@@ -157,12 +157,7 @@ public class TenantController extends BaseCrudRestController<IamTenant> {
      */
     @GetMapping("/org/{tenantId}")
     public JsonResult getTenantOrg(@PathVariable("tenantId") String tenantId) throws Exception {
-        return JsonResult.OK(iamOrgService.getValueOfField(
-                Wrappers.<IamOrg>lambdaQuery()
-                        .eq(IamOrg::getTenantId, tenantId)
-                        .eq(IamOrg::getParentId, Cons.TREE_ROOT_ID),
-                IamOrg::getId
-        ));
+        return JsonResult.OK(iamOrgService.getTenantRootOrgId(tenantId));
     }
 
     /**
