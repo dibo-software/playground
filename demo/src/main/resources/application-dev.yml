@@ -56,7 +56,8 @@ diboot:
       - /doc.html
       - /diboot-devtools/** # 允许devtools直接访问
   lcdp:
-    #license: 订阅用户配置此项，使用VIP专属功能
+    #license: 订阅用户配置该项
+    #tenant: false 是否开启多租户
     devtools:
       codes-author: MyName
       codes-copyright: MyCorp
