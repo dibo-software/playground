@@ -19,6 +19,7 @@ import com.diboot.iam.service.IamUserRoleService;
 import com.diboot.iam.service.IamUserService;
 import com.diboot.iam.util.IamSecurityUtils;
 import com.diboot.iam.util.TokenUtils;
+import com.diboot.tenant.dto.TenantPwdCredential;
 import com.pig4cloud.captcha.ArithmeticCaptcha;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +89,7 @@ public class AuthTokenController extends BaseController {
      * @return 响应（troken）
      */
     @PostMapping("/login")
-    public JsonResult<String> login(@RequestBody PwdCredential credential) {
+    public JsonResult<String> login(@RequestBody TenantPwdCredential credential) { //PwdCredential
         // 获取缓存中的验证码
         String traceId = credential.getTraceId();
         String verCode = credential.getCaptcha();

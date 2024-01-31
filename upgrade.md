@@ -1,4 +1,28 @@
 # 升级文档
+## v3.1.2 升级至 v3.2.0
+CommonController中下列接口修改：
+1. 批量加载选项数据通用接口调整：
+```java
+*@PostMapping("/load-related-data")* 替换为 *@PostMapping("/batch-load-related-data")*
+```
+
+2. 加载选项数据通用接口调整：
+```java
+@GetMapping({"/load-related-data", "/load-related-data/{parentId}"})
+public JsonResult<List<LabelValue>> bindDataFilter(@Valid RelatedDataDTO relatedDataDTO, String keyword,
+                                                   @PathVariable(required = false) String parentId) {
+    return JsonResult.OK(loadRelatedData(relatedDataDTO, parentId, keyword));
+}
+```
+修改为：
+```java
+@PostMapping({"/load-related-data", "/load-related-data/{parentId}"})
+public JsonResult<List<LabelValue>> bindDataFilter(@Valid @RequestBody RelatedDataDTO relatedDataDTO,
+                                                   @RequestParam(required = false) String keyword,
+                                                   @PathVariable(required = false) String parentId) {
+    return JsonResult.OK(loadRelatedData(relatedDataDTO, parentId, keyword));
+}
+```
 
 ## v3.1.0 升级至 v3.1.2
 

@@ -55,7 +55,7 @@ public class CommonController extends BaseController {
      * @param map
      * @return
      */
-    @PostMapping("/load-related-data")
+    @PostMapping("/batch-load-related-data")
     public JsonResult<Map<String, List<LabelValue>>> bindData(@RequestBody @Valid Map<String, RelatedDataDTO> map) {
         Map<String, List<LabelValue>> resultMap = new HashMap<>(map.size());
         map.forEach((k, v) -> resultMap.put(k, loadRelatedData(v)));
@@ -69,8 +69,9 @@ public class CommonController extends BaseController {
      * @param parentId
      * @return
      */
-    @GetMapping({"/load-related-data", "/load-related-data/{parentId}"})
-    public JsonResult<List<LabelValue>> bindDataFilter(@Valid RelatedDataDTO relatedDataDTO, String keyword,
+    @PostMapping({"/load-related-data", "/load-related-data/{parentId}"})
+    public JsonResult<List<LabelValue>> bindDataFilter(@Valid @RequestBody RelatedDataDTO relatedDataDTO,
+                                                       @RequestParam(required = false) String keyword,
                                                        @PathVariable(required = false) String parentId) {
         return JsonResult.OK(loadRelatedData(relatedDataDTO, parentId, keyword));
     }
