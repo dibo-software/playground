@@ -24,9 +24,9 @@ import com.diboot.tenant.entity.IamTenantResource;
 import com.diboot.tenant.service.IamTenantService;
 import com.diboot.tenant.vo.IamTenantDetailVO;
 import com.diboot.tenant.vo.IamTenantListVO;
+import com.diboot.tenant.vo.TenantAdminUserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -57,8 +57,6 @@ public class TenantController extends BaseCrudRestController<IamTenant> {
     @Autowired
     private IamOrgService iamOrgService;
 
-    @Value("${diboot.tenant.exclude-permissions:}")
-    private Set<Long> excludePermissions;
     /**
      * 查询资源对象的列表VO记录
      * <p>
@@ -145,7 +143,7 @@ public class TenantController extends BaseCrudRestController<IamTenant> {
      * @throws Exception
      */
     @GetMapping("/admin/{tenantId}")
-    public JsonResult getTenantAdminUser(@PathVariable("tenantId") String tenantId) throws Exception {
+    public JsonResult<TenantAdminUserVO> getTenantAdminUser(@PathVariable("tenantId") String tenantId) throws Exception {
         return JsonResult.OK(iamTenantService.getTenantAdminUserVO(tenantId));
     }
 
@@ -156,7 +154,7 @@ public class TenantController extends BaseCrudRestController<IamTenant> {
      * @throws Exception
      */
     @GetMapping("/org/{tenantId}")
-    public JsonResult getTenantOrg(@PathVariable("tenantId") String tenantId) throws Exception {
+    public JsonResult<String> getTenantOrg(@PathVariable("tenantId") String tenantId) throws Exception {
         return JsonResult.OK(iamOrgService.getTenantRootOrgId(tenantId));
     }
 
@@ -168,7 +166,7 @@ public class TenantController extends BaseCrudRestController<IamTenant> {
      */
     @Log(operation = "创建或更新管理员信息")
     @PostMapping("/admin/{tenantId}")
-    public JsonResult createOrUpdateTenantAdmin(@Valid @RequestBody IamUserFormDTO iamUserFormDTO, @PathVariable("tenantId") String tenantId) throws Exception {
+    public JsonResult<?> createOrUpdateTenantAdmin(@Valid @RequestBody IamUserFormDTO iamUserFormDTO, @PathVariable("tenantId") String tenantId) throws Exception {
         iamUserFormDTO.setTenantId(tenantId);
         return new JsonResult<>(iamTenantService.createOrUpdateTenantAdminUser(iamUserFormDTO));
     }
@@ -182,7 +180,7 @@ public class TenantController extends BaseCrudRestController<IamTenant> {
      * @return
      */
     @GetMapping("/admin/check-username-duplicate")
-    public JsonResult checkUsernameDuplicate(@RequestParam String tenantId, @RequestParam String username, @RequestParam(required = false) String userId) {
+    public JsonResult<?> checkUsernameDuplicate(@RequestParam String tenantId, @RequestParam String username, @RequestParam(required = false) String userId) {
         if (V.isEmpty(username)) {
             return JsonResult.OK();
         }
@@ -195,11 +193,9 @@ public class TenantController extends BaseCrudRestController<IamTenant> {
      * @return 租户可分配权限
      */
     @GetMapping("/resource")
-    public JsonResult getResourceTree() throws Exception {
-        LambdaQueryWrapper queryWrapper = Wrappers.<IamResource>lambdaQuery()
-                .notIn(V.notEmpty(excludePermissions), IamResource::getId, excludePermissions)
-                .orderByAsc(IamResource::getSortId);
-        List<IamResourceListVO> voList = iamResourceService.getViewObjectList(queryWrapper, null, IamResourceListVO.class);
+    public JsonResult<List<IamResourceListVO>> getResourceTree() throws Exception {
+        List<IamResourceListVO> voList = iamResourceService.getViewObjectList(
+                Wrappers.<IamResource>lambdaQuery().orderByAsc(IamResource::getSortId), null, IamResourceListVO.class);
         Map<String, Object> paramsMap = getParamsMap();
         if (!paramsMap.containsKey("displayName") && !paramsMap.containsKey("resourceCode")) {
             voList = BeanUtils.buildTree(voList, Cons.TREE_ROOT_ID);
@@ -215,7 +211,7 @@ public class TenantController extends BaseCrudRestController<IamTenant> {
      */
     @Log(operation = "获取租户权限配置")
     @GetMapping("/resource/{tenantId}")
-    public JsonResult getTenantResourceVO(@PathVariable("tenantId") String tenantId) {
+    public JsonResult<List<String>> getTenantResourceVO(@PathVariable("tenantId") String tenantId) {
         return JsonResult.OK(iamTenantService.getResourceIds(tenantId));
     }
 
@@ -227,7 +223,7 @@ public class TenantController extends BaseCrudRestController<IamTenant> {
      */
     @Log(operation = "更新租户权限配置")
     @PostMapping("/resource/{tenantId}")
-    public JsonResult createOrUpdateTenantResources(@PathVariable("tenantId") String tenantId, @RequestBody List<String> ids) {
+    public JsonResult<?> createOrUpdateTenantResources(@PathVariable("tenantId") String tenantId, @RequestBody List<String> ids) {
         return new JsonResult<>(iamTenantService.createOrUpdateN2NRelations(IamTenantResource::getTenantId, tenantId,
                 IamTenantResource::getResourceId, ids));
     }
@@ -239,7 +235,7 @@ public class TenantController extends BaseCrudRestController<IamTenant> {
      * @throws Exception
      */
     @GetMapping("/check-code-duplicate")
-    public JsonResult checkCodeDuplicate(@RequestParam(required = false) String id, @RequestParam String code) {
+    public JsonResult<?> checkCodeDuplicate(@RequestParam(required = false) String id, @RequestParam String code) {
         return JsonResult.OK(!iamTenantService.exists(Wrappers.<IamTenant>lambdaQuery().eq(IamTenant::getCode, code)
                 .ne(V.notEmpty(id), IamTenant::getId, id)));
     }
