@@ -89,7 +89,7 @@ public class AuthTokenController extends BaseController {
      * @return 响应（troken）
      */
     @PostMapping("/login")
-    public JsonResult<String> login(@RequestBody TenantPwdCredential credential) { //PwdCredential
+    public JsonResult<String> login(@RequestBody PwdCredential credential) { //TenantPwdCredential
         // 获取缓存中的验证码
         String traceId = credential.getTraceId();
         String verCode = credential.getCaptcha();
