@@ -20,11 +20,11 @@ import com.diboot.iam.service.IamUserService;
 import com.diboot.iam.util.IamSecurityUtils;
 import com.diboot.iam.vo.IamUserOrgVO;
 import com.diboot.iam.vo.IamUserVO;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -62,9 +62,8 @@ public class UserController extends BaseCrudRestController<IamUser> {
     public JsonResult getViewObjectListMapping(IamUserSearchDTO dto, Pagination pagination) throws Exception {
         String orgId = dto.getOrgId();
         dto.setOrgId(null);
-
         QueryWrapper<IamUser> queryWrapper = super.buildQueryWrapperByQueryParams(dto);
-
+        queryWrapper.lambda().orderByAsc(IamUser::getSortId);
         List<IamUserVO> voList = iamUserService.getUserViewList(queryWrapper, pagination, orgId);
         // 返回结果
         return JsonResult.OK(voList).bindPagination(pagination);

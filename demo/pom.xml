@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.18</version>
+        <version>3.2.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
@@ -15,8 +15,8 @@
     <description>Demo project for Diboot</description>
 
     <properties>
-        <java.version>1.8</java.version>
-        <diboot.version>3.2.0</diboot.version>
+<!--        <java.version>1.8</java.version>-->
+        <diboot.version>3.3.0-beta1</diboot.version>
     </properties>
 
     <dependencies>
@@ -82,10 +82,10 @@
             <artifactId>captcha-core</artifactId>
             <version>2.2.2</version>
         </dependency>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>javax.xml.bind</groupId>-->
+<!--            <artifactId>jaxb-api</artifactId>-->
+<!--        </dependency>-->
 
         <!-- Swagger接口文档
         <dependency>
@@ -103,13 +103,13 @@
         </dependency>-->
 
         <!-- 依赖 devtools 代码生成工具 -->
-        <dependency>
-            <groupId>com.diboot</groupId>
-            <artifactId>lcdp-devtools</artifactId>
-            <version>${diboot.version}</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/diboot-lcdp-devtools-3.2.0.jar</systemPath>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.diboot</groupId>-->
+<!--            <artifactId>lcdp-devtools</artifactId>-->
+<!--            <version>${diboot.version}</version>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${project.basedir}/libs/diboot-lcdp-devtools-3.2.0.jar</systemPath>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.mybatis.dynamic-sql</groupId>
             <artifactId>mybatis-dynamic-sql</artifactId>

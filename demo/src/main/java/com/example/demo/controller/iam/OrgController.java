@@ -17,11 +17,11 @@ import com.diboot.iam.entity.IamUser;
 import com.diboot.iam.service.IamOrgService;
 import com.diboot.iam.service.IamUserService;
 import com.diboot.iam.vo.IamOrgVO;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
