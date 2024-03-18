@@ -248,6 +248,11 @@ const rules: FormRules = {
             />
           </el-form-item>
         </el-col>
+        <el-col :md="12" :sm="24">
+          <el-form-item prop="sortId" label="排序号">
+            <el-input v-model="model.sortId" :min="0" :step="1" type="number" />
+          </el-form-item>
+        </el-col>
       </el-row>
     </el-form>
     <UserPositionTableForm
