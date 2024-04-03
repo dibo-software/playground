@@ -62,8 +62,10 @@ public class UserController extends BaseCrudRestController<IamUser> {
     public JsonResult getViewObjectListMapping(IamUserSearchDTO dto, Pagination pagination) throws Exception {
         String orgId = dto.getOrgId();
         dto.setOrgId(null);
-        QueryWrapper<IamUser> queryWrapper = super.buildQueryWrapperByQueryParams(dto);
-        queryWrapper.lambda().orderByAsc(IamUser::getSortId);
+        QueryWrapper<IamUser> queryWrapper = super.buildQueryWrapperByDTO(dto);
+        if (pagination != null && V.isEmpty(pagination.getOrderBy())) {
+            pagination.setOrderBy("sortId:ASC");
+        }
         List<IamUserVO> voList = iamUserService.getUserViewList(queryWrapper, pagination, orgId);
         // 返回结果
         return JsonResult.OK(voList).bindPagination(pagination);
