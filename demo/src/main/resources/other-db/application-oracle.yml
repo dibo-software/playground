@@ -34,6 +34,9 @@ logging:
     sun:
       net:
         www: info
+    jdk:
+      event:
+        security: info
     com:
       diboot:
         lcdp: info
