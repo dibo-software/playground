@@ -2,7 +2,7 @@
 import type { FormInstance, FormRules } from 'element-plus'
 import type { UserModel, AccountInfo } from './type'
 import UserPositionTableForm from '../position/UserPositionTableForm.vue'
-import { checkValue } from '@diboot/common/utils/validate-form'
+import { checkValue } from '@/utils/validate-form'
 import type { UserPosition } from '@/views/org-structure/position/type'
 
 const baseApi = '/iam/user'

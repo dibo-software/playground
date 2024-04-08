@@ -5,8 +5,8 @@ import type { UserModel } from './type'
 import Detail from './Detail.vue'
 import Form from './Form.vue'
 import type { Role } from '@/views/system/role/type'
-import ExcelImport from '@diboot/common/components/excel/Import.vue'
-import ExcelExport from '@diboot/common/components/excel/Export.vue'
+import ExcelImport from '@/components/excel/Import.vue'
+import ExcelExport from '@/components/excel/Export.vue'
 
 const baseApi = '/iam/user'
 
