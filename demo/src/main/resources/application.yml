@@ -17,6 +17,27 @@ server:
     mime-types: application/json,application/xml,text/html,text/xml,text/plain
     min-response-size: 4096
 
+logging:
+  level:
+    org:
+      apache: info
+      hibernate:
+        validator: info
+      springframework: info
+    _org:
+      springframework: info
+    sun:
+      net:
+        www: info
+    jdk:
+      event:
+        security: info
+    com:
+      diboot:
+        lcdp: info
+      zaxxer:
+        hikari: info
+
 # mybatis config
 mybatis-plus:
   mapper-locations: classpath*:mapper/*Mapper.xml

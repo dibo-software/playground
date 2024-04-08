@@ -32,23 +32,9 @@ logging:
   level:
     root: debug
     org:
-      apache: info
-      hibernate:
-        validator: info
       springframework: info
     _org:
       springframework: info
-    sun:
-      net:
-        www: info
-    jdk:
-      event:
-        security: info
-    com:
-      diboot:
-        lcdp: info
-      zaxxer:
-        hikari: info
 
 # Diboot Configuration
 diboot:
