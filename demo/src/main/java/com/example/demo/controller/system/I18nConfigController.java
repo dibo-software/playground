@@ -2,6 +2,7 @@ package com.example.demo.controller.system;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.diboot.core.controller.BaseCrudRestController;
 import com.diboot.core.entity.I18nConfig;
 import com.diboot.core.entity.ValidList;
 import com.diboot.core.service.I18nConfigService;
@@ -12,7 +13,6 @@ import com.diboot.core.vo.Pagination;
 import com.diboot.iam.annotation.BindPermission;
 import com.diboot.iam.annotation.Log;
 import com.diboot.iam.annotation.OperationCons;
-import com.example.demo.controller.BaseCustomCrudRestController;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ import java.util.List;
 @RequestMapping("/i18n-config")
 @BindPermission(name = "国际化配置")
 @ConditionalOnBean(I18nConfigService.class)
-public class I18nConfigController extends BaseCustomCrudRestController<I18nConfig> {
+public class I18nConfigController extends BaseCrudRestController<I18nConfig> {
 
     @Autowired
     private I18nConfigService i18nConfigService;
