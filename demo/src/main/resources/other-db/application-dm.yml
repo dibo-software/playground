@@ -6,10 +6,10 @@ server:
 spring:
   #datasource config
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/playground_v3?characterEncoding=utf8&serverTimezone=GMT%2B8
-    username: diboot
-    password: diboot
+    driver-class-name: dm.jdbc.driver.DmDriver
+    url: jdbc:dm://127.0.0.1:30236?compatibleMode=oracle&characterEncoding=utf8&serverTimezone=GMT%2B8
+    username: DIBOOT
+    password: DIBOOT
     hikari:
       maximum-pool-size: 10
       max-lifetime: 60000 # 连接的最大生命周期

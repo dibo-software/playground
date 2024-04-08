@@ -6,13 +6,14 @@ server:
 spring:
   #datasource config
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/playground_v3?characterEncoding=utf8&serverTimezone=GMT%2B8
-    username: diboot
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://127.0.0.1:1433;databaseName=playground_v3;encrypt=false
+    username: SA
     password: diboot
     hikari:
       maximum-pool-size: 10
       max-lifetime: 60000 # 连接的最大生命周期
+      schema: dbo
 
 # Redis config
 #  redis:
