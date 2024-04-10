@@ -11,8 +11,16 @@ spring:
     username: diboot
     password: diboot
     hikari:
-      maximum-pool-size: 5
+      maximum-pool-size: 10
       max-lifetime: 60000 # 连接的最大生命周期
+
+## Postgres & Kingbase
+#mybatis-plus:
+#  mapper-locations: classpath*:mapper/*Mapper.xml
+#  global-config:
+#    db-config:
+#      logic-delete-value: true
+#      logic-not-delete-value: false
 
 # Redis config
 #  redis:
