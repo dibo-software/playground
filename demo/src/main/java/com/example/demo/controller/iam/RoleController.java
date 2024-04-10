@@ -35,7 +35,7 @@ import java.util.List;
  *
  * @author MyName
  * @version 1.0
- * @date 2022-12-30
+ * @date 2022-05-30
  * Copyright © MyCompany
  */
 @RestController
@@ -192,4 +192,10 @@ public class RoleController extends BaseCrudRestController<IamRole> {
         IamRoleFormDTO roleFormDTO = (IamRoleFormDTO) entity;
         iamRoleResourceService.updateRoleResourceRelations(roleFormDTO.getId(), roleFormDTO.getPermissionIdList());
     }
+
+    @Override
+    protected void afterDeleted(Serializable roleId) throws Exception {
+        iamRoleResourceService.deleteRoleResourceRelations((String)roleId);
+    }
+
 }
