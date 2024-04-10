@@ -72,3 +72,4 @@ diboot:
       codes-version: 1.0
       output-path: demo/src/main/java/com/example/demo/
       output-path-admin-ui: diboot-admin-ui/
+      #upgrade: true
