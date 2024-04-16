@@ -9,12 +9,12 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/playground_v3?characterEncoding=utf8&serverTimezone=GMT%2B8
     username: diboot
-    password: 123456
+    password: diboot
     hikari:
-      maximum-pool-size: 5
+      maximum-pool-size: 10
       max-lifetime: 60000 # 连接的最大生命周期
 
-  # Redis config
+# Redis config
 #  redis:
 #    database: 0
 #    port: 6379

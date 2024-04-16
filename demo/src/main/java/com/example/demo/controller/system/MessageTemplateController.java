@@ -14,11 +14,11 @@ import com.diboot.notification.entity.MessageTemplate;
 import com.diboot.notification.service.MessageTemplateService;
 import com.diboot.notification.vo.MessageTemplateDetailVO;
 import com.diboot.notification.vo.MessageTemplateListVO;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 
 /**
  * 消息模版 相关Controller

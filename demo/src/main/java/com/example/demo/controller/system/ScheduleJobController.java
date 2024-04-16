@@ -15,11 +15,11 @@ import com.diboot.scheduler.service.ScheduleJobLogService;
 import com.diboot.scheduler.service.ScheduleJobService;
 import com.diboot.scheduler.vo.ScheduleJobLogVO;
 import com.diboot.scheduler.vo.ScheduleJobVO;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**

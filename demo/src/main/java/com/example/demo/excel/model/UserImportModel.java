@@ -10,10 +10,10 @@ import com.diboot.file.excel.annotation.ExcelBindField;
 import com.diboot.file.excel.annotation.ExcelComment;
 import com.diboot.file.excel.annotation.ExcelOption;
 import com.diboot.iam.entity.IamRole;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
 
 /**
  * 用户导入model定义

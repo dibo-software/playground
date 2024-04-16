@@ -1,5 +1,6 @@
 package com.example.demo.controller.system;
 
+import com.diboot.core.controller.BaseCrudRestController;
 import com.diboot.core.util.S;
 import com.diboot.core.util.V;
 import com.diboot.core.vo.JsonResult;
@@ -10,7 +11,6 @@ import com.diboot.file.vo.FileRecordVO;
 import com.diboot.iam.annotation.BindPermission;
 import com.diboot.iam.annotation.Log;
 import com.diboot.iam.annotation.OperationCons;
-import com.example.demo.controller.BaseCustomCrudRestController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/file-record")
 @BindPermission(name = "文件记录")
 @Slf4j
-public class FileRecordController extends BaseCustomCrudRestController<FileRecord> {
+public class FileRecordController extends BaseCrudRestController<FileRecord> {
 
     /**
      * 查询ViewObject的分页数据

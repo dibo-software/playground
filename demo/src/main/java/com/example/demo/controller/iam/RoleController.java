@@ -22,11 +22,11 @@ import com.diboot.iam.service.IamRoleService;
 import com.diboot.iam.service.IamUserRoleService;
 import com.diboot.iam.vo.IamResourceListVO;
 import com.diboot.iam.vo.IamRoleVO;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.io.Serializable;
 import java.util.List;
 
@@ -35,7 +35,7 @@ import java.util.List;
  *
  * @author MyName
  * @version 1.0
- * @date 2022-12-30
+ * @date 2022-05-30
  * Copyright © MyCompany
  */
 @RestController
@@ -192,4 +192,10 @@ public class RoleController extends BaseCrudRestController<IamRole> {
         IamRoleFormDTO roleFormDTO = (IamRoleFormDTO) entity;
         iamRoleResourceService.updateRoleResourceRelations(roleFormDTO.getId(), roleFormDTO.getPermissionIdList());
     }
+
+    @Override
+    protected void afterDeleted(Serializable roleId) throws Exception {
+        iamRoleResourceService.deleteRoleResourceRelations((String)roleId);
+    }
+
 }

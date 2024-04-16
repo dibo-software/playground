@@ -19,12 +19,12 @@ import com.diboot.iam.vo.IamUserVO;
 import com.example.demo.excel.listener.UserImportExcelListener;
 import com.example.demo.excel.model.UserExportModel;
 import com.example.demo.excel.model.UserImportModel;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -103,6 +103,7 @@ public class UserExcelController extends BaseExcelFileController {
     @GetMapping("/export")
     public JsonResult export(IamUserSearchDTO iamUserDto, @RequestParam(value = "columns", required = false) List<String> columns, HttpServletResponse response) throws Exception {
         QueryWrapper<IamUser> queryWrapper = super.buildQueryWrapperByQueryParams(iamUserDto);
+        queryWrapper.lambda().orderByAsc(IamUser::getSortId);
         List<IamUserVO> iamUserList = iamUserService.getViewObjectList(queryWrapper, null, IamUserVO.class);
         if (V.isEmpty(iamUserList)) {
             return new JsonResult(Status.FAIL_OPERATION, "用户列表为空，导出失败");

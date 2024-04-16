@@ -12,10 +12,10 @@ import com.diboot.iam.annotation.Log;
 import com.diboot.iam.annotation.OperationCons;
 import com.diboot.iam.entity.SystemConfig;
 import com.diboot.iam.service.SystemConfigService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
