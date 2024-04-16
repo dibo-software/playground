@@ -7,7 +7,7 @@ spring:
   #datasource config
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
-    url: jdbc:oracle:thin:@116.62.107.16:1521:PLAYGROUND
+    url: jdbc:oracle:thin:@127.0.0.1:1521:PLAYGROUND
     username: DIBOOT
     password: DIBOOT
     hikari:
