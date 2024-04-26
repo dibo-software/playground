@@ -45,6 +45,20 @@ diboot:
       - /v3/**
       - /doc.html
       - /diboot-devtools/** # 允许devtools直接访问
+      - /auth/sso/** # 单点登录集成需打开该注释
+#    以下为单点登录配置示例：
+#    cas-server:
+#      auth-center-url: https://cas.server.com:8443/cas
+#      login-url: https://cas.server.com:8443/cas/login
+#      logout-url: https://cas.server.com:8443/cas/logout
+#      callback: http://localhost:5173/login
+#    oauth2:
+#      client-id: client-id
+#      client-secret: client-secret
+#      auth-center-url: http://127.0.0.1:8000/auth-center
+#      access-token-uri: http://127.0.0.1:8000/auth-center/oauth2/token
+#      user-info-uri: http://127.0.0.1:8000/user-center/oauth2/user-info
+#      callback: http://127.0.0.1:5173/login
   lcdp:
     #license: 订阅用户配置该项，使用VIP专属功能
     #tenant: false 是否开启多租户
