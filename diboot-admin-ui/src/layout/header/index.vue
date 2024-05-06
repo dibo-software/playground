@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UserFilled, ArrowDown } from '@element-plus/icons-vue'
+import { ArrowDown, UserFilled } from '@element-plus/icons-vue'
 import { isDark, isSmall } from '@/utils/theme'
 import MessageBell from './message-bell/index.vue'
 import MenuSearch from './MenuSearch.vue'
@@ -22,6 +22,8 @@ const logout = async () => {
 const goPersonal = () => {
   router.push({ name: 'Personal' }).finally()
 }
+
+const openChatAi = () => router.push('/chat-ai')
 </script>
 
 <template>
@@ -30,14 +32,21 @@ const goPersonal = () => {
     <div v-if="$slots.dock" class="top-menu">
       <slot name="dock" />
     </div>
-    <div style="position: absolute; right: 1.5rem; display: flex; align-items: center">
+    <div style="position: absolute; right: 1.5rem; display: flex; align-items: baseline">
       <div v-if="$slots.topNav" class="top-menu">
         <slot name="topNav" />
       </div>
       <menu-search class="item" />
+      <div class="item">
+        <el-tooltip effect="light" content="chat ai" placement="bottom" :show-after="300">
+          <el-icon :size="24">
+            <icon name="Local:Robot" @click="openChatAi" />
+          </el-icon>
+        </el-tooltip>
+      </div>
       <el-switch
         v-model="isDark"
-        class="dark-switch"
+        class="dark-switch item"
         :active-action-icon="DarkIcon"
         :inactive-action-icon="LightIcon"
       />

@@ -111,7 +111,7 @@ watch(
           selectedRows.value = list
           confirm()
         } else {
-          selected.conditions = [{ field: config.list?.primaryKey || 'id', value: newValue }]
+          selected.conditions = [{ field: config.list?.primaryKey || 'id', comparison: 'IN', value: values }]
           loadRelatedData(selected).then(list => {
             selectedRows.value = list.sort((e1, e2) => values.indexOf(e1.value) - values.indexOf(e2.value))
             confirm()
