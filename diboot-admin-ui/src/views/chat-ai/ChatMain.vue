@@ -43,16 +43,19 @@ const height = ref(0)
 const handleScroll = async () => {
   await nextTick()
   height.value = chatContentRef.value?.clientHeight + 30 || 0
-  console.log(height.value)
   chatScrollbarRef.value!.setScrollTop(height.value)
 }
 onMounted(() => handleScroll())
+// 是否是新建的session
+const newSession = ref(false)
 watch(
   () => currentSession.value,
   async newVal => {
-    if (newVal) {
+    if (newVal && !newSession.value) {
       await chatAiStore.loadSessionRecords(newVal.id as string)
       handleScroll()
+    } else {
+      newSession.value = false
     }
   },
   {
@@ -61,8 +64,8 @@ watch(
 )
 // 发送消息
 const sendMessage = async (message: string, model: string) => {
-  console.log('------ss')
   inputMessage.value = undefined
+  if (!currentSession.value) newSession.value = true
   await chatAiStore.beforeSendMessage(message)
   const newMessage = createNewMessage(message, 'user')
   currentMessages.value.push(newMessage)
@@ -70,6 +73,7 @@ const sendMessage = async (message: string, model: string) => {
   const cloneMessages = _.cloneDeep(currentMessages.value)
   // 添加一个空系统消息占位
   const systemMessage = createNewMessage('')
+
   currentMessages.value.push(systemMessage)
 
   const controller = new AbortController()
@@ -93,8 +97,12 @@ const sendMessage = async (message: string, model: string) => {
       const choice = choices[0]
       const answerMessage = currentMessages.value[currentMessages.value.length - 1]
       answerMessage.role = choice.message.role
+      if (pattern !== 'REPLACE') {
+        if (!answerMessage.originContent) answerMessage.originContent = ''
+        answerMessage.originContent += choice.message.content
+      }
       answerMessage.content = marked.parse(
-        pattern === 'REPLACE' ? choice.message.content : answerMessage.content + choice.message.content,
+        pattern === 'REPLACE' ? choice.message.content : answerMessage.originContent,
         {
           highlight: function (code, lang) {
             const language = hljs.getLanguage(lang) ? lang : 'plaintext'
@@ -102,12 +110,13 @@ const sendMessage = async (message: string, model: string) => {
           }
         }
       )
-      if (choice.finishReason === 'stop') {
+      if (choice.finish_reason === 'stop') {
         // 含有代码，最后通义刷新高亮
         const blocks = document.querySelectorAll('pre code')
         blocks.forEach(block => {
           hljs.highlightBlock(block)
         })
+        delete answerMessage.originContent
         // 消息接收成功，消息存储至数据库
         api.post<boolean>(`/ai-session-record`, {
           sessionId: currentSession.value.id,

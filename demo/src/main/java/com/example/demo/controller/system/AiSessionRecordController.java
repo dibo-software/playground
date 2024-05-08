@@ -4,10 +4,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.diboot.ai.client.AiClient;
 import com.diboot.ai.common.AiMessage;
 import com.diboot.ai.common.request.AiChatRequest;
-import com.diboot.ai.entity.AiSession;
 import com.diboot.ai.entity.AiSessionRecord;
 import com.diboot.ai.service.AiSessionRecordService;
-import com.diboot.ai.service.AiSessionService;
 import com.diboot.ai.vo.AiSessionRecordVO;
 import com.diboot.core.config.Cons;
 import com.diboot.core.controller.BaseCrudRestController;
@@ -18,7 +16,7 @@ import com.diboot.core.vo.Pagination;
 import com.diboot.iam.annotation.BindPermission;
 import com.diboot.iam.annotation.Log;
 import com.diboot.iam.annotation.OperationCons;
-import com.diboot.iam.util.IamSecurityUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
@@ -103,7 +101,7 @@ public class AiSessionRecordController extends BaseCrudRestController<AiSessionR
 
 
     @Log(operation = "AI 问答")
-    @BindPermission(name ="AI 问答", code = OperationCons.CODE_WRITE)
+    @BindPermission(name = "AI 问答", code = OperationCons.CODE_WRITE)
     @PostMapping("/chat")
     public SseEmitter chat(@RequestBody AiChatRequest aiChatRequest, HttpServletResponse response) throws Exception {
         // 配置响应为：流式输出、编码、禁用缓存
@@ -157,7 +155,7 @@ public class AiSessionRecordController extends BaseCrudRestController<AiSessionR
         List<AiMessage> aiMessages = new ArrayList<>();
         if (V.notEmpty(entityList)) {
             for (AiSessionRecord aiSessionRecord : entityList) {
-                if (V.notEmpty(aiSessionRecord.getRequestBody()) &&  V.notEmpty(aiSessionRecord.getResponseBody())) {
+                if (V.notEmpty(aiSessionRecord.getRequestBody()) && V.notEmpty(aiSessionRecord.getResponseBody())) {
                     aiMessages.add(JSON.parseObject(aiSessionRecord.getRequestBody(), AiMessage.class));
                     aiMessages.add(JSON.parseObject(aiSessionRecord.getResponseBody(), AiMessage.class));
                 }
@@ -165,7 +163,6 @@ public class AiSessionRecordController extends BaseCrudRestController<AiSessionR
         }
         return JsonResult.OK(aiMessages);
     }
-
 
 
 }
