@@ -20,7 +20,10 @@ const modelOptions: LabelValue[] = [
   { label: 'qwen-turbo（通义千问）', value: 'qwen-turbo' },
   { label: 'qwen-plus（通义千问）', value: 'qwen-plus' },
   { label: 'qwen-max（通义千问）', value: 'qwen-max' },
-  { label: 'Yi-34B-Chat（文心一言）', value: 'Yi-34B-Chat' }
+  { label: 'Yi-34B-Chat（文心一言）', value: 'Yi-34B-Chat' },
+  { label: 'moonshot-v1-8k（Kimi）', value: 'moonshot-v1-8k' },
+  { label: 'moonshot-v1-32k（Kimi）', value: 'moonshot-v1-32k' },
+  { label: 'moonshot-v1-128k（Kimi）', value: 'moonshot-v1-128k' }
 ]
 // 切换模型
 const handleCommand = (val: string) => (currentModel.value = val)
@@ -99,7 +102,7 @@ const sendMessage = async (message: string, model: string) => {
       answerMessage.role = choice.message.role
       if (pattern !== 'REPLACE') {
         if (!answerMessage.originContent) answerMessage.originContent = ''
-        answerMessage.originContent += choice.message.content
+        answerMessage.originContent += choice.message.content || ''
       }
       answerMessage.content = marked.parse(
         pattern === 'REPLACE' ? choice.message.content : answerMessage.originContent,
