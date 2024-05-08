@@ -123,6 +123,8 @@ const handleDel = async (session: any) => {
     box-sizing: border-box;
     cursor: pointer;
     .title {
+      font-size: var(--el-font-size-dynamic);
+      padding-left: 5px;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;

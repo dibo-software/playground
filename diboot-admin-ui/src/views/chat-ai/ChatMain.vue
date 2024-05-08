@@ -17,13 +17,13 @@ const inputMessage = ref('')
 // 模型
 const currentModel = ref<string>('qwen-turbo')
 const modelOptions: LabelValue[] = [
-  { label: 'qwen-turbo（通义千问）', value: 'qwen-turbo' },
-  { label: 'qwen-plus（通义千问）', value: 'qwen-plus' },
-  { label: 'qwen-max（通义千问）', value: 'qwen-max' },
-  { label: 'Yi-34B-Chat（文心一言）', value: 'Yi-34B-Chat' },
-  { label: 'moonshot-v1-8k（Kimi）', value: 'moonshot-v1-8k' },
-  { label: 'moonshot-v1-32k（Kimi）', value: 'moonshot-v1-32k' },
-  { label: 'moonshot-v1-128k（Kimi）', value: 'moonshot-v1-128k' }
+  { label: '通义千问：qwen-turbo', value: 'qwen-turbo' },
+  { label: '通义千问：qwen-plus', value: 'qwen-plus' },
+  { label: '通义千问：qwen-max', value: 'qwen-max' },
+  { label: '文心一言：Yi-34B-Chat', value: 'Yi-34B-Chat' },
+  { label: 'Kimi：moonshot-v1-8k', value: 'moonshot-v1-8k' },
+  { label: 'Kimi：moonshot-v1-32k', value: 'moonshot-v1-32k' },
+  { label: 'Kimi：moonshot-v1-128k', value: 'moonshot-v1-128k' }
 ]
 // 切换模型
 const handleCommand = (val: string) => (currentModel.value = val)
@@ -33,7 +33,7 @@ const handleCommand = (val: string) => (currentModel.value = val)
  */
 const useModel = computed(() => {
   const model = modelOptions.filter(item => item.value === currentModel.value)
-  return model ? model[0].label : 'qwen-turbo（通义千问）'
+  return model ? model[0].label : '通义千问：qwen-turbo'
 })
 //创建新消息
 const createNewMessage = (content: string, role?: RoleType) => {
@@ -180,7 +180,7 @@ const sendMessage = async (message: string, model: string) => {
         resize="none"
       />
       <div class="chat-tools">
-        <el-button size="small" :icon="Position" @click="sendMessage(inputMessage, currentModel)">发送</el-button>
+        <el-button type="primary" :icon="Position" @click="sendMessage(inputMessage, currentModel)">发送</el-button>
       </div>
     </div>
   </el-main>
@@ -196,7 +196,7 @@ const sendMessage = async (message: string, model: string) => {
     position: relative;
 
     :deep(.el-textarea__inner) {
-      padding-bottom: 20px;
+      padding-bottom: 10px;
     }
 
     .chat-tools {

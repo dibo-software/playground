@@ -9,7 +9,7 @@ const classNames = computed(() => ['chat-item', `chat-item-${props.position}`].j
 
 <template>
   <div :class="classNames">
-    <div class="chat-icon">{{ position === 'left' ? 'AI' : 'ME' }}</div>
+    <div class="chat-icon">{{ position === 'left' ? 'A' : 'Q' }}</div>
     <div class="chat-message" v-html="message" />
   </div>
 </template>

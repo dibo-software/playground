@@ -46,9 +46,6 @@ import java.util.List;
 public class AiSessionController extends BaseCrudRestController<AiSession> {
 
     @Autowired
-    private AiClient client;
-
-    @Autowired
     private AiSessionService aiSessionService;
 
     /**
@@ -101,7 +98,6 @@ public class AiSessionController extends BaseCrudRestController<AiSession> {
     public JsonResult<AiSession> getDetailVOMapping(@PathVariable("id") String id) throws Exception {
         return JsonResult.OK(aiSessionService.getEntity(id));
     }
-
 
     /**
      * 创建会话对象数据

@@ -38,8 +38,8 @@ const openChatAi = () => router.push('/chat-ai')
       </div>
       <menu-search class="item" />
       <div class="item">
-        <el-tooltip effect="light" content="chat ai" placement="bottom" :show-after="300">
-          <el-icon :size="24">
+        <el-tooltip effect="light" content="AI 对话" placement="bottom" :show-after="300">
+          <el-icon :size="24" style="color: #21ba45">
             <icon name="Local:Robot" @click="openChatAi" />
           </el-icon>
         </el-tooltip>
