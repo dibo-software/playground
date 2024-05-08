@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.diboot.ai.client.AiClient;
 import com.diboot.ai.common.AiMessage;
 import com.diboot.ai.common.request.AiChatRequest;
+import com.diboot.ai.common.request.AiEnum;
+import com.diboot.ai.common.response.AiChatResponse;
+import com.diboot.ai.common.response.AiChoice;
 import com.diboot.ai.entity.AiSessionRecord;
 import com.diboot.ai.service.AiSessionRecordService;
 import com.diboot.ai.vo.AiSessionRecordVO;
@@ -16,7 +19,6 @@ import com.diboot.core.vo.Pagination;
 import com.diboot.iam.annotation.BindPermission;
 import com.diboot.iam.annotation.Log;
 import com.diboot.iam.annotation.OperationCons;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
@@ -33,6 +35,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -110,27 +113,40 @@ public class AiSessionRecordController extends BaseCrudRestController<AiSessionR
         response.setHeader(HttpHeaders.CACHE_CONTROL, CacheControl.noCache().getHeaderValue());
 
         SseEmitter sseEmitter = new SseEmitter();
-
-        client.executeStream(aiChatRequest, new EventSourceListener() {
-            @Override
-            public void onClosed(@NotNull EventSource eventSource) {
-                sseEmitter.complete();
-            }
-
-            @Override
-            public void onEvent(@NotNull EventSource eventSource, @Nullable String id, @Nullable String type, @NotNull String data) {
-                try {
-                    sseEmitter.send(data);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+        try {
+            client.executeStream(aiChatRequest, new EventSourceListener() {
+                @Override
+                public void onClosed(@NotNull EventSource eventSource) {
+                    sseEmitter.complete();
                 }
-            }
 
-            @Override
-            public void onFailure(@NotNull EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
-                sseEmitter.completeWithError(t);
-            }
-        });
+                @Override
+                public void onEvent(@NotNull EventSource eventSource, @Nullable String id, @Nullable String type, @NotNull String data) {
+                    try {
+                        sseEmitter.send(data);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NotNull EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
+                    sseEmitter.completeWithError(t);
+                }
+            });
+        } catch (Exception e) {
+            // 异常处理
+            AiChatResponse chatResponse = new AiChatResponse()
+                    .setChoices(Collections.singletonList(new AiChoice().setFinishReason("stop")
+                            .setMessage((new AiMessage()).setRole(AiEnum.Role.ASSISTANT.getCode()).setContent(e.getMessage()))));
+
+            sseEmitter.send(JSON.stringify(chatResponse));
+
+            // 关闭连接
+            sseEmitter.complete();
+
+        }
+
         return sseEmitter;
     }
 
