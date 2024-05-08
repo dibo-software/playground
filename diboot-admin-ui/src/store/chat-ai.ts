@@ -57,7 +57,6 @@ export default defineStore('chatAi', {
      */
     chooseSession(session: AiSession) {
       this.currentSession = session
-      this.loadSessionRecords(session.id as string)
     },
     /**
      * 获取session列表

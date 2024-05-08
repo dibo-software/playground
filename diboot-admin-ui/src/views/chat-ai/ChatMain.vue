@@ -19,7 +19,8 @@ const currentModel = ref<string>('qwen-turbo')
 const modelOptions: LabelValue[] = [
   { label: 'qwen-turbo（通义千问）', value: 'qwen-turbo' },
   { label: 'qwen-plus（通义千问）', value: 'qwen-plus' },
-  { label: 'qwen-max（通义千问）', value: 'qwen-max' }
+  { label: 'qwen-max（通义千问）', value: 'qwen-max' },
+  { label: 'Yi-34B-Chat（文心一言）', value: 'Yi-34B-Chat' }
 ]
 // 切换模型
 const handleCommand = (val: string) => (currentModel.value = val)
@@ -35,8 +36,32 @@ const useModel = computed(() => {
 const createNewMessage = (content: string, role?: RoleType) => {
   return { role, content }
 }
+const chatScrollbarRef = ref()
+const chatContentRef = ref()
+const height = ref(0)
+
+const handleScroll = async () => {
+  await nextTick()
+  height.value = chatContentRef.value?.clientHeight + 30 || 0
+  console.log(height.value)
+  chatScrollbarRef.value!.setScrollTop(height.value)
+}
+onMounted(() => handleScroll())
+watch(
+  () => currentSession.value,
+  async newVal => {
+    if (newVal) {
+      await chatAiStore.loadSessionRecords(newVal.id as string)
+      handleScroll()
+    }
+  },
+  {
+    immediate: true
+  }
+)
 // 发送消息
 const sendMessage = async (message: string, model: string) => {
+  console.log('------ss')
   inputMessage.value = undefined
   await chatAiStore.beforeSendMessage(message)
   const newMessage = createNewMessage(message, 'user')
@@ -63,16 +88,20 @@ const sendMessage = async (message: string, model: string) => {
       model
     }),
     onmessage(ev) {
-      const { choices } = JSON.parse(ev.data)
+      // pattern 模式 REPLACE表示替换，另一种表示追加
+      const { pattern, choices } = JSON.parse(ev.data)
       const choice = choices[0]
       const answerMessage = currentMessages.value[currentMessages.value.length - 1]
       answerMessage.role = choice.message.role
-      answerMessage.content = marked.parse(choice.message.content, {
-        highlight: function (code, lang) {
-          const language = hljs.getLanguage(lang) ? lang : 'plaintext'
-          return hljs.highlight(code, { language }).value
+      answerMessage.content = marked.parse(
+        pattern === 'REPLACE' ? choice.message.content : answerMessage.content + choice.message.content,
+        {
+          highlight: function (code, lang) {
+            const language = hljs.getLanguage(lang) ? lang : 'plaintext'
+            return hljs.highlight(code, { language }).value
+          }
         }
-      })
+      )
       if (choice.finishReason === 'stop') {
         // 含有代码，最后通义刷新高亮
         const blocks = document.querySelectorAll('pre code')
@@ -89,6 +118,8 @@ const sendMessage = async (message: string, model: string) => {
         // 如果响应结束，关闭请求
         controller.abort()
       }
+      // 自动滚动
+      handleScroll()
     }
   })
 }
@@ -114,18 +145,18 @@ const sendMessage = async (message: string, model: string) => {
         </el-dropdown-menu>
       </template>
     </el-dropdown>
-    <el-scrollbar>
-      <template v-if="currentMessages.length > 0">
+    <el-scrollbar ref="chatScrollbarRef">
+      <div v-if="currentMessages.length > 0" ref="chatContentRef">
         <chat-item
           v-for="(message, index) in currentMessages"
           :key="`message_${index}`"
           :position="message.role === 'user' ? 'right' : 'left'"
           :message="message.content"
         />
-      </template>
-      <template v-else>
+      </div>
+      <div v-else>
         <el-empty description="无记录" />
-      </template>
+      </div>
     </el-scrollbar>
     <div class="chat-input">
       <el-input
@@ -137,13 +168,7 @@ const sendMessage = async (message: string, model: string) => {
         resize="none"
       />
       <div class="chat-tools">
-        <el-button
-          size="small"
-          :icon="Position"
-          @click="sendMessage(inputMessage, currentModel)"
-          @keydown.ctrl.enter="sendMessage(inputMessage, currentModel)"
-          >发送（ctrl + enter）</el-button
-        >
+        <el-button size="small" :icon="Position" @click="sendMessage(inputMessage, currentModel)">发送</el-button>
       </div>
     </div>
   </el-main>
