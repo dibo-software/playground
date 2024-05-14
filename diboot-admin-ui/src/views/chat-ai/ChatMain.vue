@@ -214,7 +214,7 @@ const sendMessage = async (message: string, model: string) => {
   height: 100%;
   padding: 0;
   :deep(.el-scrollbar) {
-    height: calc(100% - 142px);
+    height: calc(100% - 100px - 62px);
   }
   .el-scrollbar {
     background-color: #fff;
@@ -227,7 +227,7 @@ const sendMessage = async (message: string, model: string) => {
     margin-bottom: 10px;
     margin-top: 20px;
     .el-select {
-      width: 180px !important;
+      width: 220px !important;
     }
   }
   .chat-example {
