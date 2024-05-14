@@ -26,7 +26,27 @@ const modelOptions: LabelValue[] = [
   { label: 'Kimi：moonshot-v1-128k', value: 'moonshot-v1-128k' }
 ]
 // 切换模型
-const handleCommand = (val: string) => (currentModel.value = val)
+const changeModel = (val: string) => (currentModel.value = val)
+
+// 例子
+const exampleList: { title: string; content: string }[] = [
+  {
+    title: '数学计算',
+    content: '计算1+1'
+  },
+  {
+    title: '代码生成',
+    content: '请生成一个python代码，计算1+1'
+  },
+  {
+    title: '写一封信',
+    content: '写一封感谢信'
+  },
+  {
+    title: '写一首诗',
+    content: '写一首描述夏天的诗'
+  }
+]
 
 /**
  * 动态计算正在使用的模型
@@ -139,24 +159,6 @@ const sendMessage = async (message: string, model: string) => {
 
 <template>
   <el-main class="chat-ai-main">
-    <el-dropdown class="custom-dropdown" @command="handleCommand">
-      <span style="display: flex">
-        {{ useModel }}
-        <el-icon>
-          <arrow-down />
-        </el-icon>
-      </span>
-      <template #dropdown>
-        <el-dropdown-menu>
-          <el-dropdown-item
-            v-for="(model, index) in modelOptions"
-            :key="`${model.value}_${index}`"
-            :command="model.value"
-            >{{ model.label }}</el-dropdown-item
-          >
-        </el-dropdown-menu>
-      </template>
-    </el-dropdown>
     <el-scrollbar ref="chatScrollbarRef">
       <div v-if="currentMessages.length > 0" ref="chatContentRef">
         <chat-item
@@ -167,9 +169,25 @@ const sendMessage = async (message: string, model: string) => {
         />
       </div>
       <div v-else>
-        <el-empty description="无记录" />
+        <div class="chat-example">
+          <p>您可以问我这些：</p>
+          <el-row :gutter="24">
+            <el-col v-for="item in exampleList" :key="item.title" :span="12" class="chat-example-item">
+              <el-card shadow="hover">
+                <div>{{ item.title }}</div>
+                <div class="chat-example-item-content">{{ item.content }}</div>
+              </el-card>
+            </el-col>
+          </el-row>
+        </div>
       </div>
     </el-scrollbar>
+    <div class="chat-model">
+      <span>模型：</span>
+      <el-select v-model="useModel" placeholder="请选择" @change="changeModel">
+        <el-option v-for="item in modelOptions" :key="item.value" :label="item.label" :value="item.value" />
+      </el-select>
+    </div>
     <div class="chat-input">
       <el-input
         ref="inputRef"
@@ -180,7 +198,13 @@ const sendMessage = async (message: string, model: string) => {
         resize="none"
       />
       <div class="chat-tools">
-        <el-button type="primary" :icon="Position" @click="sendMessage(inputMessage, currentModel)">发送</el-button>
+        <el-button
+          type="primary"
+          size="large"
+          title="点击发送"
+          :icon="Position"
+          @click="sendMessage(inputMessage, currentModel)"
+        />
       </div>
     </div>
   </el-main>
@@ -190,13 +214,52 @@ const sendMessage = async (message: string, model: string) => {
   height: 100%;
   padding: 0;
   :deep(.el-scrollbar) {
-    height: calc(100% - 100px - 40px);
+    height: calc(100% - 142px);
   }
+  .el-scrollbar {
+    background-color: #fff;
+    border-radius: 10px;
+  }
+  .chat-model {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    margin-bottom: 10px;
+    margin-top: 20px;
+    .el-select {
+      width: 180px !important;
+    }
+  }
+  .chat-example {
+    width: 800px;
+    margin: 100px auto 0;
+    p {
+      text-align: center;
+      color: #909399;
+      font-size: 14px;
+    }
+    &-item {
+      margin-bottom: 24px;
+      cursor: pointer;
+      .el-card {
+        :hover {
+          background-color: var(--el-color-primary-light-9);
+        }
+      }
+      &-content {
+        font-size: 14px;
+        color: #909399;
+        margin-top: 10px;
+      }
+    }
+  }
+
   .chat-input {
     position: relative;
 
     :deep(.el-textarea__inner) {
       padding-bottom: 10px;
+      color: #303133;
     }
 
     .chat-tools {

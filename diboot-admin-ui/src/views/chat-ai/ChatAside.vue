@@ -60,7 +60,13 @@ const handleDel = async (session: any) => {
 <template>
   <el-aside width="200px" class="chat-ai-aside">
     <div class="new-session">
-      <el-button :loading="loading" plain style="width: 100%" :icon="ChatDotRound" @click="handleCreate"
+      <el-button
+        :loading="loading"
+        type="primary"
+        style="width: 100%"
+        size="large"
+        :icon="ChatDotRound"
+        @click="handleCreate"
         >新建对话</el-button
       >
     </div>
@@ -76,10 +82,10 @@ const handleDel = async (session: any) => {
           <el-input v-model="session.title" />
         </div>
         <div v-if="!session.edit" class="session-operate">
-          <el-icon color="#E6A23C" style="margin-right: 5px" @click.stop="handleEdit(session)">
+          <el-icon color="#E6A23C" title="更新对话" style="margin-right: 5px" @click.stop="handleEdit(session)">
             <EditPen />
           </el-icon>
-          <el-icon color="#F56C6C" @click.stop="handleDel(session)">
+          <el-icon color="#F56C6C" title="删除对话" @click.stop="handleDel(session)">
             <Delete />
           </el-icon>
         </div>
@@ -93,7 +99,6 @@ const handleDel = async (session: any) => {
   border-right: var(--el-border-color) solid 1px;
   .new-session {
     padding: 10px;
-    height: 50px;
     box-sizing: border-box;
   }
 

@@ -6,7 +6,7 @@ import ChatMain from './ChatMain.vue'
 <template>
   <el-container style="height: 100%">
     <chat-aside width="200px" />
-    <el-main>
+    <el-main style="background-color: #fafafa">
       <chat-main />
       <div class="chat" />
     </el-main>
