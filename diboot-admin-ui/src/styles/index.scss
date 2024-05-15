@@ -83,6 +83,8 @@
 
   .el-pagination {
     margin: 7px;
+    display: flex;
+    justify-content: flex-end;
   }
 }
 
