@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowDown, Position } from '@element-plus/icons-vue'
+import { Position } from '@element-plus/icons-vue'
 import ChatItem from './ChatItem.vue'
 import { fetchEventSource } from '@microsoft/fetch-event-source'
 import { marked } from 'marked'
@@ -164,7 +164,7 @@ const sendMessage = async (message: string, model: string) => {
         <chat-item
           v-for="(message, index) in currentMessages"
           :key="`message_${index}`"
-          :position="message.role === 'user' ? 'right' : 'left'"
+          :role="message.role"
           :message="message.content"
         />
       </div>

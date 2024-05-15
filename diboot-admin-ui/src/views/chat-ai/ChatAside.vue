@@ -103,7 +103,7 @@ const handleDel = async (session: any) => {
   }
 
   :deep(.el-scrollbar) {
-    height: calc(100% - 50px);
+    height: calc(100% - 60px);
   }
 
   .session-operate {
