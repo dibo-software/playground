@@ -132,7 +132,7 @@ const TableColumn = defineComponent({
   <span>
     <span @click="visible = true">
       <slot>
-        <el-button :icon="Upload"> 批量导入 </el-button>
+        <el-button :icon="Upload" type="primary" plain> 导入 </el-button>
       </slot>
     </span>
 

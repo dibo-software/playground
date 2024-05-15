@@ -46,40 +46,15 @@ function rowClick(row: DictionaryTableExpand) {
 </script>
 <template>
   <div class="list-page">
-    <el-form v-show="searchState" label-width="80px" class="list-search" @submit.prevent>
-      <el-row :gutter="18">
-        <el-col :lg="6" :sm="12">
-          <el-form-item label="类型名称">
-            <el-input v-model="queryParam.itemName" clearable placeholder="" @change="onSearch" />
-          </el-form-item>
-        </el-col>
-        <el-col :lg="6" :sm="12">
-          <el-form-item label="类型编码">
-            <el-input v-model="queryParam.type" clearable placeholder="" @change="onSearch" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
-
     <el-space wrap class="list-operation">
       <el-button v-has-permission="'create'" :icon="Plus" type="primary" @click="openForm()">
         {{ $t('operation.create') }}
       </el-button>
       <el-space>
-        <el-input
-          v-show="!searchState"
-          v-model="queryParam.itemName"
-          clearable
-          placeholder="类型名称"
-          @change="onSearch"
-        />
+        <el-input v-model="queryParam.itemName" clearable placeholder="名称" @change="onSearch" />
+        <el-input v-model="queryParam.type" clearable placeholder="编码" @change="onSearch" />
         <el-button :icon="Search" type="primary" @click="onSearch">查询</el-button>
         <el-button title="重置搜索条件" @click="resetFilter">重置</el-button>
-        <el-button
-          :icon="searchState ? ArrowUp : ArrowDown"
-          :title="searchState ? '收起' : '展开'"
-          @click="searchState = !searchState"
-        />
       </el-space>
     </el-space>
 
@@ -112,8 +87,8 @@ function rowClick(row: DictionaryTableExpand) {
           </template>
         </template>
       </el-table-column>
-      <el-table-column prop="itemName" label="类型名称" />
-      <el-table-column label="类型编码">
+      <el-table-column prop="itemName" label="名称" />
+      <el-table-column label="编码">
         <template #default="{ row }">
           <template v-if="row.parentId && row.parentId !== '0'"> {{ row.itemValue }} </template>
           <template v-else>

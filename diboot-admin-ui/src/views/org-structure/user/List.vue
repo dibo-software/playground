@@ -84,13 +84,13 @@ const buildRoleList = (roleList?: Role[]) => roleList?.map(e => e.name).join('�
       <el-button v-has-permission="'create'" :icon="Plus" type="primary" @click="openForm()">
         {{ $t('operation.create') }}
       </el-button>
+      <excel-import :excel-base-api="`${baseApi}/excel`" :attach="() => ({ orgId })" @complete="onSearch" />
       <excel-export
         v-has-permission="'export'"
         :build-param="buildQueryParam"
         :export-url="`${baseApi}/excel/export`"
         :table-head-url="`${baseApi}/excel/export-table-head`"
       />
-      <excel-import :excel-base-api="`${baseApi}/excel`" :attach="() => ({ orgId })" @complete="onSearch" />
       <el-space>
         <el-input v-show="!searchState" v-model="queryParam.realname" clearable placeholder="姓名" @change="onSearch" />
         <el-button :icon="Search" type="primary" @click="onSearch">查询</el-button>
