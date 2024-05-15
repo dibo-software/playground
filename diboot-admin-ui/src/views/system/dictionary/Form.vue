@@ -182,7 +182,7 @@ defineExpose({ open })
                     <el-input v-model="element.itemValue" placeholder="条目编码" />
                   </el-form-item>
                 </td>
-                <td class="color-picker-td">
+                <td>
                   <el-color-picker
                     v-model="(element.extension ? element.extension : (element.extension = {})).color"
                     :predefine="predefineColors"
@@ -231,13 +231,7 @@ defineExpose({ open })
   }
 
   td > * {
-    margin-top: 2px;
     margin-bottom: 18px;
-  }
-
-  .color-picker-td {
-    padding-top: 2px;
-    padding-bottom: 18px;
   }
 
   .drag-handle {
