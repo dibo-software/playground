@@ -122,3 +122,10 @@
 .el-tag {
   border-width: 0 !important;
 }
+
+
+.el-dropdown {
+  .el-button:focus-visible {
+    outline: none !important;
+  }
+}
