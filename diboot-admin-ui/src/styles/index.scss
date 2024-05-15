@@ -46,6 +46,11 @@
   display: flex;
   flex-direction: column;
 
+  .el-table th.el-table__cell ,.el-table.is-scrolling-none th.el-table-fixed-column--right{
+    background-color: var(--el-fill-color-light);
+  }
+
+
   .el-header {
     height: auto;
     padding: 10px;
