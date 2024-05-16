@@ -38,18 +38,21 @@ const openChatAi = () => router.push('/chat-ai')
       </div>
       <menu-search class="item" />
       <div class="item">
-        <el-tooltip effect="light" content="AI 对话" placement="bottom" :show-after="300">
+        <el-tooltip effect="dark" content="AI 对话" placement="bottom" :show-after="300">
           <el-icon :size="24" style="color: #21ba45">
             <icon name="Local:ChatAi" @click="openChatAi" />
           </el-icon>
         </el-tooltip>
       </div>
-      <el-switch
-        v-model="isDark"
-        class="dark-switch item"
-        :active-action-icon="DarkIcon"
-        :inactive-action-icon="LightIcon"
-      />
+      <el-tooltip effect="dark" :content="isDark ? '深色模式' : '浅色模式'" placement="bottom" :show-after="300">
+        <el-switch
+          v-model="isDark"
+          class="dark-switch item"
+          :active-action-icon="DarkIcon"
+          :inactive-action-icon="LightIcon"
+        />
+      </el-tooltip>
+
       <!--      <el-dropdown @command="(command: string) => $i18n.locale = command">-->
       <!--        <div class="item">-->
       <!--          <el-icon :size="22">-->

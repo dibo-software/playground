@@ -85,7 +85,7 @@ const go = (name: string) => {
 
 <template>
   <span class="menu-search">
-    <el-tooltip effect="light" content="ctrl + k" placement="bottom" :show-after="300">
+    <el-tooltip effect="dark" content="搜索菜单" placement="bottom" :show-after="300">
       <el-icon :size="22" @click="open">
         <Search />
       </el-icon>
