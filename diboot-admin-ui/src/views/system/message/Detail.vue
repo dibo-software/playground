@@ -34,8 +34,18 @@ defineExpose({
       <el-descriptions-item label="接收方">
         {{ model.receiverName }}
       </el-descriptions-item>
+      <el-descriptions-item label="发送通道">
+        <el-tag :color="model.channelLabel?.ext?.color" effect="dark" type="info">
+          {{ model.channelLabel?.label }}
+        </el-tag>
+      </el-descriptions-item>
       <el-descriptions-item label="发送结果">
         <el-tag>{{ model.result }}</el-tag>
+      </el-descriptions-item>
+      <el-descriptions-item label="消息状态">
+        <el-tag :color="model.statusLabel?.ext?.color" effect="dark" type="info">
+          {{ model.statusLabel?.label }}
+        </el-tag>
       </el-descriptions-item>
       <el-descriptions-item label="定时发送时间">
         {{ model.scheduleTime }}

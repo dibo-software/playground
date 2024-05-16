@@ -64,13 +64,13 @@ const appendVariable = (variable?: string) => {
   <el-dialog v-model="visible" :title="title">
     <el-form ref="formRef" v-loading="loading" :model="model" :rules="rules" label-width="80px">
       <el-form-item prop="title" label="模板名称">
-        <el-input v-model="model.title" />
+        <el-input v-model="model.title" placeholder="消息模板名称，如：‘催办提醒’" />
       </el-form-item>
       <el-form-item prop="code" label="模板编码">
-        <el-input v-model="model.code" />
+        <el-input v-model="model.code" placeholder="模板唯一编码，如：‘CBTX’ " />
       </el-form-item>
       <el-form-item prop="appModule" label="业务模块">
-        <el-input v-model="model.appModule" />
+        <el-input v-model="model.appModule" placeholder="模板分组，如：‘SYSTEM’" />
       </el-form-item>
       <el-space fill style="width: 100%">
         <el-alert type="info" show-icon :closable="false">
@@ -86,7 +86,7 @@ const appendVariable = (variable?: string) => {
           </el-tag>
         </el-alert>
         <el-form-item prop="content" label="消息内容">
-          <el-input v-model="model.content" type="textarea" :rows="5" />
+          <el-input v-model="model.content" type="textarea" :rows="5" placeholder="消息模板内容，可添加变量" />
         </el-form-item>
       </el-space>
     </el-form>

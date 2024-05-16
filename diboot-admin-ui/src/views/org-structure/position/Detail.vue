@@ -26,7 +26,9 @@ defineExpose({
         {{ model.gradeName }}
       </el-descriptions-item>
       <el-descriptions-item label="数据权限">
-        {{ model.dataPermissionTypeLabel }}
+        <el-tag :color="model.dataPermissionTypeLabel?.ext?.color" effect="dark" type="info">
+          {{ model.dataPermissionTypeLabel?.label }}
+        </el-tag>
       </el-descriptions-item>
       <el-descriptions-item label="虚拟岗位">
         {{ model.isVirtual ? '是' : '否' }}

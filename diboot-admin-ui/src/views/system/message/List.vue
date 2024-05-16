@@ -58,20 +58,20 @@ initRelatedData()
       <el-table-column prop="receiverName" label="接收方" />
       <el-table-column prop="channelLabel" label="发送通道">
         <template #default="{ row }">
-          <el-tag type="info" effect="dark">{{ row.channelLabel }}</el-tag>
+          <el-tag :color="row.channelLabel?.ext?.color" effect="dark" type="info">
+            {{ row.channelLabel?.label }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="statusLabel" label="发送状态">
         <template #default="{ row }">
-          <el-tag v-if="row.status === 'FAILED'" type="danger">{{ row.statusLabel }}</el-tag>
-          <el-tag v-else-if="row.status === 'DELIVERY' || row.status === 'READ'" type="success">
-            {{ row.statusLabel }}
+          <el-tag :color="row.statusLabel?.ext?.color" effect="dark" type="info">
+            {{ row.statusLabel?.label }}
           </el-tag>
-          <el-tag v-else type="info" effect="dark">{{ row.statusLabel }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="createTime" label="创建时间" width="165" />
-      <el-table-column label="操作" width="70" fixed="right">
+      <el-table-column label="操作" width="90" fixed="right">
         <template #default="{ row }">
           <el-button v-has-permission="'detail'" text bg type="primary" size="small" @click="openDetail(row.id)">
             {{ $t('operation.detail') }}
