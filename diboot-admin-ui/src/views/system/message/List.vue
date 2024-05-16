@@ -1,5 +1,5 @@
 <script setup lang="ts" name="Message">
-import { Search, ArrowUp, ArrowDown } from '@element-plus/icons-vue'
+import { Search } from '@element-plus/icons-vue'
 import type { Message } from './type'
 import Detail from '@/views/system/message/Detail.vue'
 
@@ -7,9 +7,6 @@ const { queryParam, loading, dataList, pagination, getList, onSearch, resetFilte
   baseApi: '/message'
 })
 getList()
-
-// 搜索区折叠
-const searchState = ref(false)
 
 const detailRef = ref()
 const openDetail = (id: string) => {
