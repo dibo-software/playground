@@ -31,7 +31,7 @@ const getTagType = (val: string, map: Record<string, unknown>) => {
     <el-space wrap class="list-operation">
       <el-space>
         <el-input v-model="queryParam.businessObj" placeholder="业务对象" clearable @change="onSearch" />
-        <el-select v-model="queryParam.requestMethod" clearable placeholder="选择请求方式" @change="onSearch">
+        <el-select v-model="queryParam.requestMethod" clearable placeholder="请选择请求方式" @change="onSearch">
           <el-option value="GET" />
           <el-option value="POST" />
           <el-option value="PUT" />

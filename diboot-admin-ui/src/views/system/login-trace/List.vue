@@ -15,7 +15,7 @@ getList()
     <el-space wrap class="list-operation">
       <el-space>
         <el-input v-model="queryParam.authAccount" placeholder="用户名" clearable @change="onSearch" />
-        <el-select v-model="queryParam.isSuccess" placeholder="选择登录状态" clearable @change="onSearch">
+        <el-select v-model="queryParam.isSuccess" placeholder="请选择登录状态" clearable @change="onSearch">
           <el-option label="成功" :value="true" />
           <el-option label="失败" :value="false" />
         </el-select>

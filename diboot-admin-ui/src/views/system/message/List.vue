@@ -22,7 +22,7 @@ initRelatedData()
     <el-space wrap class="list-operation">
       <el-space>
         <el-input v-model="queryParam.title" clearable placeholder="消息标题" @change="onSearch" />
-        <el-select v-model="queryParam.channel" placeholder="选择发送通道" clearable @change="onSearch">
+        <el-select v-model="queryParam.channel" placeholder="请选择发送通道" clearable @change="onSearch">
           <el-option
             v-for="item in relatedData.messageChannelOptions || []"
             :key="item.value"
@@ -30,7 +30,7 @@ initRelatedData()
             :label="item.label"
           />
         </el-select>
-        <el-select v-model="queryParam.status" clearable placeholder="选择消息状态" @change="onSearch">
+        <el-select v-model="queryParam.status" clearable placeholder="请选择消息状态" @change="onSearch">
           <el-option
             v-for="item in relatedData.messageStatusOptions || []"
             :key="item.value"
