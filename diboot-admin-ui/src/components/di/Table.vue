@@ -256,7 +256,7 @@ const headerDragend = (newWidth: number, oldWidth: number, column: { property: s
     </template>
   </el-table>
 
-  <div v-if="$slots.pagination" style="display: flex; justify-content: space-between">
+  <div v-if="$slots.pagination">
     <div>
       <slot name="pagination" />
     </div>

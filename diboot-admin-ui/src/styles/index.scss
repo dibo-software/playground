@@ -85,12 +85,6 @@
       width: 200px;
     }
   }
-
-  .el-pagination {
-    margin: 7px;
-    display: flex;
-    justify-content: flex-end;
-  }
 }
 
 .long-text {
@@ -151,4 +145,10 @@
   .el-dialog__body {
     padding: 10px ;
   }
+}
+
+.el-pagination {
+  margin: 7px;
+  display: flex;
+  justify-content: flex-end;
 }
