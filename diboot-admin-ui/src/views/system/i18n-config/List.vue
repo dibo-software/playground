@@ -1,5 +1,5 @@
 <script setup lang="ts" name="I18nConfig">
-import { Search, ArrowDown, ArrowUp, Plus } from '@element-plus/icons-vue'
+import { Search, Plus } from '@element-plus/icons-vue'
 import type { I18nConfig } from './type'
 import Form from './Form.vue'
 
@@ -14,9 +14,6 @@ const formRef = ref()
 const openForm = (code?: string) => {
   formRef.value?.open(code)
 }
-
-// 搜索区折叠
-const searchState = ref(false)
 
 // 用于选择
 const props = defineProps<{ modelValue?: string; select?: boolean }>()
@@ -40,34 +37,15 @@ const singleRow = (row: Array<I18nConfig>) => {
 
 <template>
   <div class="list-page">
-    <el-form v-show="searchState" label-width="80px" class="list-search" @submit.prevent>
-      <el-row :gutter="18">
-        <el-col :lg="6" :sm="12">
-          <el-form-item label="资源标识">
-            <el-input v-model="queryParam.code" clearable @change="onSearch" />
-          </el-form-item>
-        </el-col>
-        <el-col :lg="6" :sm="12">
-          <el-form-item label="翻译内容">
-            <el-input v-model="queryParam.content" clearable @change="onSearch" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
-
     <el-space wrap class="list-operation">
       <el-button v-has-permission="'create'" :icon="Plus" type="primary" @click="openForm()">
         {{ $t('operation.create') }}
       </el-button>
       <el-space>
-        <el-input v-show="!searchState" v-model="queryParam.code" placeholder="资源标识" clearable @change="onSearch" />
+        <el-input v-model="queryParam.code" placeholder="资源标识" clearable @change="onSearch" />
+        <el-input v-model="queryParam.content" placeholder="翻译内容" clearable @change="onSearch" />
         <el-button :icon="Search" type="primary" @click="onSearch">查询</el-button>
         <el-button title="重置搜索条件" @click="resetFilter">重置</el-button>
-        <el-button
-          :icon="searchState ? ArrowUp : ArrowDown"
-          :title="searchState ? '收起' : '展开'"
-          @click="searchState = !searchState"
-        />
       </el-space>
     </el-space>
 

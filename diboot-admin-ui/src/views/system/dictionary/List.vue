@@ -1,5 +1,5 @@
 <script setup lang="ts" name="Dictionary">
-import { ArrowUp, ArrowDown, Search, Plus } from '@element-plus/icons-vue'
+import { ArrowDown, Search, Plus } from '@element-plus/icons-vue'
 import FormPage from './Form.vue'
 import DetailPage from './Detail.vue'
 import type { Dictionary } from '@/views/system/dictionary/type'
@@ -11,9 +11,6 @@ interface DictionarySearch extends Dictionary {
 type DictionaryTableExpand = Dictionary & {
   isExpand?: boolean | undefined
 }
-
-// 搜索区折叠
-const searchState = ref(false)
 
 const { queryParam, loading, dataList, pagination, getList, onSearch, remove, resetFilter } = useList<
   DictionaryTableExpand,

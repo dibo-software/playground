@@ -146,6 +146,7 @@ defineExpose({ open })
               </th>
             </tr>
           </thead>
+          <div style="height: 10px" />
           <draggable
             v-model="model.children"
             tag="tbody"
@@ -222,7 +223,8 @@ defineExpose({ open })
   width: 100%;
 
   th {
-    padding-bottom: 12px;
+    padding: 6px 0;
+    background-color: var(--el-fill-color-light);
   }
 
   td {

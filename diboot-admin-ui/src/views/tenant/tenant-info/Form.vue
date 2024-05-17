@@ -73,7 +73,7 @@ const rules: FormRules = {
 
 <template>
   <el-dialog v-model="visible" width="60%" :title="title">
-    <el-form ref="formRef" v-loading="loading" :model="model" :rules="rules" label-width="120px">
+    <el-form ref="formRef" v-loading="loading" :model="model" :rules="rules" label-width="80px">
       <el-row :gutter="18">
         <el-col :md="12" :sm="24">
           <el-form-item prop="name" label="租户名称">

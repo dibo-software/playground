@@ -16,11 +16,11 @@ defineExpose({
 <template>
   <el-dialog v-model="visible" title="用户信息详情" width="65vw">
     <el-descriptions v-loading="loading" :column="3" class="margin-top el-descriptions" border>
-      <el-descriptions-item label="姓名">
-        {{ model.realname }}
-      </el-descriptions-item>
       <el-descriptions-item label="员工编号">
         {{ model.userNum }}
+      </el-descriptions-item>
+      <el-descriptions-item label="姓名">
+        {{ model.realname }}
       </el-descriptions-item>
       <el-descriptions-item label="性别">
         <el-tag :color="model.genderLabel?.ext?.color" effect="dark" type="info">

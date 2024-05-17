@@ -1,5 +1,5 @@
 <script setup lang="ts" name="Tenant">
-import { ArrowDown, ArrowUp, Plus, Search } from '@element-plus/icons-vue'
+import { ArrowDown, Plus, Search } from '@element-plus/icons-vue'
 import type { Tenant } from './type'
 import Detail from './Detail.vue'
 import Form from './Form.vue'
@@ -18,8 +18,6 @@ const { queryParam, onSearch, getList, loading, dataList, buildQueryParam, pagin
   baseApi
 })
 getList()
-// 搜索区折叠
-const searchState = ref(false)
 
 const { relatedData, initRelatedData } = useOption({
   dict: ['TENANT_STATUS']
@@ -49,32 +47,6 @@ const deletePermission = checkPermission('delete')
 
 <template>
   <div class="list-page">
-    <el-form v-show="searchState" label-width="80px" class="list-search" @submit.prevent>
-      <el-row :gutter="18">
-        <el-col :lg="6" :sm="12">
-          <el-form-item label="租户名称">
-            <el-input v-model="queryParam.name" clearable placeholder="租户名称" @change="onSearch" />
-          </el-form-item>
-        </el-col>
-        <el-col :lg="6" :sm="12">
-          <el-form-item label="租户编码">
-            <el-input v-model="queryParam.code" clearable placeholder="租户编码" @change="onSearch" />
-          </el-form-item>
-        </el-col>
-        <el-col :lg="6" :sm="12">
-          <el-form-item label="租户状态">
-            <el-select v-model="queryParam.status" filterable placeholder="请选择租户状态" clearable>
-              <el-option
-                v-for="item in relatedData.tenantStatusOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
     <el-space wrap class="list-operation">
       <el-button v-has-permission="'create'" :icon="Plus" type="primary" @click="openForm()">
         {{ $t('operation.create') }}
@@ -87,16 +59,18 @@ const deletePermission = checkPermission('delete')
       />
       <excel-import v-has-permission="'import'" :excel-base-api="`${baseApi}/excel`" @complete="onSearch" />
       <el-space>
-        <span v-show="!searchState" class="search">
-          <el-input v-model="queryParam.name" clearable placeholder="租户名称" @change="onSearch" />
-        </span>
+        <el-input v-model="queryParam.name" clearable placeholder="租户名称" @change="onSearch" />
+        <el-input v-model="queryParam.code" clearable placeholder="租户编码" @change="onSearch" />
+        <el-select v-model="queryParam.status" filterable placeholder="请选择租户状态" clearable @change="onSearch">
+          <el-option
+            v-for="item in relatedData.tenantStatusOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
         <el-button :icon="Search" type="primary" @click="onSearch">搜索</el-button>
         <el-button title="重置查询条件" @click="resetFilter">重置</el-button>
-        <el-button
-          :icon="searchState ? ArrowUp : ArrowDown"
-          :title="searchState ? '收起' : '展开'"
-          @click="searchState = !searchState"
-        />
       </el-space>
     </el-space>
 

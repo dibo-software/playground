@@ -1,5 +1,5 @@
 <script setup lang="ts" name="OperationLog">
-import { Search, ArrowUp, ArrowDown } from '@element-plus/icons-vue'
+import { Search } from '@element-plus/icons-vue'
 import type { OperationLog } from './type'
 import Detail from '@/views/system/operation-log/Detail.vue'
 
@@ -16,9 +16,6 @@ const tagMap = {
   PATCH: 'info'
 }
 
-// 搜索区折叠
-const searchState = ref(false)
-
 const detailRef = ref()
 const openDetail = (id: string) => {
   detailRef.value?.open(id)
@@ -31,48 +28,19 @@ const getTagType = (val: string, map: Record<string, unknown>) => {
 
 <template>
   <div class="list-page">
-    <el-form v-show="searchState" label-width="80px" class="list-search" @submit.prevent>
-      <el-row :gutter="18">
-        <el-col :lg="6" :sm="12">
-          <el-form-item label="业务对象">
-            <el-input v-model="queryParam.businessObj" clearable @change="onSearch" />
-          </el-form-item>
-        </el-col>
-        <el-col :lg="6" :sm="12">
-          <el-form-item label="请求方式">
-            <el-select v-model="queryParam.requestMethod" clearable @change="onSearch">
-              <el-option value="GET" />
-              <el-option value="POST" />
-              <el-option value="PUT" />
-              <el-option value="DELETE" />
-              <el-option value="PATCH" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :lg="6" :sm="12">
-          <el-form-item label="状态码">
-            <el-input v-model="queryParam.statusCode" clearable @change="onSearch" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
-
     <el-space wrap class="list-operation">
       <el-space>
-        <el-input
-          v-show="!searchState"
-          v-model="queryParam.businessObj"
-          placeholder="业务对象"
-          clearable
-          @change="onSearch"
-        />
+        <el-input v-model="queryParam.businessObj" placeholder="业务对象" clearable @change="onSearch" />
+        <el-select v-model="queryParam.requestMethod" clearable placeholder="选择请求方式" @change="onSearch">
+          <el-option value="GET" />
+          <el-option value="POST" />
+          <el-option value="PUT" />
+          <el-option value="DELETE" />
+          <el-option value="PATCH" />
+        </el-select>
+        <el-input v-model="queryParam.statusCode" placeholder="状态码" clearable @change="onSearch" />
         <el-button :icon="Search" type="primary" @click="onSearch">查询</el-button>
         <el-button title="重置搜索条件" @click="resetFilter">重置</el-button>
-        <el-button
-          :icon="searchState ? ArrowUp : ArrowDown"
-          :title="searchState ? '收起' : '展开'"
-          @click="searchState = !searchState"
-        />
       </el-space>
     </el-space>
 

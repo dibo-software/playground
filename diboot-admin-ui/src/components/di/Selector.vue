@@ -167,7 +167,7 @@ const clickNode = (id?: string) => (parent.value = id ?? props.rootId)
   <el-dialog v-model="visible" top="3vh" :width="config.tree ? '75%' : ''" append-to-body @close="cancel">
     <template #header>
       <div style="display: flex">
-        <strong style="margin: 0 8px; zoom: 1.1">选择</strong>
+        <div style="zoom: 1.1">选择</div>
         <el-space
           wrap
           :style="config.tree ? { width: 'calc(100% - 260px)', marginLeft: '200px' } : { width: 'calc(100% - 60px)' }"
@@ -193,12 +193,11 @@ const clickNode = (id?: string) => (parent.value = id ?? props.rootId)
         :parent="parent"
         style="width: 0"
       />
-
-      <div class="bottom-operation">
-        <el-button size="default" @click="cancel">取消</el-button>
-        <el-button size="default" type="primary" @click="confirm">确认</el-button>
-      </div>
     </div>
+    <template #footer>
+      <el-button size="default" @click="cancel">取消</el-button>
+      <el-button size="default" type="primary" @click="confirm">确认</el-button>
+    </template>
   </el-dialog>
 </template>
 
@@ -207,12 +206,7 @@ const clickNode = (id?: string) => (parent.value = id ?? props.rootId)
   height: 80vh;
   display: flex;
   position: relative;
-  margin-top: -18px;
-
-  .bottom-operation {
-    position: absolute;
-    bottom: -3px;
-    right: 0;
-  }
+  margin-top: -10px;
+  margin-bottom: -10px;
 }
 </style>

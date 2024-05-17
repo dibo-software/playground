@@ -149,13 +149,13 @@ const rules: FormRules = {
       </el-row>
       <el-row :gutter="18">
         <el-col :md="12" :sm="24">
-          <el-form-item prop="realname" label="姓名">
-            <el-input v-model="model.realname" placeholder="请输入姓名" />
+          <el-form-item prop="userNum" label="员工编号">
+            <el-input v-model="model.userNum" placeholder="请输入员工编号" />
           </el-form-item>
         </el-col>
         <el-col :md="12" :sm="24">
-          <el-form-item prop="userNum" label="员工编号">
-            <el-input v-model="model.userNum" placeholder="请输入员工编号" />
+          <el-form-item prop="realname" label="姓名">
+            <el-input v-model="model.realname" placeholder="请输入姓名" />
           </el-form-item>
         </el-col>
       </el-row>

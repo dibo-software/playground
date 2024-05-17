@@ -26,7 +26,7 @@
 .el-input-number,
 .el-cascader {
   width: 100% !important;
-  min-width: 100px;
+  min-width: 90px;
 
   .el-input__wrapper {
     width: -moz-available;
@@ -45,11 +45,6 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-
-
-  .el-table th {
-    background-color: var(--el-fill-color-light) !important;
-  }
 
 
   .el-header {
@@ -83,7 +78,7 @@
     }
 
     .el-select {
-      width: 167px !important;
+      min-width: 160px !important;
     }
 
     .search-input {
@@ -142,13 +137,18 @@
   }
 }
 
+.el-table th {
+  background-color: var(--el-fill-color-light) !important;
+}
+
 .el-dialog {
   padding: unset !important;
-  .el-dialog__header ,.el-dialog__footer,.el-dialog__body{
-    padding: var(--el-dialog-padding-primary);
+  .el-dialog__header ,.el-dialog__footer{
+    padding: 10px;
+    background-color: var(--el-fill-color-light);
   }
+
   .el-dialog__body {
-    border-bottom: 1px solid var(--el-border-color);
-    border-top: 1px solid var(--el-border-color);
+    padding: 10px ;
   }
 }
