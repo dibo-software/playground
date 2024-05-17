@@ -143,7 +143,7 @@ const buildRoleList = (roleList?: Role[]) => roleList?.map(e => e.name).join('�
         </template>
       </el-table-column>
       <el-table-column prop="sortId" label="排序号" width="90" />
-      <el-table-column prop="updateTime" label="更新时间" width="150" />
+      <el-table-column prop="updateTime" label="更新时间" width="160" />
       <el-table-column label="操作" width="160" fixed="right">
         <template #default="{ row }">
           <el-space>
