@@ -217,7 +217,7 @@ const sendMessage = async (message: string, model: string) => {
     height: calc(100% - 100px - 62px);
   }
   .el-scrollbar {
-    background-color: #fff;
+    background-color: var(--el-menu-bg-color);
     border-radius: 10px;
   }
   .chat-model {
@@ -235,7 +235,7 @@ const sendMessage = async (message: string, model: string) => {
     margin: 100px auto 0;
     p {
       text-align: center;
-      color: #909399;
+      color: var(--el-text-color-primary);
       font-size: 14px;
     }
     &-item {
@@ -248,7 +248,7 @@ const sendMessage = async (message: string, model: string) => {
       }
       &-content {
         font-size: 14px;
-        color: #909399;
+        color: var(--el-text-color-primary);
         margin-top: 10px;
       }
     }
@@ -259,7 +259,7 @@ const sendMessage = async (message: string, model: string) => {
 
     :deep(.el-textarea__inner) {
       padding-bottom: 10px;
-      color: #303133;
+      color: var(--el-text-color-primary);
     }
 
     .chat-tools {
