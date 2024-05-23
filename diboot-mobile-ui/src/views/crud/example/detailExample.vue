@@ -46,12 +46,3 @@ const imagesList = [logo, lowCode]
     </van-cell>
   </van-cell-group>
 </template>
-
-<style lang="scss">
-.cell-group {
-  margin: var(--van-padding-md);
-}
-.value-font {
-  font-size: 16px;
-}
-</style>
