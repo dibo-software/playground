@@ -88,7 +88,7 @@ const onSubmit = () => {
           </template>
         </van-field>
       </van-cell-group>
-      <div style="margin: 24px 16px">
+      <div style="margin: 40px 16px 16px">
         <van-button round block type="primary" native-type="submit"> 提交 </van-button>
       </div>
     </van-form>
@@ -191,6 +191,9 @@ const onSubmit = () => {
   }
   .van-radio__label {
     margin-left: 0;
+  }
+  h2 {
+    margin-bottom: 50px;
   }
   .van-cell {
     padding: var(--van-padding-lg);
