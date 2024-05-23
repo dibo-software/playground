@@ -1,5 +1,7 @@
 <script setup>
+import { showImagePreview } from 'vant'
 import logo from '@/assets/image/logo.png'
+import lowCode from '@/assets/image/low-code.png'
 
 const detailData = ref([
   { title: '客户名', value: '帝博软件' },
@@ -13,19 +15,42 @@ const detailData = ref([
   { title: '是否开车', value: '否' }
 ])
 
+const imagesList = [logo, lowCode]
 </script>
 
 <template>
-  <van-cell title='来访客户' title-style='font-size: 24px' />
-  <van-cell v-for='item in detailData' :title='item.title' :value='item.value' title-style='font-size: 16px' value-class='value-font' />
-  <van-cell title='其他资料' value='帝博软件' title-style='font-size: 16px'>
-    <template #value>
-      <van-image :src="logo" />
-    </template>
-  </van-cell>
+  <van-cell-group inset class="cell-group">
+    <van-cell title="来访客户" title-style="font-size: 24px" />
+    <van-cell
+      v-for="item in detailData"
+      :key="item.title"
+      :title="item.title"
+      :value="item.value"
+      title-style="font-size: 16px"
+      value-class="value-font"
+    />
+    <van-cell title="其他资料" title-style="font-size: 16px">
+      <template #label>
+        <van-space>
+          <van-image
+            v-for="(v, i) in imagesList"
+            :key="v"
+            width="90px"
+            height="90px"
+            :src="v"
+            fit="fill"
+            @click="showImagePreview(imagesList, i)"
+          />
+        </van-space>
+      </template>
+    </van-cell>
+  </van-cell-group>
 </template>
 
-<style lang='scss'>
+<style lang="scss">
+.cell-group {
+  margin: var(--van-padding-md);
+}
 .value-font {
   font-size: 16px;
 }
