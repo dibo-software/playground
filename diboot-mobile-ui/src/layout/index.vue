@@ -9,8 +9,17 @@ import useAuthStore from '@/stores/auth'
 
 useAuthStore().getInfo()
 const route = useRoute()
-const firstLevelPath = route.fullPath.split('/')[1]
-const active = ref<string>(firstLevelPath === 'mine' ? 'Mine' : firstLevelPath === 'business' ? 'Component' : 'Home')
+
+const active = ref()
+
+watch(
+  () => route.fullPath,
+  () => {
+    const firstLevelPath = route.fullPath.split('/')[1]
+    active.value = firstLevelPath === 'mine' ? 'Mine' : firstLevelPath === 'business' ? 'Component' : 'Home'
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
