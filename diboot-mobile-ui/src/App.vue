@@ -8,7 +8,7 @@
 
 <style lang="scss">
 .cell-group {
-  margin: var(--van-padding-md);
+  margin: var(--van-padding-md) !important;
 }
 .value-font {
   font-size: 16px;
