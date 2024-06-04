@@ -1,6 +1,6 @@
 <script setup name="OrgList" lang="ts">
 import type { OrgModel } from '@/views/org-structure/org/type'
-import { Search, ArrowDown, ArrowUp, Plus } from '@element-plus/icons-vue'
+import { Search, Plus } from '@element-plus/icons-vue'
 import OrgForm from './Form.vue'
 
 const props = defineProps<{ parentId?: string }>()
@@ -22,9 +22,6 @@ const { queryParam, onSearch, getList, loading, dataList, pagination, remove, re
     emit('reload')
   }
 })
-
-// 搜索区折叠
-const searchState = ref(false)
 
 watch(
   () => props.parentId,
