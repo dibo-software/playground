@@ -150,10 +150,11 @@ defineExpose({ open })
                   ]
                 },
                 columns: [
-                  { prop: 'realname', label: '姓名' },
                   { prop: 'userNum', label: '编号' },
+                  { prop: 'realname', label: '姓名' },
                   { prop: 'genderLabel', label: '性别' },
-                  { prop: 'email', label: '邮箱' }
+                  { prop: 'mobilePhone', label: '电话' },
+                  { prop: 'sortId', label: '排序号' }
                 ]
               }"
               data-type="IamUser"
