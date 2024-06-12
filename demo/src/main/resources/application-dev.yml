@@ -7,9 +7,9 @@ spring:
   #datasource config
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/playground_v3?characterEncoding=utf8&serverTimezone=GMT%2B8
-    username: diboot
-    password: diboot
+    url: jdbc:mysql://localhost:3307/playground_v3?characterEncoding=utf8&serverTimezone=GMT%2B8
+    username: root
+    password: 123456
     hikari:
       maximum-pool-size: 10
       max-lifetime: 60000 # 连接的最大生命周期
@@ -28,7 +28,6 @@ logging:
       springframework: info
     _org:
       springframework: info
-
 # Diboot Configuration
 diboot:
   init-sql: true #自动初始化SQL，开发环境下初次启动开启，初始化后可关闭
@@ -45,6 +44,8 @@ diboot:
       - /doc.html
       - /diboot-devtools/** # 允许devtools直接访问
       - /auth/sso/** # 单点登录集成需打开该注释
+      - /valid
+      - /valid/get
 #    以下为单点登录配置示例：
 #    cas-server:
 #      auth-center-url: https://cas.server.com:8443/cas
@@ -68,3 +69,4 @@ diboot:
       output-path: demo/src/main/java/com/example/demo/
       output-path-admin-ui: diboot-admin-ui/
       #upgrade: true
+  i18n: true

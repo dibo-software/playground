@@ -16,7 +16,7 @@
 
     <properties>
 <!--        <java.version>1.8</java.version>-->
-        <diboot.version>3.4.0-beta1</diboot.version>
+        <diboot.version>3.4.0</diboot.version>
     </properties>
 
     <dependencies>
