@@ -9,8 +9,6 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 50MB
-  messages:
-    basename: messages,core_messages,file_messages,iam_messages,mobile_messages,notification_messages,tenant_messages,scheduler_messages,ai_messages
 server:
   shutdown: graceful
   compression:
