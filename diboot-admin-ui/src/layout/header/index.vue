@@ -38,13 +38,18 @@ const openChatAi = () => router.push('/chat-ai')
       </div>
       <menu-search class="item" />
       <div class="item">
-        <el-tooltip effect="dark" content="AI 对话" placement="bottom" :show-after="300">
+        <el-tooltip effect="dark" :content="$t('layout.header.chatAi')" placement="bottom" :show-after="300">
           <el-icon :size="24" style="color: #21ba45">
             <icon name="Local:ChatAi" @click="openChatAi" />
           </el-icon>
         </el-tooltip>
       </div>
-      <el-tooltip effect="dark" :content="isDark ? '深色模式' : '浅色模式'" placement="bottom" :show-after="300">
+      <el-tooltip
+        effect="dark"
+        :content="isDark ? $t('layout.header.dark') : $t('layout.header.light')"
+        placement="bottom"
+        :show-after="300"
+      >
         <el-switch
           v-model="isDark"
           class="dark-switch item"
@@ -52,26 +57,6 @@ const openChatAi = () => router.push('/chat-ai')
           :inactive-action-icon="LightIcon"
         />
       </el-tooltip>
-
-      <!--      <el-dropdown @command="(command: string) => $i18n.locale = command">-->
-      <!--        <div class="item">-->
-      <!--          <el-icon :size="22">-->
-      <!--            <icon name="Local:Language" />-->
-      <!--          </el-icon>-->
-      <!--        </div>-->
-      <!--        <template #dropdown>-->
-      <!--          <el-dropdown-menu>-->
-      <!--            <el-dropdown-item-->
-      <!--              v-for="item in $i18n.availableLocales"-->
-      <!--              :key="item"-->
-      <!--              :command="item"-->
-      <!--              :disabled="$i18n.locale === item"-->
-      <!--            >-->
-      <!--              {{ $t('language', {}, { locale: item }) }}-->
-      <!--            </el-dropdown-item>-->
-      <!--          </el-dropdown-menu>-->
-      <!--        </template>-->
-      <!--      </el-dropdown>-->
       <message-bell class="item" />
       <el-dropdown
         @command="
@@ -88,9 +73,15 @@ const openChatAi = () => router.push('/chat-ai')
         </div>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item command="large" :disabled="appStore.globalSize === 'large'">大</el-dropdown-item>
-            <el-dropdown-item command="default" :disabled="appStore.globalSize === 'default'">中</el-dropdown-item>
-            <el-dropdown-item command="small" :disabled="appStore.globalSize === 'small'">小</el-dropdown-item>
+            <el-dropdown-item command="large" :disabled="appStore.globalSize === 'large'">{{
+              $t('layout.header.large')
+            }}</el-dropdown-item>
+            <el-dropdown-item command="default" :disabled="appStore.globalSize === 'default'">{{
+              $t('layout.header.default')
+            }}</el-dropdown-item>
+            <el-dropdown-item command="small" :disabled="appStore.globalSize === 'small'">{{
+              $t('layout.header.small')
+            }}</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -104,8 +95,8 @@ const openChatAi = () => router.push('/chat-ai')
         </span>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item @click="goPersonal">个人中心</el-dropdown-item>
-            <el-dropdown-item divided @click="logout()">退出登录</el-dropdown-item>
+            <el-dropdown-item @click="goPersonal">{{ $t('layout.header.personal') }}</el-dropdown-item>
+            <el-dropdown-item divided @click="logout()">{{ $t('layout.header.logout') }}</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>

@@ -5,7 +5,8 @@ import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import { buildImgSrc } from '../../utils/file'
 import { isExternal } from '../../utils/validate'
 import { api, baseURL } from '../../utils/request'
-
+import { useI18n } from 'vue-i18n'
+const i18n = useI18n()
 interface PropsType {
   // 模型值
   modelValue?: string
@@ -17,7 +18,7 @@ interface PropsType {
 
 const props = withDefaults(defineProps<PropsType>(), {
   modelValue: '',
-  placeholder: '请输入内容...',
+  placeholder: i18n.t('components.rich.editor.placeholder'),
   title: ''
 })
 

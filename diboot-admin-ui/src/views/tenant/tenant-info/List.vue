@@ -59,9 +59,15 @@ const deletePermission = checkPermission('delete')
       />
       <excel-import v-has-permission="'import'" :excel-base-api="`${baseApi}/excel`" @complete="onSearch" />
       <el-space>
-        <el-input v-model="queryParam.name" clearable placeholder="租户名称" @change="onSearch" />
-        <el-input v-model="queryParam.code" clearable placeholder="租户编码" @change="onSearch" />
-        <el-select v-model="queryParam.status" filterable placeholder="请选择租户状态" clearable @change="onSearch">
+        <el-input v-model="queryParam.name" clearable :placeholder="$t('tenantInfo.name')" @change="onSearch" />
+        <el-input v-model="queryParam.code" clearable :placeholder="$t('tenantInfo.code')" @change="onSearch" />
+        <el-select
+          v-model="queryParam.status"
+          filterable
+          :placeholder="$t('tenantInfo.placeholder.status')"
+          clearable
+          @change="onSearch"
+        >
           <el-option
             v-for="item in relatedData.tenantStatusOptions"
             :key="item.value"
@@ -69,19 +75,19 @@ const deletePermission = checkPermission('delete')
             :value="item.value"
           />
         </el-select>
-        <el-button :icon="Search" type="primary" @click="onSearch">搜索</el-button>
-        <el-button title="重置查询条件" @click="resetFilter">重置</el-button>
+        <el-button :icon="Search" type="primary" @click="onSearch">{{ $t('operation.search') }}</el-button>
+        <el-button :title="$t('title.reset')" @click="resetFilter">{{ $t('operation.reset') }}</el-button>
       </el-space>
     </el-space>
 
     <el-table ref="tableRef" v-loading="loading" class="list-body" :data="dataList" stripe height="100%">
-      <el-table-column prop="name" label="租户名称" />
-      <el-table-column prop="code" label="租户编码" />
-      <el-table-column prop="startDate" label="有效期起始" />
-      <el-table-column prop="endDate" label="有效期截止" />
-      <el-table-column prop="manager" label="负责人" />
-      <el-table-column prop="phone" label="联系电话" />
-      <el-table-column prop="statusLabel" label="租户状态">
+      <el-table-column prop="name" :label="$t('tenantInfo.name')" />
+      <el-table-column prop="code" :label="$t('tenantInfo.code')" />
+      <el-table-column prop="startDate" :label="$t('tenantInfo.startDate')" />
+      <el-table-column prop="endDate" :label="$t('tenantInfo.endDate')" />
+      <el-table-column prop="manager" :label="$t('tenantInfo.manager')" />
+      <el-table-column prop="phone" :label="$t('tenantInfo.phone')" />
+      <el-table-column prop="statusLabel" :label="$t('tenantInfo.status')">
         <template #default="{ row }">
           <el-tag
             v-if="(row.statusLabel as LabelValue)?.value"
@@ -93,8 +99,8 @@ const deletePermission = checkPermission('delete')
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="createTime" label="创建时间" />
-      <el-table-column label="操作" width="330" fixed="right">
+      <el-table-column prop="createTime" :label="$t('baseField.createTime')" />
+      <el-table-column :label="$t('operation.label')" width="330" fixed="right">
         <template #default="{ row }">
           <el-space>
             <el-button v-has-permission="'detail'" text bg type="primary" size="small" @click="openDetail(row.id)">

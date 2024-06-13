@@ -170,7 +170,7 @@ const sendMessage = async (message: string, model: string) => {
       </div>
       <div v-else>
         <div class="chat-example">
-          <p>您可以问我这些：</p>
+          <p>{{ $t('chatAi.askMe') }}：</p>
           <el-row :gutter="24">
             <el-col v-for="item in exampleList" :key="item.title" :span="12" class="chat-example-item">
               <el-card shadow="hover">
@@ -183,8 +183,8 @@ const sendMessage = async (message: string, model: string) => {
       </div>
     </el-scrollbar>
     <div class="chat-model">
-      <span>模型：</span>
-      <el-select v-model="useModel" placeholder="请选择" @change="changeModel">
+      <span>{{ $t('chatAi.model') }}：</span>
+      <el-select v-model="useModel" :placeholder="`${$t('placeholder.select')}`" @change="changeModel">
         <el-option v-for="item in modelOptions" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
     </div>
@@ -194,14 +194,14 @@ const sendMessage = async (message: string, model: string) => {
         v-model="inputMessage"
         :rows="4"
         type="textarea"
-        placeholder="请输入您的问题"
+        :placeholder="$t('chatAi.placeholder.problem')"
         resize="none"
       />
       <div class="chat-tools">
         <el-button
           type="primary"
           size="large"
-          title="点击发送"
+          :title="$t('chatAi.title.send')"
           :icon="Position"
           @click="sendMessage(inputMessage, currentModel)"
         />
@@ -235,7 +235,7 @@ const sendMessage = async (message: string, model: string) => {
     margin: 100px auto 0;
     p {
       text-align: center;
-      color: var(--el-text-color-primary);
+      color: #909399;
       font-size: 14px;
     }
     &-item {
@@ -248,7 +248,7 @@ const sendMessage = async (message: string, model: string) => {
       }
       &-content {
         font-size: 14px;
-        color: var(--el-text-color-primary);
+        color: #909399;
         margin-top: 10px;
       }
     }
@@ -259,7 +259,7 @@ const sendMessage = async (message: string, model: string) => {
 
     :deep(.el-textarea__inner) {
       padding-bottom: 10px;
-      color: var(--el-text-color-primary);
+      color: #303133;
     }
 
     .chat-tools {

@@ -50,10 +50,10 @@ const onFormComplete = () => {
         {{ $t('operation.create') }}
       </el-button>
       <el-space>
-        <el-input v-model="queryParam.name" clearable placeholder="名称" @change="onSearch" />
-        <el-input v-model="queryParam.code" clearable placeholder="编码" @change="onSearch" />
-        <el-button :icon="Search" type="primary" @click="onSearch">查询</el-button>
-        <el-button title="重置搜索条件" @click="resetFilter">重置</el-button>
+        <el-input v-model="queryParam.name" clearable :placeholder="$t('org.name')" @change="onSearch" />
+        <el-input v-model="queryParam.code" clearable :placeholder="$t('org.code')" @change="onSearch" />
+        <el-button :icon="Search" type="primary" @click="onSearch">{{ $t('operation.search') }}</el-button>
+        <el-button :title="$t('title.reset')" @click="resetFilter">{{ $t('operation.reset') }}</el-button>
       </el-space>
     </el-space>
 
@@ -66,12 +66,12 @@ const onFormComplete = () => {
       stripe
       height="100%"
     >
-      <el-table-column prop="name" label="名称" />
-      <el-table-column prop="code" label="编码" />
-      <el-table-column prop="managerName" label="负责人" />
-      <el-table-column prop="sortId" label="排序号" />
-      <el-table-column prop="updateTime" label="更新时间" width="185" />
-      <el-table-column label="操作" width="160" fixed="right">
+      <el-table-column prop="name" :label="$t('org.name')" />
+      <el-table-column prop="code" :label="$t('org.code')" />
+      <el-table-column prop="managerName" :label="$t('org.managerName')" />
+      <el-table-column prop="sortId" :label="$t('org.sortId')" />
+      <el-table-column prop="updateTime" :label="$t('baseField.updateTime')" width="185" />
+      <el-table-column :label="$t('operation.label')" width="160" fixed="right">
         <template #default="{ row }">
           <el-button v-has-permission="'update'" text bg type="primary" size="small" @click="openForm(row.id)">
             {{ $t('operation.update') }}

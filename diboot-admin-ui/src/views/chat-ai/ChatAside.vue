@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ChatDotRound, EditPen, Delete } from '@element-plus/icons-vue'
 import useChatAiStore from '@/store/chat-ai'
-
+import { useI18n } from 'vue-i18n'
+const i18n = useI18n()
 const chatAiStore = useChatAiStore()
 const { currentSession, sessions } = storeToRefs(chatAiStore)
 
@@ -34,7 +35,7 @@ const loading = ref(false)
  */
 const handleCreate = async () => {
   loading.value = true
-  await chatAiStore.createSession('新对话' + new Date().getTime())
+  await chatAiStore.createSession(i18n.t('chatAi.newSession') + new Date().getTime())
   loading.value = false
   chatAiStore.getSessions()
 }
@@ -67,7 +68,7 @@ const handleDel = async (session: any) => {
         size="large"
         :icon="ChatDotRound"
         @click="handleCreate"
-        >新建对话</el-button
+        >{{ $t('chatAi.createSession') }}</el-button
       >
     </div>
     <el-scrollbar>
@@ -82,10 +83,15 @@ const handleDel = async (session: any) => {
           <el-input v-model="session.title" />
         </div>
         <div v-if="!session.edit" class="session-operate">
-          <el-icon color="#E6A23C" title="更新对话" style="margin-right: 5px" @click.stop="handleEdit(session)">
+          <el-icon
+            color="#E6A23C"
+            :title="$t('chatAi.updateSession')"
+            style="margin-right: 5px"
+            @click.stop="handleEdit(session)"
+          >
             <EditPen />
           </el-icon>
-          <el-icon color="#F56C6C" title="删除对话" @click.stop="handleDel(session)">
+          <el-icon color="#F56C6C" :title="$t('chatAi.deleteSession')" @click.stop="handleDel(session)">
             <Delete />
           </el-icon>
         </div>

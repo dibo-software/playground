@@ -9,17 +9,8 @@ import useAuthStore from '@/stores/auth'
 
 useAuthStore().getInfo()
 const route = useRoute()
-
-const active = ref()
-
-watch(
-  () => route.fullPath,
-  () => {
-    const firstLevelPath = route.fullPath.split('/')[1]
-    active.value = firstLevelPath === 'mine' ? 'Mine' : firstLevelPath === 'business' ? 'Component' : 'Home'
-  },
-  { immediate: true }
-)
+const firstLevelPath = route.fullPath.split('/')[1]
+const active = ref<string>(firstLevelPath === 'mine' ? 'Mine' : firstLevelPath === 'business' ? 'Component' : 'Home')
 </script>
 
 <template>
@@ -44,7 +35,7 @@ watch(
           <component :is="active === 'Home' ? HomeActive : Home" />
         </Icon>
       </template>
-      首页
+      {{ $t('layout.home') }}
     </van-tabbar-item>
     <!--    <van-tabbar-item name="Component" icon="apps-o" @click="$router.push({ name: 'Business' })">-->
     <!--      <template #icon>-->
@@ -60,7 +51,7 @@ watch(
           <component :is="active === 'Mine' ? MineActive : Mine" />
         </icon>
       </template>
-      我的
+      {{ $t('layout.mine') }}
     </van-tabbar-item>
   </van-tabbar>
 </template>

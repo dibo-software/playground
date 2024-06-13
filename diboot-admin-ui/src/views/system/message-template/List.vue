@@ -1,5 +1,5 @@
 <script setup lang="ts" name="MessageTemplate">
-import { Search, ArrowDown, ArrowUp, Plus } from '@element-plus/icons-vue'
+import { Search, ArrowDown, Plus } from '@element-plus/icons-vue'
 import type { MessageTemplate } from './type'
 import Detail from '@/views/system/message-template/Detail.vue'
 import Form from './Form.vue'
@@ -8,9 +8,6 @@ const { queryParam, loading, dataList, pagination, getList, onSearch, resetFilte
   baseApi: '/message-template'
 })
 getList()
-
-// 搜索区折叠
-const searchState = ref(false)
 
 const detailRef = ref()
 const openDetail = (id: string) => {
@@ -35,8 +32,8 @@ const deletePermission = checkPermission('delete')
       <el-space>
         <el-input v-model="queryParam.code" clearable placeholder="模板编码" @change="onSearch" />
         <el-input v-model="queryParam.title" clearable placeholder="标题" @change="onSearch" />
-        <el-button :icon="Search" type="primary" @click="onSearch">查询</el-button>
-        <el-button title="重置搜索条件" @click="resetFilter">重置</el-button>
+        <el-button :icon="Search" type="primary" @click="onSearch">{{ $t('operation.search') }}</el-button>
+        <el-button :title="$t('title.reset')" @click="resetFilter">{{ $t('operation.reset') }}</el-button>
       </el-space>
     </el-space>
 
@@ -56,10 +53,10 @@ const deletePermission = checkPermission('delete')
           <span>{{ row.content }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="createByName" label="创建人" width="120" />
-      <el-table-column prop="createTime" label="创建时间" width="165" />
-      <el-table-column prop="updateTime" label="更新时间" width="165" />
-      <el-table-column label="操作" width="160" fixed="right">
+      <el-table-column prop="createByName" :label="$t('baseField.createBy')" width="120" />
+      <el-table-column prop="createTime" :label="$t('baseField.createTime')" width="165" />
+      <el-table-column prop="updateTime" :label="$t('baseField.updateTime')" width="165" />
+      <el-table-column :label="$t('operation.label')" width="160" fixed="right">
         <template #default="{ row }">
           <el-space>
             <el-button v-has-permission="'detail'" text bg type="primary" size="small" @click="openDetail(row.id)">

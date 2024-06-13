@@ -1,5 +1,5 @@
 <script setup lang="ts" name="UserList">
-import { Search, ArrowUp, ArrowDown, Plus } from '@element-plus/icons-vue'
+import { Search, Plus } from '@element-plus/icons-vue'
 import type { UserPosition } from '../position/type'
 import type { UserModel } from './type'
 import Detail from './Detail.vue'
@@ -64,22 +64,22 @@ const buildRoleList = (roleList?: Role[]) => roleList?.map(e => e.name).join('�
     <el-form v-show="searchState" label-width="80px" class="list-search" @submit.prevent>
       <el-row :gutter="18">
         <el-col :lg="8" :sm="12">
-          <el-form-item label="姓名">
+          <el-form-item :label="$t('user.realname')">
             <el-input v-model="queryParam.realname" clearable placeholder="" @change="onSearch" />
           </el-form-item>
         </el-col>
         <el-col :lg="8" :sm="12">
-          <el-form-item label="编号">
+          <el-form-item :label="$t('user.userNum')">
             <el-input v-model="queryParam.userNum" clearable placeholder="" @change="onSearch" />
           </el-form-item>
         </el-col>
         <el-col :lg="8" :sm="12">
-          <el-form-item label="电话">
+          <el-form-item :label="$t('user.mobilePhone')">
             <el-input v-model="queryParam.mobilePhone" clearable placeholder="" @change="onSearch" />
           </el-form-item>
         </el-col>
         <el-col :lg="8" :sm="12">
-          <el-form-item label="状态：">
+          <el-form-item :label="$t('user.status')">
             <el-radio-group v-model="queryParam.status" @change="onSearch">
               <el-radio label="A">在职</el-radio>
               <el-radio label="I">离职</el-radio>
@@ -101,59 +101,66 @@ const buildRoleList = (roleList?: Role[]) => roleList?.map(e => e.name).join('�
         :table-head-url="`${baseApi}/excel/export-table-head`"
       />
       <el-space>
-        <el-input v-show="!searchState" v-model="queryParam.realname" clearable placeholder="姓名" @change="onSearch" />
-        <el-button :icon="Search" type="primary" @click="onSearch">查询</el-button>
-        <el-button title="重置查询条件" @click="resetFilter">重置</el-button>
+        <el-input
+          v-show="!searchState"
+          v-model="queryParam.realname"
+          clearable
+          :placeholder="$t('user.realname')"
+          @change="onSearch"
+        />
+        <el-button :icon="Search" type="primary" @click="onSearch">{{ $t('operation.search') }}</el-button>
+        <el-button :title="$t('title.reset')" @click="resetFilter">{{ $t('operation.reset') }}</el-button>
         <el-button
           :icon="searchState ? ArrowUp : ArrowDown"
-          :title="searchState ? '收起' : '展开'"
+          :title="searchState ? $t('searchState.up') : $t('searchState.down')"
           @click="searchState = !searchState"
         />
       </el-space>
     </el-space>
 
     <el-table ref="tableRef" v-loading="loading" row-key="id" :data="dataList" stripe height="100%">
-      <el-table-column prop="userNum" label="编号" />
-      <el-table-column prop="realname" label="姓名">
+      <el-table-column prop="userNum" :label="$t('user.userNum')" />
+      <el-table-column prop="realname" :label="$t('user.realname')">
         <template #default="{ row }">
           <span v-if="isPrimaryPosition(row.userPositionList)">
             {{ row.realname }}
           </span>
-          <el-tooltip v-else placement="top" content="兼职">
+          <el-tooltip v-else placement="top" :content="$t('user.partTimeJob')">
             <el-badge is-dot>
               {{ row.realname }}
             </el-badge>
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column prop="genderLabel" label="性别" width="80">
+
+      <el-table-column prop="genderLabel" :label="$t('user.gender')" width="80">
         <template #default="{ row }">
           <el-tag :color="row.genderLabel?.ext?.color" effect="dark">
             {{ row.genderLabel?.label }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="mobilePhone" label="电话" show-overflow-tooltip />
-      <el-table-column prop="sortId" label="排序号" width="90" />
-      <el-table-column prop="genderLabel" label="状态">
+      <el-table-column prop="mobilePhone" :label="$t('user.mobilePhone')" show-overflow-tooltip />
+      <el-table-column prop="sortId" :label="$t('user.sortId')" show-overflow-tooltip />
+      <el-table-column prop="statusLabel" :label="$t('user.status')">
         <template #default="{ row }">
           <el-tag :color="row.statusLabel?.ext?.color" effect="dark">
             {{ row.statusLabel?.label }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="roleList" label="角色" show-overflow-tooltip>
+      <el-table-column prop="roleList" :label="$t('user.role')" show-overflow-tooltip>
         <template #default="{ row }">
           {{ buildRoleList(row.roleList) }}
         </template>
       </el-table-column>
-      <el-table-column prop="accountStatus" label="账号状态">
+      <el-table-column prop="accountStatus" :label="$t('user.accountStatus')">
         <template #default="{ row }">
           <span>{{ row.accountStatusLabel || '-' }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="updateTime" label="更新时间" width="150" />
-      <el-table-column label="操作" width="160" fixed="right">
+      <el-table-column prop="updateTime" :label="$t('baseField.updateTime')" width="160" />
+      <el-table-column :label="$t('operation.label')" width="160" fixed="right">
         <template #default="{ row }">
           <el-space>
             <el-button v-has-permission="'detail'" text bg type="primary" size="small" @click="openDetail(row.id)">

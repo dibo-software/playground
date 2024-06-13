@@ -22,7 +22,6 @@ export function createRouterGuard(router: Router) {
 
       try {
         await userStore.getInfo()
-
         // 加载异步路由
         const res = await api.get<Array<RouteRecordRaw>>('/auth/route')
         if (res.data?.length) {

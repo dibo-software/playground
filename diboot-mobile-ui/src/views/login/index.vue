@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import useAuthStore from '@/stores/auth'
+import Language from '@/assets/icons/Language.vue'
 import JSEncrypt from 'jsencrypt'
-
+import { useI18n } from 'vue-i18n'
+import i18nStore from '@/utils/i18n'
 const encryptor = new JSEncrypt()
 encryptor.setPublicKey(`MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzPy1UcwzgRT8dRUpAW0H
 eyVvIi4icqiwdBZMrh85+tJEZ/AXjELRzl89m2ZKoMHfoMDkajoxJeaL5IV9UpUl
@@ -25,7 +27,7 @@ refreshTraceId()
 const captchaSrc = `${baseURL}/auth/captcha`
 
 const router = useRouter()
-
+const i18n = useI18n()
 const redirect = () => {
   const query = router.currentRoute.value.query
   const redirect = query.redirect
@@ -36,6 +38,7 @@ const redirect = () => {
     router.push('/')
   }
 }
+
 const onSubmit = () => {
   loading.value = true
   authStore
@@ -49,34 +52,57 @@ const onSubmit = () => {
       loading.value = false
     })
 }
+const showPopover = ref(false)
+
+const i18nActions = computed(() => {
+  return i18n.availableLocales.map(item => {
+    return {
+      disabled: i18n.locale.value === item,
+      text: i18n.t('language', {}, { locale: item }),
+      locale: item
+    }
+  })
+})
+const selectI18n = (data: any) => {
+  i18nStore.set(data.locale)
+  i18n.locale.value = data.locale
+}
+const enableI18n = import.meta.env.VITE_APP_ENABLE_I18N === 'true'
 </script>
 
 <template>
   <div class="content">
     <van-form @submit="onSubmit">
-      <h2 style="text-align: center">Diboot 移动端 v3.0</h2>
+      <h2 style="text-align: center">Diboot Mobile v3.0</h2>
+      <div style="text-align: right; margin-bottom: 5px; padding-right: 70px" v-if="enableI18n">
+        <van-popover v-model:show="showPopover" :actions="i18nActions" @select="selectI18n">
+          <template #reference>
+            <Language style="width: 22px" />
+          </template>
+        </van-popover>
+      </div>
       <van-cell-group inset>
         <van-field
           v-model="model.username"
           name="username"
-          label="用户名"
-          placeholder="用户名"
-          :rules="[{ required: true, message: '请填写用户名' }]"
+          :label="$t('login.username')"
+          :placeholder="$t('login.username')"
+          :rules="[{ required: true, message: $t('login.rules.username') }]"
         />
         <van-field
           v-model="model.password"
           type="password"
           name="password"
-          label="密码"
-          placeholder="密码"
-          :rules="[{ required: true, message: '请填写密码' }]"
+          :label="$t('login.password')"
+          :placeholder="$t('login.password')"
+          :rules="[{ required: true, message: $t('login.rules.password') }]"
         />
         <van-field
           v-model="model.captcha"
           name="captcha"
-          label="验证码"
-          placeholder="验证码"
-          :rules="[{ required: true, message: '请填写验证码' }]"
+          :label="$t('login.captcha')"
+          :placeholder="$t('login.captcha')"
+          :rules="[{ required: true, message: $t('login.rules.captcha') }]"
         >
           <template #button>
             <img
@@ -89,7 +115,7 @@ const onSubmit = () => {
         </van-field>
       </van-cell-group>
       <div style="margin: 40px 16px 16px">
-        <van-button round block type="primary" native-type="submit"> 提交 </van-button>
+        <van-button round block type="primary" native-type="submit"> {{ $t('login.submit') }} </van-button>
       </div>
     </van-form>
   </div>
