@@ -7,7 +7,7 @@ const en: Locale = {
     businessObj: 'Business Object',
     operation: 'Operation Matter',
     requestMethod: 'Request Method',
-    requestUrl: 'Request URL',
+    requestUri: 'Request URL',
     requestIp: 'Client IP',
     statusCode: 'Status Code',
     createTime: 'Operation Time',

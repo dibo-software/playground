@@ -38,7 +38,7 @@ watch(
 </script>
 
 <template>
-  <el-form ref="ruleFormRef" label-width="120px">
+  <el-form ref="ruleFormRef" :label-width="$i18n.locale === 'en' ? '150px' : '120px'">
     <el-form-item v-if="password !== '' && password !== undefined" label="" align="center" style="height: 25px">
       <!-- 展示长度条 -->
       <div

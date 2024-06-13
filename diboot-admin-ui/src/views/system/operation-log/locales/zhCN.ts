@@ -6,7 +6,7 @@ const zhCN = {
     businessObj: '业务对象',
     operation: '操作事项',
     requestMethod: '请求方式',
-    requestUrl: '请求URL',
+    requestUri: '请求URL',
     requestIp: '客户端IP',
     statusCode: '状态码',
     createTime: '操作时间',

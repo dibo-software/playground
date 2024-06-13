@@ -3,6 +3,7 @@ const en: Locale = {
   fileRecord: {
     appModule: 'Business Module',
     fileName: 'File Name',
+    fileType: 'File Type',
     fileSize: 'File Size',
     accessUrl: 'Access URL',
     description: 'Note',

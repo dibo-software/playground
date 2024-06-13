@@ -30,25 +30,25 @@ const deletePermission = checkPermission('delete')
         {{ $t('operation.create') }}
       </el-button>
       <el-space>
-        <el-input v-model="queryParam.code" clearable placeholder="模板编码" @change="onSearch" />
-        <el-input v-model="queryParam.title" clearable placeholder="标题" @change="onSearch" />
+        <el-input v-model="queryParam.code" clearable :placeholder="$t('messageTemplate.code')" @change="onSearch" />
+        <el-input v-model="queryParam.title" clearable :placeholder="$t('messageTemplate.title')" @change="onSearch" />
         <el-button :icon="Search" type="primary" @click="onSearch">{{ $t('operation.search') }}</el-button>
         <el-button :title="$t('title.reset')" @click="resetFilter">{{ $t('operation.reset') }}</el-button>
       </el-space>
     </el-space>
 
     <el-table ref="tableRef" v-loading="loading" class="list-body" :data="dataList" stripe height="100%">
-      <el-table-column prop="code" label="模版编码">
+      <el-table-column prop="code" :label="$t('messageTemplate.code')">
         <template #default="{ row }">
           <el-tag type="info" effect="dark">{{ row.code }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="title" label="标题" show-overflow-tooltip>
+      <el-table-column prop="title" :label="$t('messageTemplate.title')" show-overflow-tooltip>
         <template #default="{ row }">
           <span>{{ row.title }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="content" label="内容" show-overflow-tooltip>
+      <el-table-column prop="content" :label="$t('messageTemplate.content')" show-overflow-tooltip>
         <template #default="{ row }">
           <span>{{ row.content }}</span>
         </template>

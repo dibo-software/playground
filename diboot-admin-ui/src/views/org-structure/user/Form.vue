@@ -124,7 +124,7 @@ const rules: FormRules = {
 </script>
 
 <template>
-  <el-dialog v-model="visible" :title="title" :width="720">
+  <el-dialog v-model="visible" :title="title" :width="800">
     <el-form
       ref="formRef"
       v-loading="loading"

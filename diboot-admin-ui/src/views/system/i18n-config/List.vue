@@ -17,7 +17,7 @@ const openForm = (code?: string) => {
 }
 
 // 用于选择
-const props = defineProps<{ modelValue?: string; select?: boolean }>()
+const props = defineProps<{ modelValue?: string; select?: boolean; tableHeight?: string }>()
 const emits = defineEmits<{
   (e: 'update:modelValue', code: string): void
   (e: 'change', list: Array<I18nConfig>): void
@@ -66,7 +66,7 @@ const initI18nData = () => {
       </el-space>
     </el-space>
 
-    <el-table ref="tableRef" v-loading="loading" class="list-body" :data="dataList" height="100%">
+    <el-table ref="tableRef" v-loading="loading" class="list-body" :data="dataList" :height="tableHeight || '100%'">
       <el-table-column v-if="select" fixed width="36px">
         <template #default="{ row }">
           <el-radio v-model="single" :label="row[0].code" @change="singleRow(row)">{{ '' }}</el-radio>

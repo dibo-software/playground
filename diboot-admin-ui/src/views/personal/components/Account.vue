@@ -40,7 +40,11 @@ const save = () => {
 
 <template>
   <el-card shadow="never" :header="$t('personal.info')">
-    <el-form :model="form" label-width="120px" style="margin-top: 20px; width: 50%">
+    <el-form
+      :model="form"
+      :label-width="$i18n.locale === 'en' ? '150px' : '120px'"
+      style="margin-top: 20px; width: 50%"
+    >
       <el-form-item :label="$t('user.realname')">
         <el-input v-model="form.realname" disabled />
       </el-form-item>

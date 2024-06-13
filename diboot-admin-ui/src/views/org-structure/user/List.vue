@@ -1,5 +1,5 @@
 <script setup lang="ts" name="UserList">
-import { Search, Plus } from '@element-plus/icons-vue'
+import { Search, Plus, ArrowUp, ArrowDown } from '@element-plus/icons-vue'
 import type { UserPosition } from '../position/type'
 import type { UserModel } from './type'
 import Detail from './Detail.vue'
@@ -81,8 +81,8 @@ const buildRoleList = (roleList?: Role[]) => roleList?.map(e => e.name).join('�
         <el-col :lg="8" :sm="12">
           <el-form-item :label="$t('user.status')">
             <el-radio-group v-model="queryParam.status" @change="onSearch">
-              <el-radio label="A">在职</el-radio>
-              <el-radio label="I">离职</el-radio>
+              <el-radio label="A">{{ $t('user.onJob') }}</el-radio>
+              <el-radio label="I">{{ $t('user.dimission') }}</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-col>

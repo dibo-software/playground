@@ -53,7 +53,7 @@ defineExpose({
       <el-descriptions-item :label="$t('baseField.updateTime')">
         {{ model.updateTime }}
       </el-descriptions-item>
-      <el-descriptions-item label="描述">
+      <el-descriptions-item :label="$t('tenantInfo.description')">
         {{ model.description }}
       </el-descriptions-item>
     </el-descriptions>

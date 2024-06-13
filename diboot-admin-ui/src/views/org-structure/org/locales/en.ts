@@ -4,7 +4,7 @@ const en: Locale = {
     name: 'Name',
     code: 'Code',
     type: 'Type',
-    managerName: 'Manager Name',
+    managerName: 'Manager',
     sortId: 'Sort ID',
     parentId: 'Parent ID',
     orgComment: 'Note',

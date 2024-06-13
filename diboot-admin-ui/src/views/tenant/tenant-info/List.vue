@@ -83,8 +83,8 @@ const deletePermission = checkPermission('delete')
     <el-table ref="tableRef" v-loading="loading" class="list-body" :data="dataList" stripe height="100%">
       <el-table-column prop="name" :label="$t('tenantInfo.name')" />
       <el-table-column prop="code" :label="$t('tenantInfo.code')" />
-      <el-table-column prop="startDate" :label="$t('tenantInfo.startDate')" />
-      <el-table-column prop="endDate" :label="$t('tenantInfo.endDate')" />
+      <el-table-column prop="startDate" width="150" :label="$t('tenantInfo.startDate')" />
+      <el-table-column prop="endDate" width="150" :label="$t('tenantInfo.endDate')" />
       <el-table-column prop="manager" :label="$t('tenantInfo.manager')" />
       <el-table-column prop="phone" :label="$t('tenantInfo.phone')" />
       <el-table-column prop="statusLabel" :label="$t('tenantInfo.status')">

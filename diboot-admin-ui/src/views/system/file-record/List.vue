@@ -36,13 +36,7 @@ const openDetail = (id: string) => {
         {{ $t('operation.create') }}
       </el-button>
       <el-space>
-        <el-input
-          v-show="!searchState"
-          v-model="queryParam.fileName"
-          clearable
-          :placeholder="$t('fileRecord.fileName')"
-          @change="onSearch"
-        />
+        <el-input v-model="queryParam.fileName" clearable :placeholder="$t('fileRecord.fileName')" @change="onSearch" />
         <el-select
           v-model="queryParam.createBy"
           remote

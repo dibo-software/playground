@@ -165,7 +165,6 @@ defineExpose({ open })
                 ]
               }"
               data-type="IamUser"
-              placeholder="选择负责人"
             />
           </el-form-item>
         </el-col>

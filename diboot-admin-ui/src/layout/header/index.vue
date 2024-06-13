@@ -8,6 +8,7 @@ import Logo from '@/assets/logo.png'
 import useAppStore from '@/store/app'
 import LightIcon from '@/assets/icon/light.vue'
 import DarkIcon from '@/assets/icon/dark.vue'
+import i18n from '@/utils/i18n'
 
 withDefaults(defineProps<{ showLogo?: boolean }>(), { showLogo: true })
 
@@ -57,6 +58,32 @@ const openChatAi = () => router.push('/chat-ai')
           :inactive-action-icon="LightIcon"
         />
       </el-tooltip>
+      <el-dropdown
+        @command="
+          (command: string) => {
+            i18n.set(command)
+            $i18n.locale = command
+          }
+        "
+      >
+        <div class="item">
+          <el-icon :size="22">
+            <icon name="Local:Language" />
+          </el-icon>
+        </div>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item
+              v-for="item in $i18n.availableLocales"
+              :key="item"
+              :command="item"
+              :disabled="$i18n.locale === item"
+            >
+              {{ $t('language', {}, { locale: item }) }}
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
       <message-bell class="item" />
       <el-dropdown
         @command="

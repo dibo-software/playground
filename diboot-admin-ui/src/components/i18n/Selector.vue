@@ -85,7 +85,7 @@ watch(
           >
         </div>
       </template>
-      <i18n-list v-model="value" select class="i18n-list" @change="list => (dataList = list)" />
+      <i18n-list v-model="value" table-height="500" select class="i18n-list" @change="list => (dataList = list)" />
     </el-dialog>
   </span>
 </template>

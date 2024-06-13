@@ -63,7 +63,7 @@ const getTagType = (val: string, map: Record<string, unknown>) => {
       <el-table-column prop="userType" :label="$t('operationLog.userType')" />
       <el-table-column prop="userRealname" :label="$t('operationLog.userRealname')" />
       <el-table-column prop="businessObj" :label="$t('operationLog.businessObj')" />
-      <el-table-column prop="operation" :label="$t('operationLog.businessObj')" />
+      <el-table-column prop="operation" :label="$t('operationLog.operation')" />
       <el-table-column prop="requestMethod" :label="$t('operationLog.requestMethod')">
         <template #default="{ row }">
           <el-tag :type="getTagType(row.requestMethod, tagMap)" effect="plain">{{ row.requestMethod }}</el-tag>

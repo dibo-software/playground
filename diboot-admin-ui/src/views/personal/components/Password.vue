@@ -71,7 +71,13 @@ const submitForm = (formEl: FormInstance | undefined) => {
 
 <template>
   <el-card shadow="never" :header="$t('user.modifyPassword')">
-    <el-form ref="ruleFormRef" :model="form" :rules="rules" label-width="120px" style="margin-top: 20px; width: 50%">
+    <el-form
+      ref="ruleFormRef"
+      :model="form"
+      :rules="rules"
+      :label-width="$i18n.locale === 'en' ? '150px' : '120px'"
+      style="margin-top: 20px; width: 50%"
+    >
       <el-form-item :label="$t('personal.oldPassword')" prop="oldPassword">
         <el-input v-model="form.oldPassword" type="password" show-password />
       </el-form-item>
