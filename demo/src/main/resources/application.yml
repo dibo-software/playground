@@ -4,8 +4,6 @@ spring:
       - dev
   main:
     allow-bean-definition-overriding: true
-  messages:
-    basename: messages, core_messages
   servlet:
     multipart:
       max-file-size: 50MB
