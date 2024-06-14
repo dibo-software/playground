@@ -133,6 +133,12 @@
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>1.6.6</version>
         </dependency>-->
+<!--       用于cas单点登录中校验ticket的 jar-->
+        <dependency>
+            <groupId>org.jasig.cas.client</groupId>
+            <artifactId>cas-client-core</artifactId>
+            <version>3.6.4</version>
+        </dependency>
 
         <!-- 依赖common包，可配置将Entity，VO，Service，Mapper等各层代码生成到common包下，以便其他模块依赖 -->
         <!--
