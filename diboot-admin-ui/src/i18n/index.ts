@@ -21,7 +21,7 @@ const i18n = createI18n({
   legacy: false,
   globalInjection: true,
   locale: I18nUtils.get() || navigator.language,
-  fallbackLocale: I18nUtils.get() || 'zh-CN',
+  fallbackLocale: I18nUtils.get(),
   messages
 })
 export default i18n
