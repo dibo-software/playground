@@ -67,7 +67,7 @@ watch(
 const requiredRule = {
   required: true,
   message: i18n.t('rules.notnull'),
-  ...(props.config.type === 'input-number' || props.config.type === 'checkbox' || (props.config as Select).multiple
+  ...(['input-number', 'checkbox', 'boolean'].includes(props.config.type) || (props.config as Select).multiple
     ? {}
     : { whitespace: true })
 }
