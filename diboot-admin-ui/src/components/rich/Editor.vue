@@ -201,5 +201,8 @@ const editorConfig: IEditorConfig = {
     max-height: 100%;
     max-width: 100%;
   }
+  :deep(.w-e-scroll) {
+    overflow-y: unset !important;
+  }
 }
 </style>
