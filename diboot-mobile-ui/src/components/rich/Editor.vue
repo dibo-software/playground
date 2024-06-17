@@ -18,7 +18,6 @@ interface PropsType {
 
 const props = withDefaults(defineProps<PropsType>(), {
   modelValue: '',
-  placeholder: i18n.t('components.rich.editor.placeholder'),
   title: ''
 })
 
@@ -77,7 +76,7 @@ const toolbarConfig: Partial<IToolbarConfig> = {
   toolbarKeys: ['header1', 'header2', 'header3', 'bold', 'underline', 'italic', 'bulletedList', 'numberedList']
 }
 const editorConfig: IEditorConfig = {
-  placeholder: props.placeholder,
+  placeholder: props.placeholder || i18n.t('components.rich.editor.placeholder'),
   scroll: true,
   readOnly: false,
   autoFocus: false,
