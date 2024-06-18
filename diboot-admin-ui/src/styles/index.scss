@@ -62,6 +62,10 @@
   }
 
   .list-search {
+    &.el-form:not(.top-filter) {
+      background-color: var(--el-fill-color-lighter);
+    }
+
     .el-row {
       margin: 9px 0 -9px !important;
     }

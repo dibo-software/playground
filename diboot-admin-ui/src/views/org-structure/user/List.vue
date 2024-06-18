@@ -61,13 +61,31 @@ const buildRoleList = (roleList?: Role[]) => roleList?.map(e => e.name).join('ã€
 
 <template>
   <div class="list-page">
+    <el-space wrap class="list-operation">
+      <el-button v-has-permission="'create'" :icon="Plus" type="primary" @click="openForm()">
+        {{ $t('operation.create') }}
+      </el-button>
+      <excel-import :excel-base-api="`${baseApi}/excel`" :attach="() => ({ orgId })" @complete="onSearch" />
+      <excel-export
+        v-has-permission="'export'"
+        :build-param="buildQueryParam"
+        :export-url="`${baseApi}/excel/export`"
+        :table-head-url="`${baseApi}/excel/export-table-head`"
+      />
+      <el-space>
+        <el-input v-model="queryParam.realname" clearable :placeholder="$t('user.realname')" @change="onSearch" />
+        <el-button :icon="Search" type="primary" @click="onSearch">{{ $t('operation.search') }}</el-button>
+        <el-button :title="$t('title.reset')" @click="resetFilter">{{ $t('operation.reset') }}</el-button>
+        <el-button
+          :icon="searchState ? ArrowUp : ArrowDown"
+          :title="searchState ? $t('searchState.up') : $t('searchState.down')"
+          @click="searchState = !searchState"
+        />
+      </el-space>
+    </el-space>
+
     <el-form v-show="searchState" label-width="80px" class="list-search" @submit.prevent>
       <el-row :gutter="18">
-        <el-col :lg="8" :sm="12">
-          <el-form-item :label="$t('user.realname')">
-            <el-input v-model="queryParam.realname" clearable placeholder="" @change="onSearch" />
-          </el-form-item>
-        </el-col>
         <el-col :lg="8" :sm="12">
           <el-form-item :label="$t('user.userNum')">
             <el-input v-model="queryParam.userNum" clearable placeholder="" @change="onSearch" />
@@ -89,36 +107,15 @@ const buildRoleList = (roleList?: Role[]) => roleList?.map(e => e.name).join('ã€
       </el-row>
     </el-form>
 
-    <el-space wrap class="list-operation">
-      <el-button v-has-permission="'create'" :icon="Plus" type="primary" @click="openForm()">
-        {{ $t('operation.create') }}
-      </el-button>
-      <excel-import :excel-base-api="`${baseApi}/excel`" :attach="() => ({ orgId })" @complete="onSearch" />
-      <excel-export
-        v-has-permission="'export'"
-        :build-param="buildQueryParam"
-        :export-url="`${baseApi}/excel/export`"
-        :table-head-url="`${baseApi}/excel/export-table-head`"
-      />
-      <el-space>
-        <el-input
-          v-show="!searchState"
-          v-model="queryParam.realname"
-          clearable
-          :placeholder="$t('user.realname')"
-          @change="onSearch"
-        />
-        <el-button :icon="Search" type="primary" @click="onSearch">{{ $t('operation.search') }}</el-button>
-        <el-button :title="$t('title.reset')" @click="resetFilter">{{ $t('operation.reset') }}</el-button>
-        <el-button
-          :icon="searchState ? ArrowUp : ArrowDown"
-          :title="searchState ? $t('searchState.up') : $t('searchState.down')"
-          @click="searchState = !searchState"
-        />
-      </el-space>
-    </el-space>
-
-    <el-table ref="tableRef" v-loading="loading" row-key="id" :data="dataList" stripe height="100%">
+    <el-table
+      ref="tableRef"
+      v-loading="loading"
+      row-key="id"
+      :data="dataList"
+      stripe
+      height="100%"
+      style="border-top: 1px solid var(--el-border-color-lighter)"
+    >
       <el-table-column prop="userNum" :label="$t('user.userNum')" />
       <el-table-column prop="realname" :label="$t('user.realname')">
         <template #default="{ row }">

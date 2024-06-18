@@ -106,36 +106,6 @@ const multiple = inject<boolean | undefined>(
 
 <template>
   <div class="list-page">
-    <el-form v-if="searchArea" v-show="searchState" label-width="80px" class="list-search" @submit.prevent>
-      <el-row :gutter="18">
-        <el-col
-          v-for="item in searchArea.propList"
-          :key="JSON.stringify(item)"
-          :md="searchArea.column ? 24 / searchArea.column : 8"
-          :sm="24"
-        >
-          <di-input
-            v-if="['daterange', 'datetimerange'].includes(item.type)"
-            :model-value="dateRangeQuery[item.prop] as any"
-            :config="item"
-            @change="onSearch"
-            @update:model-value="dateRangeQuery[item.prop] = $event as [string, string]"
-          />
-          <di-input
-            v-else
-            :model-value="queryParam[item.prop] as any"
-            :config="item"
-            :related-datas="getRelatedData(item)"
-            :loading="asyncLoading"
-            :lazy-load="async (parentId: string) => await lazyLoadRelatedData(item.prop, parentId)"
-            @change="onSearch"
-            @remote-filter="(value?: string) => remoteRelatedDataFilter(item.prop, value)"
-            @update:model-value="queryParam[item.prop] = $event as unknown"
-          />
-        </el-col>
-      </el-row>
-    </el-form>
-
     <el-space wrap class="list-operation">
       <el-button v-if="createPermission && operation?.create" type="primary" :icon="Plus" @click="openForm()">
         {{ $t('operation.create') }}
@@ -163,7 +133,7 @@ const multiple = inject<boolean | undefined>(
         {{ $t('operation.batchDelete') }}
       </el-button>
       <el-space>
-        <span v-if="searchArea?.propList?.length" v-show="!searchState" class="search">
+        <span v-if="searchArea?.propList?.length" class="search">
           <template v-for="item in [searchArea.propList[0]]" :key="item.prop">
             <di-input
               v-if="['daterange', 'datetimerange'].includes(item.type)"
@@ -197,6 +167,38 @@ const multiple = inject<boolean | undefined>(
         />
       </el-space>
     </el-space>
+
+    <el-form v-if="searchArea" v-show="searchState" label-width="80px" class="list-search" @submit.prevent>
+      <el-row :gutter="18">
+        <el-col
+          v-for="item in searchArea.propList.slice(1)"
+          :key="JSON.stringify(item)"
+          :md="searchArea.column ? 24 / searchArea.column : 8"
+          :sm="24"
+        >
+          <di-input
+            v-if="['daterange', 'datetimerange'].includes(item.type)"
+            :model-value="dateRangeQuery[item.prop] as any"
+            :config="item"
+            @change="onSearch"
+            @update:model-value="dateRangeQuery[item.prop] = $event as [string, string]"
+          />
+          <di-input
+            v-else
+            :model-value="queryParam[item.prop] as any"
+            :config="item"
+            :related-datas="getRelatedData(item)"
+            :loading="asyncLoading"
+            :lazy-load="async (parentId: string) => await lazyLoadRelatedData(item.prop, parentId)"
+            @change="onSearch"
+            @remote-filter="(value?: string) => remoteRelatedDataFilter(item.prop, value)"
+            @update:model-value="queryParam[item.prop] = $event as unknown"
+          />
+        </el-col>
+      </el-row>
+    </el-form>
+
+    <div style="border-top: 1px solid var(--el-border-color-lighter)" />
 
     <di-table
       :model="model"
@@ -280,12 +282,6 @@ const multiple = inject<boolean | undefined>(
 </template>
 
 <style scoped lang="scss">
-.list-search {
-  :deep(.el-form-item) {
-    margin-bottom: 12px;
-  }
-}
-
 .list-operation .search :deep(.el-form-item) {
   margin-bottom: 0 !important;
 }
