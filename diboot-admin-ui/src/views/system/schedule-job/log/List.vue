@@ -95,6 +95,8 @@ const openDetail = (id: string) => {
         v-loading="loading"
         :data="dataList"
         height="100%"
+        stripe
+        style="border-top: 1px solid var(--el-border-color-lighter)"
         @selection-change="(arr: ScheduleJobLog[]) => (selectedKeys = arr.map(e => e.id))"
       >
         <el-table-column type="selection" width="55" />
