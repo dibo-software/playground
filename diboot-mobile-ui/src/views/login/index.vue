@@ -218,9 +218,6 @@ const enableI18n = import.meta.env.VITE_APP_ENABLE_I18N === 'true'
   .van-radio__label {
     margin-left: 0;
   }
-  h2 {
-    margin-bottom: 50px;
-  }
   .van-cell {
     padding: var(--van-padding-lg);
   }
