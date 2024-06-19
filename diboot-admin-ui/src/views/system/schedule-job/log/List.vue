@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Refresh, Search } from '@element-plus/icons-vue'
+import { ArrowUp, ArrowDown, Search } from '@element-plus/icons-vue'
 import type { ScheduleJobLog } from '../type'
 import Detail from './Detail.vue'
 
@@ -49,16 +49,27 @@ const openDetail = (id: string) => {
 <template>
   <el-drawer v-model="visible" title="日志" size="850px">
     <div class="list-page">
+      <el-header>
+        <el-space wrap class="list-operation">
+          <el-button v-has-permission="'logDelete'" @click="batchRemove(selectedKeys)">批量删除</el-button>
+          <el-space>
+            <el-select v-model="queryParam.runStatus" placeholder="执行结果" clearable @change="onSearch">
+              <el-option label="成功" value="S" />
+              <el-option label="失败" value="F" />
+            </el-select>
+            <el-button :icon="Search" type="primary" @click="onSearch">{{ $t('operation.search') }}</el-button>
+            <el-button :title="$t('title.reset')" @click="resetFilter">{{ $t('operation.reset') }}</el-button>
+            <el-button
+              :icon="searchState ? ArrowUp : ArrowDown"
+              :title="searchState ? $t('searchState.up') : $t('searchState.down')"
+              @click="searchState = !searchState"
+            />
+          </el-space>
+        </el-space>
+      </el-header>
+
       <el-form v-show="searchState" label-width="80px" class="list-search" @submit.prevent>
         <el-row :gutter="18">
-          <el-col :md="12" :sm="24">
-            <el-form-item label="执行结果">
-              <el-select v-model="queryParam.runStatus" clearable @change="onSearch">
-                <el-option label="成功" value="S" />
-                <el-option label="失败" value="F" />
-              </el-select>
-            </el-form-item>
-          </el-col>
           <el-col :md="12" :sm="24">
             <el-form-item label="触发方式">
               <el-select v-model="queryParam.triggerMode" clearable @change="onSearch">
@@ -76,23 +87,9 @@ const openDetail = (id: string) => {
               />
             </el-form-item>
           </el-col>
-          <el-col :md="12" :sm="24" style="margin-left: auto">
-            <el-form-item>
-              <el-button type="primary" @click="onSearch">{{ $t('operation.search') }}</el-button>
-              <el-button @click="resetFilter">{{ $t('operation.reset') }}</el-button>
-            </el-form-item>
-          </el-col>
         </el-row>
       </el-form>
-      <el-header>
-        <el-space wrap class="list-operation">
-          <el-button v-has-permission="'logDelete'" @click="batchRemove(selectedKeys)">批量删除</el-button>
-          <el-space>
-            <el-button :icon="Refresh" circle @click="getList()" />
-            <el-button :icon="Search" circle @click="searchState = !searchState" />
-          </el-space>
-        </el-space>
-      </el-header>
+
       <el-table
         ref="tableRef"
         v-loading="loading"
