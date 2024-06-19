@@ -15,8 +15,8 @@ BwIDAQAB`)
 
 const authStore = useAuthStore()
 const loading = ref(false)
-const PROCESS_USERNAME = 'maql'
-const PASSWORD = 'Dibo306!'
+const PROCESS_USERNAME = ''
+const PASSWORD = ''
 const model = reactive({ username: PROCESS_USERNAME, password: PASSWORD, captcha: '', traceId: '' })
 
 const refreshTraceId = () => {
