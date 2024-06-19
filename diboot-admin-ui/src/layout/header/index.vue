@@ -25,6 +25,8 @@ const goPersonal = () => {
 }
 
 const openChatAi = () => router.push('/chat-ai')
+
+const enableI18n = import.meta.env.VITE_APP_ENABLE_I18N === 'true'
 </script>
 
 <template>
@@ -59,6 +61,7 @@ const openChatAi = () => router.push('/chat-ai')
         />
       </el-tooltip>
       <el-dropdown
+        v-if="enableI18n"
         @command="
           (command: string) => {
             i18n.set(command)

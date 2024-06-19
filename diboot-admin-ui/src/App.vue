@@ -3,12 +3,10 @@ import * as locales from 'element-plus/es/locale/index'
 import { colorPrimary, isSmall } from '@/utils/theme'
 import useAppStore from './store/app'
 import { useI18n } from 'vue-i18n'
-import i18nStore from '@/utils/i18n'
 const appStore = useAppStore()
 const i18n = useI18n()
 
 const locale = ref()
-const router = useRouter()
 // 初始化自定义主题色
 onMounted(() => {
   appStore.colorPrimary && (colorPrimary.value = appStore.colorPrimary)

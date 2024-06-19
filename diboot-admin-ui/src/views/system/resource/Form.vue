@@ -332,7 +332,11 @@ const enableI18n = import.meta.env.VITE_APP_ENABLE_I18N === 'true'
                           v-model="permission.displayName"
                           :placeholder="$t('resource.placeholder.buttonPermissionConfig.displayName')"
                           @input="(value: string) => changeBtnPermissionName(permission, value)"
-                        />
+                        >
+                          <template v-if="enableI18n" #append>
+                            <i18n-selector v-model="permission.displayNameI18n" />
+                          </template>
+                        </el-input>
                       </el-descriptions-item>
                       <el-descriptions-item :label="$t('resource.buttonPermissionConfig.permissionCodes')">
                         <el-select
