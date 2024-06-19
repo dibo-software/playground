@@ -133,7 +133,7 @@
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>1.6.6</version>
         </dependency>-->
-<!--       用于cas单点登录中校验ticket的 jar-->
+        <!--用于cas单点登录中校验ticket的 jar-->
         <dependency>
             <groupId>org.jasig.cas.client</groupId>
             <artifactId>cas-client-core</artifactId>
