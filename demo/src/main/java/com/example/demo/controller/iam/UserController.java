@@ -3,6 +3,8 @@ package com.example.demo.controller.iam;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.diboot.core.controller.BaseCrudRestController;
+import com.diboot.core.util.BeanUtils;
+import com.diboot.core.util.JSON;
 import com.diboot.core.util.V;
 import com.diboot.core.vo.JsonResult;
 import com.diboot.core.vo.Pagination;
@@ -26,13 +28,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 系统用户相关Controller
  *
  * @author MyName
  * @version 1.0
- * @date 2022-12-30
+ * @date 2022-05-30
  * Copyright © MyCompany
  */
 @RestController
@@ -59,9 +62,18 @@ public class UserController extends BaseCrudRestController<IamUser> {
     @Log(operation = OperationCons.LABEL_LIST)
     @BindPermission(name = OperationCons.LABEL_LIST, code = OperationCons.CODE_READ)
     @GetMapping
-    public JsonResult getViewObjectListMapping(IamUserSearchDTO dto, Pagination pagination) throws Exception {
+    public JsonResult getViewObjectListMapping(IamUserSearchDTO dto, String _conditions, Pagination pagination) throws Exception {
         String orgId = dto.getOrgId();
         dto.setOrgId(null);
+        // 处理 _conditions
+        if (V.notEmpty(_conditions)) {
+            List<Map> conditions = JSON.parseArray(_conditions, Map.class);
+            for (Map<String, Object> condition : conditions) {
+                String field = String.valueOf(condition.get("field"));
+                Object value = condition.get("value");
+                BeanUtils.setProperty(dto, field, value);
+            }
+        }
         QueryWrapper<IamUser> queryWrapper = super.buildQueryWrapperByDTO(dto);
         if (pagination != null && V.isEmpty(pagination.getOrderBy())) {
             pagination.setOrderBy("sortId:ASC");
