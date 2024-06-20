@@ -51,7 +51,10 @@ public class DictionaryController extends BaseCrudRestController<Dictionary> {
     @GetMapping
     public JsonResult getViewObjectListMapping(Dictionary entity, Pagination pagination) throws Exception{
         QueryWrapper<Dictionary> queryWrapper = super.buildQueryWrapperByDTO(entity);
-        queryWrapper.isNull(Cons.ColumnName.parent_id.name()).or().eq(Cons.ColumnName.parent_id.name(), Cons.ID_PREVENT_NULL).orderByDesc(Cons.ColumnName.id.name());
+        queryWrapper.and(wrapper -> {
+                    wrapper.isNull(Cons.ColumnName.parent_id.name()).or().eq(Cons.ColumnName.parent_id.name(), Cons.ID_PREVENT_NULL);
+        });
+        queryWrapper.orderByDesc(Cons.ColumnName.id.name());
         List<DictionaryVO> voList = dictionaryService.getViewObjectList(queryWrapper, pagination, DictionaryVO.class);
         return JsonResult.OK(voList).bindPagination(pagination);
     }

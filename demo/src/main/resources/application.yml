@@ -4,12 +4,10 @@ spring:
       - dev
   main:
     allow-bean-definition-overriding: true
-
   servlet:
     multipart:
       max-file-size: 50MB
       max-request-size: 50MB
-
 server:
   shutdown: graceful
   compression:
@@ -40,7 +38,6 @@ logging:
 
 # mybatis config
 mybatis-plus:
-  mapper-locations: classpath*:mapper/*Mapper.xml
   global-config:
     db-config:
       logic-delete-value: 1

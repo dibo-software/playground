@@ -5,3 +5,4 @@
     <van-grid-item icon="notes-o" text="详情示例" @click="$router.push({ name: 'DetailExample' })"></van-grid-item>
   </van-grid>
 </template>
+<script setup lang="ts"></script>

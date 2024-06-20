@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.4</version>
+        <version>3.3.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
@@ -16,7 +16,7 @@
 
     <properties>
 <!--        <java.version>1.8</java.version>-->
-        <diboot.version>3.3.0</diboot.version>
+        <diboot.version>3.4.0</diboot.version>
     </properties>
 
     <dependencies>
@@ -30,7 +30,7 @@
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
-            <version>8.2.0</version>
+            <version>8.4.0</version>
         </dependency>
         <!-- sqlite 数据库驱动-->
 <!--        <dependency>-->
@@ -42,7 +42,7 @@
 <!--        <dependency>-->
 <!--            <groupId>org.postgresql</groupId>-->
 <!--            <artifactId>postgresql</artifactId>-->
-<!--            <version>42.3.1</version>-->
+<!--            <version>42.7.3</version>-->
 <!--        </dependency>-->
         <!-- SqlServer 数据库驱动-->
 <!--        <dependency>-->
@@ -109,6 +109,13 @@
             <version>${diboot.version}</version>
         </dependency>
 
+        <!-- diboot-ai diboot ai组件对接各种大模型 -->
+        <dependency>
+            <groupId>com.diboot</groupId>
+            <artifactId>diboot-ai-spring-boot-starter</artifactId>
+            <version>${diboot.version}</version>
+        </dependency>
+
         <!-- 默认的验证码组件，可按需替换 -->
         <dependency>
             <groupId>com.pig4cloud.plugin</groupId>
@@ -126,6 +133,12 @@
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>1.6.6</version>
         </dependency>-->
+        <!--用于cas单点登录中校验ticket的 jar-->
+        <dependency>
+            <groupId>org.jasig.cas.client</groupId>
+            <artifactId>cas-client-core</artifactId>
+            <version>3.6.4</version>
+        </dependency>
 
         <!-- 依赖common包，可配置将Entity，VO，Service，Mapper等各层代码生成到common包下，以便其他模块依赖 -->
         <!--
@@ -141,17 +154,17 @@
             <artifactId>lcdp-devtools</artifactId>
             <version>${diboot.version}</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/diboot-lcdp-devtools-3.3.0.jar</systemPath>
+            <systemPath>${project.basedir}/libs/diboot-lcdp-devtools-3.4.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.mybatis.dynamic-sql</groupId>
             <artifactId>mybatis-dynamic-sql</artifactId>
-            <version>1.5.0</version>
+            <version>1.5.2</version>
         </dependency>
         <dependency>
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-core</artifactId>
-            <version>3.25.9</version>
+            <version>3.26.0</version>
         </dependency>
 
     </dependencies>

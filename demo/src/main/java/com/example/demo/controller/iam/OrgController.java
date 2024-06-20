@@ -54,8 +54,8 @@ public class OrgController extends BaseCrudRestController<IamOrg> {
     @Log(operation = OperationCons.LABEL_LIST)
     @BindPermission(name = OperationCons.LABEL_LIST, code = OperationCons.CODE_READ)
     @GetMapping
-    public JsonResult getViewObjectListWithMapping(IamOrg entity, Pagination pagination) throws Exception {
-        QueryWrapper<IamOrg> queryWrapper = super.buildQueryWrapperByQueryParams(entity);
+    public JsonResult getViewObjectListWithMapping(IamOrgDTO entity, Pagination pagination) throws Exception {
+        QueryWrapper<IamOrg> queryWrapper = super.buildQueryWrapperByDTO(entity);
         queryWrapper.lambda().orderByAsc(IamOrg::getSortId).orderByAsc(IamOrg::getId);
         List<IamOrgVO> voList = this.getService().getViewObjectList(queryWrapper, pagination, IamOrgVO.class);
         return JsonResult.OK(voList).bindPagination(pagination);
