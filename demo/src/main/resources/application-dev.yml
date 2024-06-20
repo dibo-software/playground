@@ -15,11 +15,12 @@ spring:
       max-lifetime: 60000 # 连接的最大生命周期
 
 # Redis config
-#  redis:
-#    database: 0
-#    port: 6379
-#    host: localhost
-#    password:
+#  data:
+#    redis:
+#      database: 0
+#      port: 6379
+#      host: localhost
+#      password:
 
 logging:
   level:
