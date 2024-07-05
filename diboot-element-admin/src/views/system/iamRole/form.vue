@@ -32,8 +32,8 @@
       </el-form-item>
       <el-form-item label="拥有权限" prop="permissionList">
         <flat-tree
-          v-if="permissionTreeList && permissionTreeList.length > 0"
           :key="visible"
+          v-if="permissionTreeList && permissionTreeList.length > 0"
           ref="tree"
           class="filter-tree"
           node-key="id"

@@ -14,8 +14,8 @@
           我们推荐使用这种方式进行 LOGO 和 title 自定义
     -->
     <template v-slot:menuHeaderRender>
-      <div>
-        <logo-svg />
+      <div class="logo-wrapper">
+        <img src="~@/assets/logo.svg" class="logo" alt="logo">
         <h1>{{ title }}</h1>
       </div>
     </template>

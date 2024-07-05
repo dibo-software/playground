@@ -1,5 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
+const packageJson = require('./package.json')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const GitRevision = new GitRevisionPlugin()
 const buildDate = JSON.stringify(new Date().toLocaleString())
@@ -16,9 +17,9 @@ function getGitHash () {
   } catch (e) {}
   return 'unknown'
 }
-
-// const isProd = process.env.NODE_ENV === 'production'
-//
+// eslint-disable-next-line no-unused-vars
+const isProd = process.env.NODE_ENV === 'production'
+// eslint-disable-next-line no-unused-vars
 // const assetsCDN = {
 //   // webpack build externals
 //   externals: {
@@ -30,10 +31,10 @@ function getGitHash () {
 //   css: [],
 //   // https://unpkg.com/browse/vue@2.6.10/
 //   js: [
-//     '//cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js',
-//     '//cdn.jsdelivr.net/npm/vue-router@3.1.3/dist/vue-router.min.js',
+//     '//cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js',
+//     '//cdn.jsdelivr.net/npm/vue-router@3.5.1/dist/vue-router.min.js',
 //     '//cdn.jsdelivr.net/npm/vuex@3.1.1/dist/vuex.min.js',
-//     '//cdn.jsdelivr.net/npm/axios@0.19.0/dist/axios.min.js'
+//     '//cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js'
 //   ]
 // }
 
@@ -44,11 +45,11 @@ const vueConfig = {
     plugins: [
       // Ignore all locale files of moment.js
       new webpack.IgnorePlugin({
-        resourceRegExp: /^\.\/locale$/,
-        contextRegExp: /moment$/,
+        contextRegExp: /^\.\/locale$/,
+        resourceRegExp: /moment$/
       }),
       new webpack.DefinePlugin({
-        APP_VERSION: `"${require('./package.json').version}"`,
+        APP_VERSION: `"${packageJson.version}"`,
         GIT_HASH: JSON.stringify(getGitHash()),
         BUILD_DATE: buildDate
       })
@@ -57,25 +58,40 @@ const vueConfig = {
     // externals: isProd ? assetsCDN.externals : {}
   },
 
-  chainWebpack: (config) => {
-    config.resolve.alias
-      .set('@$', resolve('src'))
+  chainWebpack: config => {
+    config.resolve.alias.set('@$', resolve('src'))
 
+    // fixed svg-loader by https://github.com/damianstasik/vue-svg-loader/issues/185#issuecomment-1126721069
     const svgRule = config.module.rule('svg')
-    svgRule.uses.clear()
-    svgRule
-      .oneOf('inline')
+    // Remove regular svg config from root rules list
+    config.module.rules.delete('svg')
+
+    config.module.rule('svg')
+    // Use svg component rule
+      .oneOf('svg_as_component')
       .resourceQuery(/inline/)
-      .use('vue-svg-icon-loader')
-      .loader('vue-svg-icon-loader')
+      .test(/\.(svg)(\?.*)?$/)
+      .use('babel-loader')
+      .loader('babel-loader')
       .end()
-      .end()
-      .oneOf('external')
-      .use('file-loader')
-      .loader('file-loader')
+      .use('vue-svg-loader')
+      .loader('vue-svg-loader')
       .options({
-        name: 'assets/[name].[hash:8].[ext]'
+        svgo: {
+          plugins: [
+            { prefixIds: true },
+            { cleanupIDs: true },
+            { convertShapeToPath: false },
+            { convertStyleToAttrs: true }
+          ]
+        }
       })
+      .end()
+      .end()
+    // Otherwise use original svg rule
+      .oneOf('svg_as_regular')
+      .merge(svgRule.toConfig())
+      .end()
 
     // if prod is on
     // assets require on cdn
