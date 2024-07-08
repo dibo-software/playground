@@ -4,21 +4,21 @@
 ## 项目启动与devtools等配置说明
 ### 0. playground 项目说明
 > 依赖环境：
-  * JDK 8
+  * JDK 17+
   * MySQL 8 （或Postgres等其他数据库）
   * Node v16
   * pnpm
 
 > 项目目录说明:
-  * demo：项目的后端接口示例（Spring boot + Diboot v3）
-  * demo/libs：devtools 开发工具包
+  * {demo}：项目的后端接口示例（Spring boot + Diboot v3）(示例 demo 为配置模块名)
+  * {demo}/libs：devtools 开发工具包
   * diboot-admin-ui：PC端前端项目（Vue3+TypeScript+Vite+Pinia+ElementPlus）
   * diboot-mobile-ui：移动端前端项目（Vant4）
 
 ### 1. 项目配置说明
 
-* 配置demo应用的相关参数：
-  * demo为后端接口项目，配置启动步骤：
+* 配置{demo}应用的相关参数：
+  * {demo}为后端接口项目，配置启动步骤：
     * 修改 `application-dev.yml` 中的数据库连接信息，改为本地连接
     * 配置 devtools 代码生成相关参数：
       * 将 `diboot.init-sql` 设置为 true ，以开启自动初始化
@@ -35,7 +35,7 @@
 ### 2. 项目启动与初始化
 
 * 2.1 启动后端项目：
-  * 配置IDEA服务（`DemoApplication`为启动类），运行demo后台程序，此时diboot各starter会自动执行初始化SQL。
+  * 配置IDEA服务（`{Demo}Application`为启动类），运行后台程序，此时diboot各starter会自动执行初始化SQL。
 * 前端项目：
   *
 * 2.2 启动 diboot-admin-ui PC端前端项目，步骤：
@@ -61,8 +61,6 @@
 ~~~
 > 注：
 > 1. 如您为订阅用户，请配置 `diboot.lcdp.devtools.license` 以便使用devtools全部功能。
-> 2. 如启动过程报错：javax.net.ssl.SSLHandshakeException，无法连接devtools服务器：需升级到JDK8的最新小版本 [下载最新版 JDK8](https://www.oracle.com/java/technologies/downloads/)。
-
 
 ## 其他参考文档
 * [V3 技术文档](http://www.diboot.com)
