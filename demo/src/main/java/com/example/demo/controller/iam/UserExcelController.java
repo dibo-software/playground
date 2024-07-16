@@ -102,7 +102,7 @@ public class UserExcelController extends BaseExcelFileController {
     @BindPermission(name = OperationCons.LABEL_EXPORT, code = OperationCons.CODE_EXPORT)
     @GetMapping("/export")
     public JsonResult export(IamUserSearchDTO iamUserDto, @RequestParam(value = "columns", required = false) List<String> columns, HttpServletResponse response) throws Exception {
-        QueryWrapper<IamUser> queryWrapper = super.buildQueryWrapperByQueryParams(iamUserDto);
+        QueryWrapper<IamUser> queryWrapper = super.buildQueryWrapperByDTO(iamUserDto);
         queryWrapper.lambda().orderByAsc(IamUser::getSortId);
         List<IamUserVO> iamUserList = iamUserService.getViewObjectList(queryWrapper, null, IamUserVO.class);
         if (V.isEmpty(iamUserList)) {

@@ -43,7 +43,7 @@ public class OperationLogController extends BaseCrudRestController<IamOperationL
         if(pagination != null && V.isEmpty(pagination.getOrderBy())) {
             pagination.setOrderBy(Pagination.ORDER_BY_ID_DESC);
         }
-        QueryWrapper<IamOperationLog> queryWrapper = super.buildQueryWrapperByQueryParams(entity);
+        QueryWrapper<IamOperationLog> queryWrapper = super.buildQueryWrapperByDTO(entity);
         Integer status = getInteger("status");
         if(status != null){
             if(status.intValue() == 0){

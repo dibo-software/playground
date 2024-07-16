@@ -148,7 +148,7 @@ public class ScheduleJobController extends BaseCrudRestController<ScheduleJob> {
     @BindPermission(name = "定时日志列表", code = OperationCons.CODE_READ)
     @GetMapping("/log")
     public JsonResult getJobLogVOListMapping(ScheduleJobLog entity, Pagination pagination) throws Exception {
-        QueryWrapper<ScheduleJobLog> queryWrapper = super.buildQueryWrapperByQueryParams(entity);
+        QueryWrapper<ScheduleJobLog> queryWrapper = super.buildQueryWrapperByDTO(entity);
         if (pagination != null && V.isEmpty(pagination.getOrderBy())) {
             pagination.setOrderBy(Pagination.ORDER_BY_ID_DESC);
         }

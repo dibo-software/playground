@@ -55,7 +55,7 @@ public class ResourceController extends BaseCrudRestController<IamResource> {
     @BindPermission(name = OperationCons.LABEL_LIST, code = OperationCons.CODE_READ)
     @GetMapping
     public JsonResult getViewObjectListMapping(IamResource entity) throws Exception {
-        QueryWrapper<IamResource> queryWrapper = super.buildQueryWrapperByQueryParams(entity);
+        QueryWrapper<IamResource> queryWrapper = super.buildQueryWrapperByDTO(entity);
         queryWrapper.lambda().orderByAsc(IamResource::getSortId);
         List<IamResourceListVO> voList = iamResourceService.getViewObjectList(queryWrapper, null, IamResourceListVO.class);
         Map<String, Object> paramsMap = getParamsMap();
