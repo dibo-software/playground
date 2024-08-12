@@ -63,7 +63,7 @@ const zhCN = {
       config: '国际化配置'
     },
     icon: {
-      reelect: '重选',
+      reselect: '重选',
       choose: '选择',
       clear: '清除',
       selector: '图标选择器'

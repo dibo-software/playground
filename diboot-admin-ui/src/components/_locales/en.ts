@@ -44,7 +44,7 @@ const en: Locale = {
       exportColumn: 'Export Columns'
     },
     i18n: { language: 'Language Identifier', config: 'Internationalization Configuration' },
-    icon: { reelect: 'Re-Select', choose: 'Choose', clear: 'Clear', selector: 'Icon Selector' },
+    icon: { reselect: 'Re-Select', choose: 'Choose', clear: 'Clear', selector: 'Icon Selector' },
     numberRange: { startPlaceholder: 'Start', endPlaceholder: 'End' },
     rich: { placeholder: 'Enter content...', uploadError: 'Upload failed, please try again later!' },
     watermark: 'Your browser does not support watermark functionality'

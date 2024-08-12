@@ -9,6 +9,7 @@ const en: Locale = {
     routeMetaIcon: 'Menu Icon',
     routePath: 'Route Path',
     resourceCode: 'Route Name',
+    componentPath: 'Component path',
     redirectPath: 'Redirect',
     routeMetaUrl: 'External Link',
     appModule: 'Application Module',
@@ -42,7 +43,8 @@ const en: Locale = {
       redirectPath: 'Enter redirect',
       routeMetaUrl: 'Enter external link',
       permissionCodes: 'Click to focus then select from the permission list',
-      componentName: 'Please select the component',
+      componentName: 'Please enter the component name',
+      componentPath: 'Please enter the routing component path',
       buttonPermissionConfig: {
         _customCode: 'Enter button permission code',
         resourceCode: 'Please select the current button permission code',
@@ -56,7 +58,7 @@ const en: Locale = {
     componentNameChange: 'Component name has changed. To avoid cache issues, please select again!',
     componentNonExist: 'Component does not exist and cannot load the menu. Please select again!',
     permissionSelect: {
-      title: 'Menu Category Can Configure Permission API',
+      title: '`Menu` type resource can configure permission API',
       permissionApi: 'Configure Permission API',
       searchPlaceholder: 'Search for required APIs: Supports fuzzy search by title, permission code, and API address',
       tip: 'After selecting the application module, configure permissions'

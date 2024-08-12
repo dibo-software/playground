@@ -1,8 +1,10 @@
 package com.example.demo.config;
 
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.DataPermissionInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
+import com.diboot.core.handler.DataAccessControlHandler;
 import com.diboot.tenant.handler.DefaultTenantHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +27,7 @@ public class MybatisPlusConfig {
         // 多租户拦截器
         // interceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new DefaultTenantHandler()));
         // 数据权限拦截器
-        // interceptor.addInnerInterceptor(new DataPermissionInterceptor(new DataAccessControlHandler()));
+        interceptor.addInnerInterceptor(new DataPermissionInterceptor(new DataAccessControlHandler()));
         // 分页拦截器
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
         return interceptor;
