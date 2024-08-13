@@ -52,6 +52,12 @@ public class LoginTraceController extends BaseCrudRestController<IamLoginTrace> 
         return result;
     }
 
+    /**
+     * 强制退出
+     * @param id 登录日志记录id
+     * @return
+     * @throws Exception
+     */
     @Log(operation = "强制退出")
     @BindPermission(name = "强制退出", code = "FORCE_LOGOUT")
     @PostMapping("/force-logout/{id}")

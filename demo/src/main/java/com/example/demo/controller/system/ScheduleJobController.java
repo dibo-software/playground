@@ -106,6 +106,12 @@ public class ScheduleJobController extends BaseCrudRestController<ScheduleJob> {
     }
 
 
+    /**
+     * 执行一次定时任务
+     * @param id
+     * @return
+     * @throws Exception
+     */
     @Log(operation = "执行一次定时任务")
     @BindPermission(name = "执行一次定时任务", code = OperationCons.CODE_WRITE)
     @PutMapping("/execute-once/{id}")

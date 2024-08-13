@@ -82,7 +82,6 @@ public class AuthTokenController extends BaseController {
 
     /**
      * 用户登录获取token
-     * ·
      *
      * @param credential 登录凭证
      * @return 响应（troken）

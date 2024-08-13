@@ -159,8 +159,8 @@ public class OrgController extends BaseCrudRestController<IamOrg> {
     /**
      * 检查code是否重复
      *
-     * @param id
-     * @param code
+     * @param id 组织/部门id
+     * @param code 编码
      * @return
      */
     @GetMapping("/check-code-duplicate")
