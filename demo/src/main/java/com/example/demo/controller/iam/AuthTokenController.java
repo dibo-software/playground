@@ -60,7 +60,7 @@ public class AuthTokenController extends BaseController {
     @Qualifier("iamCacheManager")
     private BaseCacheManager baseCacheManager;
 
-    @Value("${rsa-encryptor.private-key}")
+    @Value("${diboot.login-encrypt.rsa-private-key}")
     private String rsaPrivateKey;
 
     /**
