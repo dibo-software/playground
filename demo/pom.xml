@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.0</version>
+        <version>3.3.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
@@ -16,7 +16,7 @@
 
     <properties>
 <!--        <java.version>1.8</java.version>-->
-        <diboot.version>3.4.1</diboot.version>
+        <diboot.version>3.5.0</diboot.version>
     </properties>
 
     <dependencies>
@@ -130,15 +130,27 @@
         <!-- Swagger接口文档
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.6.6</version>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.therapi</groupId>
+            <artifactId>therapi-runtime-javadoc</artifactId>
+            <version>0.15.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.therapi</groupId>
+            <artifactId>therapi-runtime-javadoc-scribe</artifactId>
+            <version>0.15.0</version>
+            <scope>provided</scope>
         </dependency>-->
-        <!--用于cas单点登录中校验ticket的 jar-->
+
+        <!-- 用于cas单点登录中校验ticket的 jar
         <dependency>
             <groupId>org.jasig.cas.client</groupId>
             <artifactId>cas-client-core</artifactId>
             <version>3.6.4</version>
-        </dependency>
+        </dependency>-->
 
         <!-- 依赖common包，可配置将Entity，VO，Service，Mapper等各层代码生成到common包下，以便其他模块依赖 -->
         <!--
@@ -160,11 +172,13 @@
             <groupId>org.mybatis.dynamic-sql</groupId>
             <artifactId>mybatis-dynamic-sql</artifactId>
             <version>1.5.2</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-core</artifactId>
             <version>3.26.0</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
