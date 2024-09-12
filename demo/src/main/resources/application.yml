@@ -1,7 +1,7 @@
 spring:
   profiles:
     active:
-      - local
+      - dev
   main:
     allow-bean-definition-overriding: true
   servlet:
