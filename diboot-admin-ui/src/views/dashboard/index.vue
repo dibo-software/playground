@@ -1,27 +1,36 @@
 <script setup lang="ts" name="Dashboard">
 import type { EChartsOption } from 'echarts'
 import logoSrc from '@/assets/logo.png'
+import { StarFilled } from '@element-plus/icons-vue'
 
 const tags: Array<{ label: string; type?: 'success' | 'info' | 'warning' | 'danger' }> = [
   {
     label: '低代码',
-    type: void 0
+    type: 'success'
   },
   {
     label: '代码生成器',
     type: 'success'
   },
   {
-    label: 'vue',
-    type: 'info'
+    label: '零代码',
+    type: void 0
   },
   {
-    label: 'flowable',
+    label: '表单设计器',
+    type: void 0
+  },
+  {
+    label: 'Flowable工作流',
     type: 'warning'
   },
   {
-    label: '工作流',
-    type: 'danger'
+    label: '流程设计器',
+    type: 'warning'
+  },
+  {
+    label: 'AI',
+    type: void 0
   }
 ]
 
@@ -114,7 +123,9 @@ const currentDate = ref(new Date())
           <div class="mb-10 fw-bold" style="font-size: calc(var(--el-font-size-dynamic) + 2px)">
             基础组件化繁为简，高效工具以简驭繁
           </div>
-          <div class="mb-20">感谢您使用Diboot，喜欢就点个star支持一下我们，谢谢。</div>
+          <div class="mb-20">
+            感谢您使用Diboot，喜欢就帮我们点个 <el-icon color="red"><StarFilled /></el-icon> 鼓励一下，谢谢
+          </div>
           <el-row>
             <el-col :span="8">
               <a
@@ -141,7 +152,7 @@ const currentDate = ref(new Date())
               >
                 <el-image src="https://www.diboot.com/wechat_donate.png" fit="contain" />
                 <template #reference>
-                  <el-button type="primary" link>捐助支持 Diboot</el-button>
+                  <el-button type="success" link>捐助支持 Diboot</el-button>
                 </template>
               </el-popover>
             </el-col>
