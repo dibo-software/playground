@@ -110,22 +110,42 @@ const currentDate = ref(new Date())
       </el-col>
       <el-col :lg="7" :md="12" :xs="24" style="display: flex" class="flex-dir-col">
         <el-card class="mb-10" shadow="hover">
-          <div class="fw-bold mb-20" style="font-size: calc(var(--el-font-size-dynamic) + 4px)">关于项目</div>
-          <div class="main-color mb-10 fw-bold" style="font-size: calc(var(--el-font-size-dynamic) + 2px)">
+          <div class="fw-bold mb-20" style="font-size: calc(var(--el-font-size-dynamic) + 4px)">Diboot</div>
+          <div class="mb-10 fw-bold" style="font-size: calc(var(--el-font-size-dynamic) + 2px)">
             基础组件化繁为简，高效工具以简驭繁
           </div>
-          <div class="mb-20">感谢您使用Diboot，如果喜欢就点个星星支持一下我们。</div>
-          <a
-            href="http://gitee.com/dibo_software/diboot"
-            target="_blank"
-            title="Gitee 仓库 - 开源不易，star鼓励"
-            style="margin-right: 20px"
-          >
-            <img src="http://gitee.com/dibo_software/diboot/badge/star.svg?theme=dark" />
-          </a>
-          <a href="http://github.com/dibo-software/diboot" target="_blank" title="Github 仓库 - 开源不易，star鼓励">
-            <img src="https://img.shields.io/github/stars/dibo-software/diboot.svg?style=social&label=Stars" />
-          </a>
+          <div class="mb-20">感谢您使用Diboot，喜欢就点个star支持一下我们，谢谢。</div>
+          <el-row>
+            <el-col :span="8">
+              <a
+                href="http://gitee.com/dibo_software/diboot"
+                target="_blank"
+                title="Gitee 仓库 - 开源不易，star鼓励"
+                style="margin-right: 20px"
+              >
+                <img src="http://gitee.com/dibo_software/diboot/badge/star.svg?theme=dark" />
+              </a>
+            </el-col>
+            <el-col :span="8">
+              <a href="http://github.com/dibo-software/diboot" target="_blank" title="Github 仓库 - 开源不易，star鼓励">
+                <img src="https://img.shields.io/github/stars/dibo-software/diboot.svg?style=social&label=Stars" />
+              </a>
+            </el-col>
+            <el-col :span="8">
+              <el-popover
+                placement="bottom-end"
+                title="感谢每一份信任与支持"
+                :width="200"
+                trigger="hover"
+                style="margin-right: 10px"
+              >
+                <el-image src="https://www.diboot.com/wechat_donate.png" fit="contain" />
+                <template #reference>
+                  <el-button type="primary" link>捐助支持 Diboot</el-button>
+                </template>
+              </el-popover>
+            </el-col>
+          </el-row>
         </el-card>
         <el-card style="flex: 1" shadow="hover">
           <div class="fw-bold mb-20" style="font-size: calc(var(--el-font-size-dynamic) + 4px)">活跃度</div>
