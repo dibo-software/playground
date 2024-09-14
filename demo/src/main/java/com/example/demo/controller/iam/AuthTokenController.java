@@ -1,5 +1,6 @@
 package com.example.demo.controller.iam;
 
+import com.diboot.core.binding.Binder;
 import com.diboot.core.cache.BaseCacheManager;
 import com.diboot.core.controller.BaseController;
 import com.diboot.core.exception.BusinessException;
@@ -19,6 +20,7 @@ import com.diboot.iam.service.IamUserRoleService;
 import com.diboot.iam.service.IamUserService;
 import com.diboot.iam.util.IamSecurityUtils;
 import com.diboot.iam.util.TokenUtils;
+import com.diboot.iam.vo.IamUserOrgVO;
 import com.pig4cloud.captcha.ArithmeticCaptcha;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -87,7 +89,7 @@ public class AuthTokenController extends BaseController {
      * @return 响应（troken）
      */
     @PostMapping("/login")
-    public JsonResult<String> login(@RequestBody PwdCredential credential) { //TenantPwdCredential
+    public JsonResult<String> login(@RequestBody PwdCredential /* TenantPwdCredential */ credential) {
         // 获取缓存中的验证码
         String traceId = credential.getTraceId();
         String verCode = credential.getCaptcha();
@@ -149,10 +151,10 @@ public class AuthTokenController extends BaseController {
         if (currentUser == null) {
             return JsonResult.OK();
         }
-        if(refresh && currentUser instanceof IamUser) {
-            iamUserService.refreshUserInfo((IamUser)currentUser);
+        if (refresh && currentUser instanceof IamUser) {
+            iamUserService.refreshUserInfo((IamUser) currentUser);
         }
-        data.put("info", currentUser);
+        data.put("info", Binder.convertAndBindRelations(currentUser, IamUserOrgVO.class));
         // 角色权限数据
         List<IamRole> roles = iamUserRoleService.getUserRoleList(IamUser.class.getSimpleName(), currentUser.getId());
         data.put("roles", roles);
