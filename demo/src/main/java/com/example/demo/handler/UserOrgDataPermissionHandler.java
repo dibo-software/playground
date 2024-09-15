@@ -1,6 +1,5 @@
 package com.example.demo.handler;
 
-import com.diboot.core.config.Cons;
 import com.diboot.iam.data.UserOrgDataAccessScopeManager;
 import org.springframework.stereotype.Component;
 
@@ -11,12 +10,7 @@ import org.springframework.stereotype.Component;
  * @date 2022/9/9
  * Copyright © diboot.com
  */
-// title = "基于用户组织的权限控制"
 @Component
 public class UserOrgDataPermissionHandler extends UserOrgDataAccessScopeManager {
-
-    protected boolean isOrgFieldName(String fieldName) {
-        return super.isOrgFieldName(fieldName) || "reportOrg".equals(fieldName);
-    }
 
 }
