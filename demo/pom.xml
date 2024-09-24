@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.3</version>
+        <version>3.3.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
@@ -15,7 +15,6 @@
     <description>Demo project for Diboot</description>
 
     <properties>
-<!--        <java.version>1.8</java.version>-->
         <diboot.version>3.5.0</diboot.version>
     </properties>
 
@@ -160,13 +159,13 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>-->
 
-        <!-- 依赖 devtools 代码生成工具 -->
+        <!-- devtools 代码生成工具 及其相关依赖 begin ，开发环境依赖使用，部署环境需剔除依赖-->
         <dependency>
             <groupId>com.diboot</groupId>
             <artifactId>lcdp-devtools</artifactId>
             <version>${diboot.version}</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/diboot-lcdp-devtools-3.4.0.jar</systemPath>
+            <systemPath>${project.basedir}/libs/diboot-lcdp-devtools-${diboot.version}.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.mybatis.dynamic-sql</groupId>
@@ -177,9 +176,10 @@
         <dependency>
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-core</artifactId>
-            <version>3.26.0</version>
+            <version>3.26.2</version>
             <scope>provided</scope>
         </dependency>
+        <!-- devtools 代码生成工具 及其相关依赖 end -->
 
     </dependencies>
     <build>

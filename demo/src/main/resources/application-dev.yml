@@ -32,7 +32,6 @@ logging:
 # Diboot Configuration
 diboot:
   init-sql: true #自动初始化SQL，开发环境下初次启动开启，初始化后可关闭
-  #i18n: true #启用国际化
   file:
     # 文件存储路径（本地存储方式）
     storage-directory: D:/temp/playground
@@ -62,7 +61,7 @@ diboot:
 #      user-info-uri: http://127.0.0.1:8000/user-center/oauth2/user-info
 #      callback: http://127.0.0.1:5173/login
   lcdp:
-    #tenant: false 是否开启多租户
+    #tenant: true #Devtools是否开启多租户模式，默认false
     devtools:
       codes-author: MyName
       codes-copyright: MyCorp
