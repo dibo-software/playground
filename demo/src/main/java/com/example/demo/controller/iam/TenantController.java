@@ -1,6 +1,5 @@
 package com.example.demo.controller.iam;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.diboot.core.controller.BaseCrudRestController;
 import com.diboot.core.util.BeanUtils;
@@ -12,7 +11,6 @@ import com.diboot.iam.annotation.Log;
 import com.diboot.iam.annotation.OperationCons;
 import com.diboot.iam.config.Cons;
 import com.diboot.iam.dto.IamUserFormDTO;
-import com.diboot.iam.entity.IamOrg;
 import com.diboot.iam.entity.IamResource;
 import com.diboot.iam.entity.IamUser;
 import com.diboot.iam.service.IamAccountService;
@@ -32,7 +30,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 租户 相关rest接口

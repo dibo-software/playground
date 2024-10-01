@@ -9,7 +9,6 @@ import com.diboot.core.vo.Pagination;
 import com.diboot.iam.annotation.BindPermission;
 import com.diboot.iam.annotation.Log;
 import com.diboot.iam.annotation.OperationCons;
-import com.diboot.iam.dto.IamPositionFormDTO;
 import com.diboot.iam.entity.IamPosition;
 import com.diboot.iam.entity.IamUserPosition;
 import com.diboot.iam.service.IamPositionService;
@@ -91,7 +90,7 @@ public class PositionController extends BaseCrudRestController<IamPosition> {
     @Log(operation = OperationCons.LABEL_CREATE)
     @BindPermission(name = OperationCons.LABEL_CREATE, code = OperationCons.CODE_WRITE)
     @PostMapping
-    public JsonResult createEntityWithMapping(@RequestBody @Valid IamPositionFormDTO entity) throws Exception {
+    public JsonResult createEntityWithMapping(@RequestBody @Valid IamPosition entity) throws Exception {
         return super.createEntity(entity);
     }
 
@@ -105,7 +104,7 @@ public class PositionController extends BaseCrudRestController<IamPosition> {
     @Log(operation = OperationCons.LABEL_UPDATE)
     @BindPermission(name = OperationCons.LABEL_UPDATE, code = OperationCons.CODE_WRITE)
     @PutMapping("/{id}")
-    public JsonResult updateEntityWithMapping(@PathVariable("id") String id, @Valid @RequestBody IamPositionFormDTO entity) throws Exception {
+    public JsonResult updateEntityWithMapping(@PathVariable("id") String id, @Valid @RequestBody IamPosition entity) throws Exception {
         return super.updateEntity(id, entity);
     }
 

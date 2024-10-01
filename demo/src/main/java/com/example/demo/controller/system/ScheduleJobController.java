@@ -106,6 +106,12 @@ public class ScheduleJobController extends BaseCrudRestController<ScheduleJob> {
     }
 
 
+    /**
+     * 执行一次定时任务
+     * @param id
+     * @return
+     * @throws Exception
+     */
     @Log(operation = "执行一次定时任务")
     @BindPermission(name = "执行一次定时任务", code = OperationCons.CODE_WRITE)
     @PutMapping("/execute-once/{id}")
@@ -148,7 +154,7 @@ public class ScheduleJobController extends BaseCrudRestController<ScheduleJob> {
     @BindPermission(name = "定时日志列表", code = OperationCons.CODE_READ)
     @GetMapping("/log")
     public JsonResult getJobLogVOListMapping(ScheduleJobLog entity, Pagination pagination) throws Exception {
-        QueryWrapper<ScheduleJobLog> queryWrapper = super.buildQueryWrapperByQueryParams(entity);
+        QueryWrapper<ScheduleJobLog> queryWrapper = super.buildQueryWrapperByDTO(entity);
         if (pagination != null && V.isEmpty(pagination.getOrderBy())) {
             pagination.setOrderBy(Pagination.ORDER_BY_ID_DESC);
         }

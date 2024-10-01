@@ -149,7 +149,7 @@ public class OrgController extends BaseCrudRestController<IamOrg> {
     @BindPermission(name = "获取子组织列表", code = OperationCons.CODE_READ)
     @GetMapping("/children-list/{parentNodeId}")
     public JsonResult getOrgChildList(@PathVariable("parentNodeId") String parentNodeId, IamOrgDTO iamOrgDTO, Pagination pagination) throws Exception {
-        QueryWrapper<IamOrg> wrapper = super.buildQueryWrapperByQueryParams(iamOrgDTO);
+        QueryWrapper<IamOrg> wrapper = super.buildQueryWrapperByDTO(iamOrgDTO);
         if (parentNodeId != null && !V.equals(parentNodeId, Cons.TREE_ROOT_ID)) {
             wrapper.lambda().eq(IamOrg::getParentId, parentNodeId);
         }
@@ -159,8 +159,8 @@ public class OrgController extends BaseCrudRestController<IamOrg> {
     /**
      * 检查code是否重复
      *
-     * @param id
-     * @param code
+     * @param id 组织/部门id
+     * @param code 编码
      * @return
      */
     @GetMapping("/check-code-duplicate")

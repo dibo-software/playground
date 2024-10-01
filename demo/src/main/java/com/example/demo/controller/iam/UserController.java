@@ -168,7 +168,7 @@ public class UserController extends BaseCrudRestController<IamUser> {
      */
     @GetMapping("/user-list/{orgId}")
     public JsonResult getUserList(@PathVariable("orgId") String orgId, IamUser iamUser, Pagination pagination) throws Exception {
-        QueryWrapper<IamUser> wrapper = super.buildQueryWrapperByQueryParams(iamUser);
+        QueryWrapper<IamUser> wrapper = super.buildQueryWrapperByDTO(iamUser);
         if (orgId != null && !V.equals(orgId, Cons.TREE_ROOT_ID)) {
             wrapper.lambda().eq(IamUser::getOrgId, orgId);
         }

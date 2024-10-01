@@ -59,7 +59,7 @@ public class UserExcelController extends BaseExcelFileController {
         ExcelHelper.exportExcel(response, fileName, UserImportModel.class, null);
     }
 
-    /***
+    /**
      * 预览数据
      * @throws Exception
      */
@@ -70,7 +70,7 @@ public class UserExcelController extends BaseExcelFileController {
         return super.excelPreview(file, params);
     }
 
-    /***
+    /**
      * 预览保存
      * @throws Exception
      */
@@ -81,7 +81,7 @@ public class UserExcelController extends BaseExcelFileController {
         return super.excelPreviewSave(params);
     }
 
-    /***
+    /**
      * excel导入用户
      * @throws Exception
      */
@@ -92,7 +92,7 @@ public class UserExcelController extends BaseExcelFileController {
         return super.uploadExcelFile(file, params);
     }
 
-    /***
+    /**
      * 人员列表导出
      * @param iamUserDto
      * @return
@@ -102,7 +102,7 @@ public class UserExcelController extends BaseExcelFileController {
     @BindPermission(name = OperationCons.LABEL_EXPORT, code = OperationCons.CODE_EXPORT)
     @GetMapping("/export")
     public JsonResult export(IamUserSearchDTO iamUserDto, @RequestParam(value = "columns", required = false) List<String> columns, HttpServletResponse response) throws Exception {
-        QueryWrapper<IamUser> queryWrapper = super.buildQueryWrapperByQueryParams(iamUserDto);
+        QueryWrapper<IamUser> queryWrapper = super.buildQueryWrapperByDTO(iamUserDto);
         queryWrapper.lambda().orderByAsc(IamUser::getSortId);
         List<IamUserVO> iamUserList = iamUserService.getViewObjectList(queryWrapper, null, IamUserVO.class);
         if (V.isEmpty(iamUserList)) {
@@ -114,12 +114,16 @@ public class UserExcelController extends BaseExcelFileController {
         return null;
     }
 
+    /**
+     * 可导出字段（用于选择导出列）
+     * @return
+     */
     @GetMapping("/export-table-head")
     public JsonResult getTableHeaderMap() {
         return new JsonResult<>(ExcelHelper.getTableHeads(UserExportModel.class));
     }
 
-    /***
+    /**
      * 实体列表转excel列表
      * @param userVoList
      * @return

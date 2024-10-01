@@ -43,7 +43,7 @@ public class ResourceController extends BaseCrudRestController<IamResource> {
     @Autowired
     private IamResourceService iamResourceService;
 
-    /***
+    /**
      * 查询ViewObject的分页数据
      * <p>
      * url请求参数示例: ?field=abc&pageSize=20&pageIndex=1&orderBy=id
@@ -55,7 +55,7 @@ public class ResourceController extends BaseCrudRestController<IamResource> {
     @BindPermission(name = OperationCons.LABEL_LIST, code = OperationCons.CODE_READ)
     @GetMapping
     public JsonResult getViewObjectListMapping(IamResource entity) throws Exception {
-        QueryWrapper<IamResource> queryWrapper = super.buildQueryWrapperByQueryParams(entity);
+        QueryWrapper<IamResource> queryWrapper = super.buildQueryWrapperByDTO(entity);
         queryWrapper.lambda().orderByAsc(IamResource::getSortId);
         List<IamResourceListVO> voList = iamResourceService.getViewObjectList(queryWrapper, null, IamResourceListVO.class);
         Map<String, Object> paramsMap = getParamsMap();
@@ -79,7 +79,7 @@ public class ResourceController extends BaseCrudRestController<IamResource> {
         return JsonResult.OK(BeanUtils.buildTree(list, Cons.TREE_ROOT_ID));
     }
 
-    /***
+    /**
      * 根据资源id查询ViewObject
      * @param id ID
      * @return
@@ -92,7 +92,7 @@ public class ResourceController extends BaseCrudRestController<IamResource> {
         return super.getViewObject(id, IamResourceVO.class);
     }
 
-    /***
+    /**
      * 新建菜单项、按钮/权限列表
      * @param IamResourceDTO
      * @return
@@ -106,7 +106,7 @@ public class ResourceController extends BaseCrudRestController<IamResource> {
         return JsonResult.OK(IamResourceDTO.getId());
     }
 
-    /***
+    /**
      * 更新用户、账号和用户角色关联列表
      * @param IamResourceDTO
      * @return JsonResult
@@ -147,7 +147,7 @@ public class ResourceController extends BaseCrudRestController<IamResource> {
         return new JsonResult<>(getService().sort(sortParam, IamResource::getSortId, IamResource::getParentId, null));
     }
 
-    /***
+    /**
      * api接口列表（供前端选择）
      * @return
      * @throws Exception
@@ -157,7 +157,7 @@ public class ResourceController extends BaseCrudRestController<IamResource> {
         return JsonResult.OK(IamCacheManager.getApiPermissionVoList());
     }
 
-    /***
+    /**
      * 检查菜单编码是否重复
      * @param id
      * @param code

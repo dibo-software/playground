@@ -87,7 +87,6 @@ public class AiSessionRecordController extends BaseCrudRestController<AiSessionR
         return JsonResult.OK(aiSessionRecordService.getEntity(id));
     }
 
-
     /**
      * 创建会话记录对象数据
      *
@@ -102,7 +101,13 @@ public class AiSessionRecordController extends BaseCrudRestController<AiSessionR
         return JsonResult.OK(aiSessionRecordService.createEntity(aiSessionRecord));
     }
 
-
+    /**
+     * AI 问答
+     * @param aiChatRequest
+     * @param response
+     * @return
+     * @throws Exception
+     */
     @Log(operation = "AI 问答")
     @BindPermission(name = "AI 问答", code = OperationCons.CODE_WRITE)
     @PostMapping("/chat")
@@ -179,6 +184,5 @@ public class AiSessionRecordController extends BaseCrudRestController<AiSessionR
         }
         return JsonResult.OK(aiMessages);
     }
-
 
 }

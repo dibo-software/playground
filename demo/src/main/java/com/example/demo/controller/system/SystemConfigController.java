@@ -56,7 +56,7 @@ public class SystemConfigController extends BaseCrudRestController<SystemConfig>
     @BindPermission(name = OperationCons.LABEL_LIST, code = OperationCons.CODE_READ)
     @GetMapping
     public JsonResult<List<SystemConfig>> getViewObjectListMapping(SystemConfig entity) throws Exception {
-        QueryWrapper<SystemConfig> queryWrapper = super.buildQueryWrapperByQueryParams(entity);
+        QueryWrapper<SystemConfig> queryWrapper = super.buildQueryWrapperByDTO(entity);
         if (V.isEmpty(entity.getCategory())) {
             queryWrapper.lambda().and(query -> query.eq(SystemConfig::getCategory, S.EMPTY).or().isNull(SystemConfig::getCategory));
         }

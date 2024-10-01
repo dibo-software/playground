@@ -1,8 +1,10 @@
 package com.example.demo.config;
 
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.DataPermissionInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
+import com.diboot.core.handler.DataAccessControlHandler;
 import com.diboot.tenant.handler.DefaultTenantHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

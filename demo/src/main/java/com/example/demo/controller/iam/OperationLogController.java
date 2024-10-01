@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/iam/operation-log")
 public class OperationLogController extends BaseCrudRestController<IamOperationLog> {
 
-    /***
+    /**
     * 查询ViewObject的分页数据
     * <p>
     * url请求参数示例: ?field=abc&pageSize=20&pageIndex=1&orderBy=id
@@ -43,7 +43,7 @@ public class OperationLogController extends BaseCrudRestController<IamOperationL
         if(pagination != null && V.isEmpty(pagination.getOrderBy())) {
             pagination.setOrderBy(Pagination.ORDER_BY_ID_DESC);
         }
-        QueryWrapper<IamOperationLog> queryWrapper = super.buildQueryWrapperByQueryParams(entity);
+        QueryWrapper<IamOperationLog> queryWrapper = super.buildQueryWrapperByDTO(entity);
         Integer status = getInteger("status");
         if(status != null){
             if(status.intValue() == 0){
@@ -56,7 +56,7 @@ public class OperationLogController extends BaseCrudRestController<IamOperationL
         return super.getEntityListWithPaging(queryWrapper, pagination);
     }
 
-    /***
+    /**
     * 根据资源id查询ViewObject
     * @param id ID
     * @return
