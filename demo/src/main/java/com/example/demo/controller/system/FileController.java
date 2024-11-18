@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,6 +41,11 @@ public class FileController {
     private FileStorageService fileStorageService;
 
     /**
+     * 附加允许的文件后缀列表
+     */
+    private static final List<String> ADDITIONAL_VALID_EXT = Arrays.asList("");
+
+    /**
      * 上传文件
      *
      * @param file 文件
@@ -48,9 +54,12 @@ public class FileController {
      */
     @PostMapping("/upload")
     public JsonResult<FileRecord> upload(@RequestParam("file") MultipartFile file) throws Exception {
-        if (!FileHelper.isValidFileExt(file.getOriginalFilename())) {
-            log.warn("非法的文件上传:{}", file.getOriginalFilename());
-            return JsonResult.FAIL_VALIDATION("非法的文件上传");
+        if (file == null || file.getOriginalFilename() == null) {
+            return JsonResult.FAIL_VALIDATION("文件上传异常：无有效文件！");
+        }
+        if (!FileHelper.isValidFileExt(file.getOriginalFilename(), ADDITIONAL_VALID_EXT)) {
+            log.warn("非法的文件上传:{} 文件类型不允许！", file.getOriginalFilename());
+            return JsonResult.FAIL_VALIDATION("非法的文件上传：文件类型不允许！");
         }
         FileRecord fileRecord = fileStorageService.save(file);
         fileRecordService.createEntity(fileRecord);
@@ -152,4 +161,5 @@ public class FileController {
         fileStorageService.download(fileRecord, response);
         return null;
     }
+
 }
