@@ -36,7 +36,6 @@ public class OperationLogController extends BaseCrudRestController<IamOperationL
     * @return
     * @throws Exception
     */
-    @Log(operation = OperationCons.LABEL_LIST)
     @BindPermission(name = OperationCons.LABEL_LIST, code = OperationCons.CODE_READ)
     @GetMapping
     public JsonResult getViewObjectListMapping(IamOperationLog entity, Pagination pagination) throws Exception{
@@ -44,15 +43,6 @@ public class OperationLogController extends BaseCrudRestController<IamOperationL
             pagination.setOrderBy(Pagination.ORDER_BY_ID_DESC);
         }
         QueryWrapper<IamOperationLog> queryWrapper = super.buildQueryWrapperByDTO(entity);
-        Integer status = getInteger("status");
-        if(status != null){
-            if(status.intValue() == 0){
-                queryWrapper.eq("status_code", 0);
-            }
-            else{
-                queryWrapper.gt("status_code", 0);
-            }
-        }
         return super.getEntityListWithPaging(queryWrapper, pagination);
     }
 
@@ -62,7 +52,6 @@ public class OperationLogController extends BaseCrudRestController<IamOperationL
     * @return
     * @throws Exception
     */
-    @Log(operation = OperationCons.LABEL_DETAIL)
     @BindPermission(name = OperationCons.LABEL_DETAIL, code = OperationCons.CODE_READ)
     @GetMapping("/{id}")
     public JsonResult getViewObjectMapping(@PathVariable("id") String id) throws Exception{
