@@ -17,10 +17,14 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 文件记录 相关Controller
@@ -39,6 +43,21 @@ public class I18nConfigController extends BaseCrudRestController<I18nConfig> {
 
     @Autowired
     private I18nConfigService i18nConfigService;
+
+    /**
+     * 获取所有国际化配置
+     *
+     * @return
+     */
+    @GetMapping("/all")
+    public JsonResult<Map<String, String>> getViewObjectListMapping() {
+        LambdaQueryWrapper<I18nConfig> queryWrapper = Wrappers.lambdaQuery();
+        Locale locale = LocaleContextHolder.getLocale();
+        if (V.isEmpty(locale.getCountry())) queryWrapper.likeRight(I18nConfig::getLanguage, locale.getLanguage());
+        else queryWrapper.eq(I18nConfig::getLanguage, locale.getLanguage() + "_" + locale.getCountry());
+        List<I18nConfig> configList = i18nConfigService.getEntityList(queryWrapper);
+        return JsonResult.OK(configList.stream().collect(Collectors.toMap(I18nConfig::getCode, I18nConfig::getContent)));
+    }
 
     /**
      * 查询ViewObject的分页数据
