@@ -32,6 +32,7 @@ logging:
 # Diboot Configuration
 diboot:
   init-sql: true #自动初始化SQL，开发环境下初次启动开启，初始化后可关闭
+  # i18n: true #启用国际化
   file:
     # 文件存储路径（本地存储方式）
     storage-directory: D:/temp/playground
@@ -39,6 +40,7 @@ diboot:
     # token-expires-minutes: 60
     # Shiro的匿名urls
     anon-urls:
+      - /i18n-config/all
       - /swagger**/**
       - /webjars/**
       - /v3/**
