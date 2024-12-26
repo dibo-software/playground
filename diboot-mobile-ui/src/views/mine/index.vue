@@ -10,7 +10,7 @@ const authStore = useAuthStore()
 const positions = ref()
 const orgName = ref()
 if (authStore.info) {
-  positions.value = authStore.info.positionList?.map(position => position.name).toString()
+  positions.value = authStore.info.positionList?.map((position: any) => position.name).toString()
   api
     .get<OrgModel>(`/iam/org/${authStore.info.orgId}`)
     .then(res => {

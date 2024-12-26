@@ -1,9 +1,13 @@
 package com.example.demo.controller.iam;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.diboot.core.binding.Binder;
 import com.diboot.core.cache.BaseCacheManager;
 import com.diboot.core.controller.BaseController;
+import com.diboot.core.entity.AbstractEntity;
 import com.diboot.core.exception.BusinessException;
+import com.diboot.core.util.V;
 import com.diboot.core.vo.JsonResult;
 import com.diboot.core.vo.Status;
 import com.diboot.iam.annotation.BindPermission;
@@ -11,10 +15,9 @@ import com.diboot.iam.annotation.Log;
 import com.diboot.iam.auth.AuthServiceFactory;
 import com.diboot.iam.config.Cons;
 import com.diboot.iam.dto.PwdCredential;
-import com.diboot.iam.entity.BaseLoginUser;
-import com.diboot.iam.entity.IamRole;
-import com.diboot.iam.entity.IamUser;
+import com.diboot.iam.entity.*;
 import com.diboot.iam.entity.route.RouteRecord;
+import com.diboot.iam.service.IamResourceService;
 import com.diboot.iam.service.IamRoleResourceService;
 import com.diboot.iam.service.IamUserRoleService;
 import com.diboot.iam.service.IamUserService;
@@ -57,6 +60,8 @@ public class AuthTokenController extends BaseController {
     private IamUserService iamUserService;
     @Autowired
     private IamRoleResourceService iamRoleResourceService;
+    @Autowired
+    private IamResourceService iamResourceService;
 
     @Autowired
     @Qualifier("iamCacheManager")
@@ -144,7 +149,8 @@ public class AuthTokenController extends BaseController {
      * @return 响应（用户信息）
      */
     @GetMapping("/user-info")
-    public JsonResult<Map<String, Object>> getUserInfo(@RequestParam(value = "refresh", required = false) boolean refresh) {
+    public JsonResult<Map<String, Object>> getUserInfo(@RequestParam(value = "refresh", required = false) boolean refresh,
+                                                       @RequestParam(value = "module", required = false) String module) {
         Map<String, Object> data = new HashMap<>();
         // 获取当前登录用户对象
         BaseLoginUser currentUser = IamSecurityUtils.getCurrentUser();
@@ -158,6 +164,23 @@ public class AuthTokenController extends BaseController {
         // 角色权限数据
         List<IamRole> roles = iamUserRoleService.getUserRoleList(IamUser.class.getSimpleName(), currentUser.getId());
         data.put("roles", roles);
+
+        // 移动端权限列表
+        if ("mobile".equals(module)) {
+            LambdaQueryWrapper<IamResource> queryWrapper = Wrappers.lambdaQuery();
+            queryWrapper.eq(IamResource::getStatus, Cons.DICTCODE_RESOURCE_STATUS.A.name());
+            queryWrapper.eq(IamResource::getAppModule, module);
+            if (IamSecurityUtils.isSuperAdmin()) {
+                data.put("permissions", iamResourceService.getValuesOfField(queryWrapper, IamResource::getResourceCode));
+            } else if (roles != null && !roles.isEmpty()) {
+                List<String> roleIds = roles.stream().map(AbstractEntity::getId).toList();
+                List<String> resourceIds = iamRoleResourceService.getValuesOfField(Wrappers.<IamRoleResource>lambdaQuery().in(IamRoleResource::getRoleId, roleIds), IamRoleResource::getResourceId);
+                if (V.notEmpty(resourceIds)) {
+                    queryWrapper.in(IamResource::getId, resourceIds);
+                    data.put("permissions", iamResourceService.getValuesOfField(queryWrapper, IamResource::getResourceCode));
+                }
+            }
+        }
         return JsonResult.OK(data);
     }
 
