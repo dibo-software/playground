@@ -2,9 +2,13 @@ package com.example.demo.controller.iam;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.diboot.core.cache.I18nCacheManager;
 import com.diboot.core.controller.BaseCrudRestController;
 import com.diboot.core.dto.SortParamDTO;
+import com.diboot.core.entity.I18nConfig;
+import com.diboot.core.service.I18nConfigService;
 import com.diboot.core.util.BeanUtils;
 import com.diboot.core.util.V;
 import com.diboot.core.vo.JsonResult;
@@ -23,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +47,10 @@ public class ResourceController extends BaseCrudRestController<IamResource> {
 
     @Autowired
     private IamResourceService iamResourceService;
+    @Autowired(required = false)
+    private I18nConfigService i18nConfigService;
+    @Autowired(required = false)
+    private I18nCacheManager i18nCacheManager;
 
     /**
      * 查询ViewObject的分页数据
@@ -108,15 +117,30 @@ public class ResourceController extends BaseCrudRestController<IamResource> {
 
     /**
      * 更新用户、账号和用户角色关联列表
-     * @param IamResourceDTO
+     * @param iamResourceDTO
      * @return JsonResult
      * @throws Exception
      */
     @Log(operation = OperationCons.LABEL_UPDATE)
     @BindPermission(name = OperationCons.LABEL_UPDATE, code = OperationCons.CODE_WRITE)
     @PutMapping("/{id}")
-    public JsonResult updateEntityMapping(@PathVariable("id") String id, @Valid @RequestBody IamResourceDTO IamResourceDTO) throws Exception {
-        iamResourceService.updateMenuResources(IamResourceDTO);
+    public JsonResult updateEntityMapping(@PathVariable("id") String id, @Valid @RequestBody IamResourceDTO iamResourceDTO) throws Exception {
+        String oldDisplayName = iamResourceService.getValueOfField(iamResourceDTO.getId(), IamResource::getDisplayName);
+        iamResourceService.updateMenuResources(iamResourceDTO);
+        if(i18nConfigService != null && V.notEquals(oldDisplayName, iamResourceDTO.getDisplayName())) {
+            if(V.notEquals(oldDisplayName, iamResourceDTO.getDisplayName())) {
+                LambdaUpdateWrapper<I18nConfig> updateWrapper =
+                        Wrappers.<I18nConfig>lambdaUpdate()
+                                .set(I18nConfig::getContent, iamResourceDTO.getDisplayName())
+                                .eq(I18nConfig::getLanguage, "zh_CN")
+                                .eq(I18nConfig::getCode, iamResourceDTO.getDisplayNameI18n());
+                i18nConfigService.updateEntity(updateWrapper);
+                Map<String, String> i18nItemCache = new HashMap<>();
+                i18nItemCache.put(iamResourceDTO.getDisplayNameI18n(), iamResourceDTO.getDisplayName());
+                i18nCacheManager.cacheLanguage("zh_CN", i18nItemCache);
+                log.debug("I18N {}:{} 的缓存已被更新为: {}", "zh_CN", iamResourceDTO.getDisplayNameI18n(), iamResourceDTO.getDisplayName());
+            }
+        }
         return JsonResult.OK();
     }
 
