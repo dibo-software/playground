@@ -42,3 +42,4 @@ diboot:
     # token-expires-minutes: 60
     # Shiro的匿名urls，用逗号分隔
     anon-urls:
+      - /i18n-config/all
