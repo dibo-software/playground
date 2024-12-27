@@ -40,7 +40,6 @@ diboot:
     # token-expires-minutes: 60
     # Shiro的匿名urls
     anon-urls:
-      - /i18n-config/all
       - /swagger**/**
       - /webjars/**
       - /v3/**

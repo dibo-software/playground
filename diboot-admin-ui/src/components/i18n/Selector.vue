@@ -64,7 +64,7 @@ watch(visible, boo => {
   if (boo) {
     let queryCode = unref(props.group ?? i18nGroup)
     if (!queryCode) {
-      ;(value.value ? [value.value] : (codes ?? []))
+      ;(value.value ? [value.value] : codes ?? [])
         .map(val => val?.slice(0, val.lastIndexOf('.') + 1))
         .filter(e => !!e)
         .reduce((map: Record<string, any>, code) => {
