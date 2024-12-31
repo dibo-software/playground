@@ -8,6 +8,7 @@ import com.diboot.core.dto.SortParamDTO;
 import com.diboot.core.util.BeanUtils;
 import com.diboot.core.util.V;
 import com.diboot.core.vo.JsonResult;
+import com.diboot.core.vo.Pagination;
 import com.diboot.iam.annotation.BindPermission;
 import com.diboot.iam.annotation.Log;
 import com.diboot.iam.annotation.OperationCons;
@@ -54,15 +55,8 @@ public class ResourceController extends BaseCrudRestController<IamResource> {
     @Log(operation = OperationCons.LABEL_LIST)
     @BindPermission(name = OperationCons.LABEL_LIST, code = OperationCons.CODE_READ)
     @GetMapping
-    public JsonResult getViewObjectListMapping(IamResource entity) throws Exception {
-        QueryWrapper<IamResource> queryWrapper = super.buildQueryWrapperByDTO(entity);
-        queryWrapper.lambda().orderByAsc(IamResource::getSortId);
-        List<IamResourceListVO> voList = iamResourceService.getViewObjectList(queryWrapper, null, IamResourceListVO.class);
-        Map<String, Object> paramsMap = getParamsMap();
-        if (!paramsMap.containsKey("displayName") && !paramsMap.containsKey("resourceCode")) {
-            voList = BeanUtils.buildTree(voList, Cons.TREE_ROOT_ID);
-        }
-        return JsonResult.OK(voList);
+    public JsonResult getViewObjectListMapping(IamResource entity, Pagination pagination) throws Exception {
+        return super.getViewObjectList(entity, pagination, IamResourceListVO.class);
     }
 
     /**
@@ -74,6 +68,14 @@ public class ResourceController extends BaseCrudRestController<IamResource> {
     public JsonResult getMenuTreeList() {
         LambdaQueryWrapper<IamResource> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.ne(IamResource::getDisplayType, "PERMISSION");
+        queryWrapper.orderByAsc(IamResource::getSortId).orderByAsc(IamResource::getId);
+        List<IamResourceListVO> list = iamResourceService.getViewObjectList(queryWrapper, null, IamResourceListVO.class);
+        return JsonResult.OK(BeanUtils.buildTree(list, Cons.TREE_ROOT_ID));
+    }
+
+    @GetMapping("/tree")
+    public JsonResult getTreeList() {
+        LambdaQueryWrapper<IamResource> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.orderByAsc(IamResource::getSortId).orderByAsc(IamResource::getId);
         List<IamResourceListVO> list = iamResourceService.getViewObjectList(queryWrapper, null, IamResourceListVO.class);
         return JsonResult.OK(BeanUtils.buildTree(list, Cons.TREE_ROOT_ID));
