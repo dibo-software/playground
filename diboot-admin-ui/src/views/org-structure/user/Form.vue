@@ -136,8 +136,8 @@ const rules: FormRules = {
         <el-col :md="12" :sm="24">
           <el-form-item :required="true" prop="isSysAccount" :label="$t('user.type')">
             <el-radio-group v-model="model.isSysAccount" @change="switchType">
-              <el-radio-button :label="false">{{ $t('user.general') }}</el-radio-button>
-              <el-radio-button :label="true">{{ $t('user.system') }}</el-radio-button>
+              <el-radio-button :value="false">{{ $t('user.general') }}</el-radio-button>
+              <el-radio-button :value="true">{{ $t('user.system') }}</el-radio-button>
             </el-radio-group>
           </el-form-item>
         </el-col>
@@ -148,8 +148,10 @@ const rules: FormRules = {
               :placeholder="$t('user.placeholder.orgId')"
               class="tree-selector"
               :data="relatedData.orgTree"
-              :default-expand-all="true"
-              :check-strictly="true"
+              filterable
+              default-expand-all
+              check-strictly
+              clearable
             />
           </el-form-item>
         </el-col>
@@ -243,8 +245,8 @@ const rules: FormRules = {
         <el-col :md="12" :sm="24">
           <el-form-item prop="status" :label="$t('user.status')">
             <el-radio-group v-model="model.status">
-              <el-radio label="A">{{ $t('user.onJob') }}</el-radio>
-              <el-radio label="I">{{ $t('user.dimission') }}</el-radio>
+              <el-radio value="A">{{ $t('user.onJob') }}</el-radio>
+              <el-radio value="I">{{ $t('user.dimission') }}</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-col>

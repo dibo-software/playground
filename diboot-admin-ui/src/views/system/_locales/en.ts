@@ -2,6 +2,7 @@ import type { Locale } from './zhCN'
 const en: Locale = {
   config: {
     propKey: 'Property Name',
+    propLabel: 'Property Label',
     propValue: 'Property Value',
     category: 'Category',
     dataType: 'Data Type',
@@ -150,9 +151,9 @@ const en: Locale = {
     displayType: 'Menu Category',
     displayName: 'Menu Name',
     routeMetaIcon: 'Menu Icon',
-    routePath: 'Route Path（e.g：route-path）',
-    resourceCode: 'Route Name（e.g：RouteName）',
-    componentPath: 'Component path（e.g: @/views/user/List.vue）',
+    routePath: 'Route Path',
+    resourceCode: 'Route Name',
+    componentPath: 'Component path',
     redirectPath: 'Redirect',
     routeMetaUrl: 'External Link',
     appModule: 'Application Module',
@@ -181,13 +182,13 @@ const en: Locale = {
     },
     placeholder: {
       displayName: 'Enter menu name',
-      routePath: 'Enter route address (e.g., route-path)',
-      resourceCode: 'Enter route name (e.g., RouteName)',
+      routePath: 'Enter route address (e.g: route-path)',
+      resourceCode: 'Enter route name (e.g: RouteName)',
       redirectPath: 'Enter redirect',
       routeMetaUrl: 'Enter external link',
       permissionCodes: 'Click to focus then select from the permission list',
       componentName: 'Please enter the component name',
-      componentPath: 'Please enter the routing component path',
+      componentPath: "Component path (e.g: {'@'}/views/user/List.vue)",
       buttonPermissionConfig: {
         _customCode: 'Enter button permission code',
         resourceCode: 'Please select the current button permission code',
@@ -210,6 +211,7 @@ const en: Locale = {
   role: {
     name: 'Name',
     code: 'Code',
+    userList: 'User',
     description: 'Note',
     grantPermission: 'Authorize Permissions',
     permissionList: 'Role Authorization'

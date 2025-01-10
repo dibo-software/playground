@@ -54,7 +54,7 @@ export default defineStore('auth', {
             .catch(err => console.error(err.msg || err.message))
         }
       } catch (e) {
-        throw new Error('获取登录用户信息异常')
+        throw new Error('获取登录用户信息异常', e)
       }
     },
     async logout() {
