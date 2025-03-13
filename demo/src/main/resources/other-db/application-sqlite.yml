@@ -57,7 +57,6 @@ diboot:
 #      user-info-uri: http://127.0.0.1:8000/user-center/oauth2/user-info
 #      callback: http://127.0.0.1:5173/login
   lcdp:
-    #license: 订阅用户配置该项，使用VIP专属功能
     #tenant: false 是否开启多租户
     devtools:
       codes-author: MyName

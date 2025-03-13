@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2020, www.dibo.ltd (service@dibo.ltd).
+ * Copyright (c) 2015-2025, www.dibo.ltd (service@dibo.ltd).
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -13,36 +13,32 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.diboot.iam.dto;
+package com.diboot.iam.vo;
 
-import com.diboot.iam.entity.IamRole;
+import com.diboot.core.binding.annotation.BindDict;
+import com.diboot.core.vo.LabelValue;
+import com.diboot.iam.entity.Client;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.util.List;
+import java.io.Serial;
 
 /**
- * 角色表单接收类
- * @author mazc@dibo.ltd
- * @version v2.0
- * @date 2019/12/18
+ * 三方客户端 VO定义
+ *
+ * @author wind
+ * @version 3.5.1
+ * @date 2025/1/13
  */
 @Getter
 @Setter
 @Accessors(chain = true)
-public class IamRoleFormDTO extends IamRole {
+public class ClientVO extends Client {
+    @Serial
+    private static final long serialVersionUID = 8928260369300882232L;
 
-    private static final long serialVersionUID = 1444823850258901617L;
-
-    /**
-     * 权限id列表
-     */
-    private List<String> permissionIdList;
-
-    /**
-     * 用户id列表
-     */
-    private List<String> userIdList;
+    @BindDict(type = "ACCOUNT_STATUS", field = "status")
+    private LabelValue statusLabel;
 
 }

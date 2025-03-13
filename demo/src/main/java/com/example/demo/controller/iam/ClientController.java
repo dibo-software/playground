@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 三方应用 相关rest接口
+ * 三方应用接口服务 相关rest接口
  *
  * @author JerryMa
  * @version 1.0

@@ -11,7 +11,6 @@ import com.diboot.iam.annotation.Log;
 import com.diboot.iam.annotation.OperationCons;
 import com.diboot.iam.config.Cons;
 import com.diboot.iam.dto.IamUserFormDTO;
-import com.diboot.iam.entity.IamResource;
 import com.diboot.iam.entity.IamUser;
 import com.diboot.iam.service.IamAccountService;
 import com.diboot.iam.service.IamOrgService;

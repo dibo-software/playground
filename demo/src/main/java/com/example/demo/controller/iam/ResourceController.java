@@ -1,7 +1,6 @@
 package com.example.demo.controller.iam;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.diboot.core.controller.BaseCrudRestController;
 import com.diboot.core.dto.SortParamDTO;
@@ -12,7 +11,7 @@ import com.diboot.core.vo.Pagination;
 import com.diboot.iam.annotation.BindPermission;
 import com.diboot.iam.annotation.Log;
 import com.diboot.iam.annotation.OperationCons;
-import com.diboot.iam.cache.IamCacheManager;
+import com.diboot.iam.cache.IamPermissionCacheManager;
 import com.diboot.iam.config.Cons;
 import com.diboot.iam.dto.IamResourceDTO;
 import com.diboot.iam.entity.IamResource;
@@ -24,8 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 系统资源权限相关Controller
@@ -78,7 +77,9 @@ public class ResourceController extends BaseCrudRestController<IamResource> {
         LambdaQueryWrapper<IamResource> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.orderByAsc(IamResource::getSortId).orderByAsc(IamResource::getId);
         List<IamResourceListVO> list = iamResourceService.getViewObjectList(queryWrapper, null, IamResourceListVO.class);
-        return JsonResult.OK(BeanUtils.buildTree(list, Cons.TREE_ROOT_ID));
+        List<IamResourceListVO> tree = BeanUtils.buildTree(list, Cons.TREE_ROOT_ID);
+        tree.sort(Comparator.comparing(IamResource::getAppModule, Comparator.nullsFirst(Comparator.naturalOrder())));
+        return JsonResult.OK(tree);
     }
 
     /**
@@ -155,8 +156,8 @@ public class ResourceController extends BaseCrudRestController<IamResource> {
      * @throws Exception
      */
     @GetMapping("/api-list")
-    public JsonResult apiList() throws Exception {
-        return JsonResult.OK(IamCacheManager.getApiPermissionVoList());
+    public JsonResult apiList(boolean openApi) throws Exception {
+        return JsonResult.OK(IamPermissionCacheManager.getApiPermissionVoList(openApi));
     }
 
     /**
