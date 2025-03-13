@@ -17,7 +17,7 @@ const authStore = useAuthStore()
 const loading = ref(false)
 const PROCESS_USERNAME = ''
 const PASSWORD = ''
-const model = reactive({ username: PROCESS_USERNAME, password: PASSWORD, captcha: '', traceId: '' })
+const model = reactive({ tenantCode: void 0, username: PROCESS_USERNAME, password: PASSWORD, captcha: '', traceId: '' })
 
 const refreshTraceId = () => {
   model.traceId = Math.random().toString(36).slice(-8) + +new Date()
@@ -68,20 +68,29 @@ const selectI18n = (data: any) => {
   i18n.locale.value = data.locale
 }
 const enableI18n = import.meta.env.VITE_APP_ENABLE_I18N === 'true'
+const enableTenant = import.meta.env.VITE_APP_ENABLE_TENANT === 'true'
 </script>
 
 <template>
   <div class="content">
     <van-form @submit="onSubmit">
-      <h2 style="text-align: center">Diboot Mobile v3.0</h2>
-      <div style="text-align: right; margin-bottom: 5px; padding-right: 70px" v-if="enableI18n">
-        <van-popover v-model:show="showPopover" :actions="i18nActions" @select="selectI18n">
-          <template #reference>
-            <Language style="width: 22px" />
-          </template>
-        </van-popover>
-      </div>
       <van-cell-group inset>
+        <h2 style="text-align: center">Diboot Mobile v3.0</h2>
+        <div style="text-align: right; margin-bottom: 5px; padding-right: 70px" v-if="enableI18n">
+          <van-popover v-model:show="showPopover" :actions="i18nActions" @select="selectI18n">
+            <template #reference>
+              <Language style="width: 22px" />
+            </template>
+          </van-popover>
+        </div>
+        <van-field
+          v-if="enableTenant"
+          v-model="model.tenantCode"
+          name="tenantCode"
+          :label="$t('login.tenantCode')"
+          :placeholder="$t('login.tenantCode')"
+          :rules="[{ required: true, message: $t('login.rules.tenantCode') }]"
+        />
         <van-field
           v-model="model.username"
           name="username"
@@ -113,10 +122,10 @@ const enableI18n = import.meta.env.VITE_APP_ENABLE_I18N === 'true'
             />
           </template>
         </van-field>
+        <div style="margin: 16px">
+          <van-button round block type="primary" native-type="submit"> {{ $t('login.submit') }} </van-button>
+        </div>
       </van-cell-group>
-      <div style="margin: 40px 16px 16px">
-        <van-button round block type="primary" native-type="submit"> {{ $t('login.submit') }} </van-button>
-      </div>
     </van-form>
   </div>
 </template>

@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    DiDynamicForm: typeof import('@/components/di/DynamicForm.vue')['default']
     DiInput: typeof import('@/components/di/Input.vue')['default']
     Icon: typeof import('@/components/icon/index.vue')['default']
     IconBranches: typeof import('@/components/icon/Branches.vue')['default']
@@ -26,6 +27,7 @@ declare module 'vue' {
     RichRead: typeof import('@/components/rich/Read.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ScanCode: typeof import('@/components/scan-code/index.vue')['default']
     Select: typeof import('@/components/select/index.vue')['default']
     SelectColumn: typeof import('@/components/select/Column.vue')['default']
     VanArea: typeof import('vant/es')['Area']
@@ -35,7 +37,6 @@ declare module 'vue' {
     VanCheckbox: typeof import('vant/es')['Checkbox']
     VanCheckboxGroup: typeof import('vant/es')['CheckboxGroup']
     VanDatePicker: typeof import('vant/es')['DatePicker']
-    VanEmpty: typeof import('vant/es')['Empty']
     VanField: typeof import('vant/es')['Field']
     VanForm: typeof import('vant/es')['Form']
     VanGrid: typeof import('vant/es')['Grid']

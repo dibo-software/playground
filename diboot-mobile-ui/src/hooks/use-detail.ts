@@ -10,7 +10,7 @@ export default <T>(baseApi: string, init: Partial<T> = {}) => {
 
   const loadData = (id?: string) => {
     // 在请求之前重设状态...
-    model.value = _.cloneDeep(init) as any
+    model.value = _.cloneDeep(init)
 
     if (!id) return Promise.resolve()
 
@@ -20,7 +20,7 @@ export default <T>(baseApi: string, init: Partial<T> = {}) => {
       api
         .get<T>(`${baseApi}/${unref(id)}`)
         .then(res => {
-          model.value = res.data ?? ({} as any)
+          model.value = res.data ?? {}
           resolve()
         })
         .catch(err => {
