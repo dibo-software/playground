@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import type { TreeNodeData } from 'element-plus/es/components/tree/src/tree.type'
 import type { FormInstance, FormRules } from 'element-plus'
 import type { Role } from './type'
 import type { Resource } from '@/views/system/resource/type'
 import { checkValue } from '@/utils/validate-form'
-import type { Select } from '@/components/di/type'
 import { useI18n } from 'vue-i18n'
 
 const i18n = useI18n()
@@ -28,7 +28,7 @@ const { treeRef, treeDataList, selectedIdList, getTree, checkNode, flatTreeNodeC
 })
 const treeProps = {
   label: 'displayName',
-  class: flatTreeNodeClass
+  class: (data: TreeNodeData) => ({ ...flatTreeNodeClass(data), mobile: data.appModule === 'mobile' })
 }
 getTree()
 
@@ -105,34 +105,6 @@ const handleCheckNode = (currentNode: Resource, data: { checkedKeys: string[] })
       <el-form-item prop="code" :label="$t('role.code')">
         <el-input v-model="model.code" />
       </el-form-item>
-      <el-form-item prop="userIdList" :label="$t('role.userList')">
-        <di-selector
-          v-model="model.userIdList"
-          :tree="{ type: 'IamOrg', label: 'name', parent: 'parentId', parentPath: 'parentIdsPath' }"
-          :conditions="[{ field: 'status', value: 'A' }]"
-          :list="{
-            baseApi: '/iam/user',
-            relatedKey: 'orgId',
-            searchArea: {
-              propList: [
-                { prop: 'realname', label: $t('user.realname'), type: 'input' },
-                { prop: 'userNum', label: $t('user.userNum'), type: 'input' },
-                { prop: 'gender', label: $t('user.gender'), type: 'select', loader: 'GENDER' } as Select
-              ]
-            },
-            columns: [
-              { prop: 'userNum', label: $t('user.userNum') },
-              { prop: 'realname', label: $t('user.realname') },
-              { prop: 'genderLabel', label: $t('user.gender') },
-              { prop: 'mobilePhone', label: $t('user.mobilePhone') },
-              { prop: 'sortId', label: $t('user.sortId') }
-            ]
-          }"
-          multiple
-          data-type="IamUser"
-          data-label="realname"
-        />
-      </el-form-item>
       <el-form-item prop="description" :label="$t('role.description')">
         <el-input v-model="model.description" type="textarea" />
       </el-form-item>
@@ -164,4 +136,10 @@ const handleCheckNode = (currentNode: Resource, data: { checkedKeys: string[] })
   </el-dialog>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+.el-tree {
+  :deep(.mobile) {
+    color: var(--el-color-primary-dark-2);
+  }
+}
+</style>

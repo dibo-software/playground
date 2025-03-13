@@ -1,10 +1,16 @@
 import type { Locale } from './zhCN'
 const en: Locale = {
   client: {
-    name: 'Name',
+    name: 'Client Name',
     status: 'Status',
-    permissions: 'Permissions',
-    permissionsCreate: 'Enter create options'
+    permissions: 'API Permissions',
+    updateKey: 'Regenerate secret',
+    viewLogs: 'View logs',
+    namePlaceholder: 'Please enter client name',
+    statusPlaceholder: 'Please select status',
+    appKeyPlaceholder: 'Please enter the AppKey',
+    appSecretPlaceholder: 'Automatically generated AppSecret',
+    permissionsPlaceholder: 'Please select an interface permission'
   },
   config: {
     propKey: 'Property Name',
@@ -134,6 +140,10 @@ const en: Locale = {
     addVariable: 'Add This Variable'
   },
   operationLog: {
+    business: 'Business operation logs',
+    tripartite: 'Third-party application logs',
+    exception: 'System exception logs',
+    user: 'User',
     userRealname: 'User Name',
     userTypeAndId: 'User Type: ID',
     userType: 'User Type',
@@ -151,6 +161,16 @@ const en: Locale = {
     }
   },
   resource: {
+    main: 'Main menu resources',
+    mobile: {
+      title: 'Mobile menu resources',
+      parentId: 'Superior',
+      parentPlaceholder: 'Please select Superior',
+      displayName: 'Name',
+      displayNamePlaceholder: 'Please enter name',
+      resourceCode: 'Code',
+      resourceCodePlaceholder: 'Please enter the code'
+    },
     newButtonPermission: 'New Button Permission',
     parentId: 'Parent Directory',
     parentId0: 'Top-Level Directory',
@@ -217,7 +237,7 @@ const en: Locale = {
   role: {
     name: 'Name',
     code: 'Code',
-    userList: 'User',
+    userList: 'Role Users',
     description: 'Note',
     grantPermission: 'Authorize Permissions',
     permissionList: 'Role Authorization'

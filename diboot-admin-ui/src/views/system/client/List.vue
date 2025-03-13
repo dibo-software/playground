@@ -5,6 +5,8 @@ import Detail from './Detail.vue'
 import Form from './Form.vue'
 import { checkPermission } from '@/utils/permission'
 import { useI18n } from 'vue-i18n'
+import { uuid } from '@/utils/tools'
+import LogList from '@/views/system/operation-log/List.vue'
 
 const i18n = useI18n()
 
@@ -112,6 +114,15 @@ const handleOperation = (code: string, value?: string | string[]) => {
     case 'batchRemove':
       batchRemove(value as string[])
       break
+    case 'updateKey':
+      api
+        .put(`${baseApi}/${value}`, { id: value, appSecret: uuid() })
+        .then(res => {
+          ElMessage.success(res.msg)
+          refreshData()
+        })
+        .catch(err => ElMessage.error(err.msg || err.message))
+      break
     default:
       throw new Error(`不存在的操作编码${code}!`)
   }
@@ -135,6 +146,8 @@ const activated = () => {
 }
 
 router.currentRoute.value.meta.keepAlive ? onActivated(activated) : activated()
+
+const viewClientIdLogs = ref()
 </script>
 
 <template>
@@ -190,7 +203,7 @@ router.currentRoute.value.meta.keepAlive ? onActivated(activated) : activated()
       <el-table-column :label="$t('client.name')" prop="name" show-overflow-tooltip />
       <el-table-column label="AppKey" prop="appKey" show-overflow-tooltip />
       <el-table-column label="AppSecret" prop="appSecret" show-overflow-tooltip />
-      <el-table-column :label="$t('client.status')" prop="statusLabel" show-overflow-tooltip>
+      <el-table-column :label="$t('client.status')" prop="statusLabel" :width="95">
         <template #default="{ row }: { row: Client }">
           <el-tag
             v-if="row.statusLabel"
@@ -204,21 +217,24 @@ router.currentRoute.value.meta.keepAlive ? onActivated(activated) : activated()
       </el-table-column>
       <el-table-column :label="$t('baseField.createBy')" prop="createByLabel" show-overflow-tooltip />
       <el-table-column :label="$t('baseField.updateTime')" prop="updateTime" show-overflow-tooltip />
-      <el-table-column :label="$t('operation.label')" fixed="right" :width="180">
+      <el-table-column :label="$t('operation.label')" fixed="right" :width="280">
         <template #default="{ row }: { row: Client }">
           <el-space>
             <el-button
-              v-has-permission="'detail'"
-              type="primary"
+              v-has-permission="'update'"
+              type="warning"
               text
               bg
               size="small"
-              @click="handleOperation('detail', row.id)"
+              @click="handleOperation('updateKey', row.id)"
             >
-              {{ $t('operation.detail') }}
+              {{ $t('client.updateKey') }}
+            </el-button>
+            <el-button v-has-permission="'viewLogs'" text bg size="small" @click="viewClientIdLogs = row.id">
+              {{ $t('client.viewLogs') }}
             </el-button>
             <el-dropdown
-              v-has-permission="['update', 'delete']"
+              v-has-permission="['detail', 'update', 'delete']"
               @command="(code: string) => handleOperation(code, row.id)"
             >
               <el-button text bg type="primary" size="small">
@@ -229,6 +245,9 @@ router.currentRoute.value.meta.keepAlive ? onActivated(activated) : activated()
               </el-button>
               <template #dropdown>
                 <el-dropdown-menu>
+                  <el-dropdown-item v-if="checkPermission('detail')" command="detail">
+                    <el-button link>{{ $t('operation.detail') }}</el-button>
+                  </el-dropdown-item>
                   <el-dropdown-item v-if="checkPermission('update')" command="update">
                     <el-button link>{{ $t('operation.update') }}</el-button>
                   </el-dropdown-item>
@@ -248,7 +267,7 @@ router.currentRoute.value.meta.keepAlive ? onActivated(activated) : activated()
       v-model:current-page="pagination.current"
       v-model:page-size="pagination.pageSize"
       :page-sizes="[10, 15, 20, 30, 50, 100]"
-      small
+      size="small"
       background
       layout="total, sizes, prev, pager, next, jumper"
       :total="pagination.total"
@@ -256,7 +275,7 @@ router.currentRoute.value.meta.keepAlive ? onActivated(activated) : activated()
       @current-change="getList()"
     />
 
-    <el-dialog v-model="formVisible" width="60%" :title="formTitle" draggable @close="closeForm">
+    <el-dialog v-model="formVisible" width="60%" :title="formTitle" top="5vh" draggable @close="closeForm">
       <Form
         ref="formRef"
         @submitting="(val: boolean) => (submitting = val)"
@@ -287,6 +306,21 @@ router.currentRoute.value.meta.keepAlive ? onActivated(activated) : activated()
           {{ $t('operation.update') }}
         </el-button>
         <el-button @click="closeDetail">{{ $t('button.close') }}</el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog
+      :model-value="!!viewClientIdLogs"
+      :title="$t('client.viewLogs')"
+      top="5vh"
+      width="80%"
+      draggable
+      @close="viewClientIdLogs = void 0"
+    >
+      <LogList v-if="viewClientIdLogs" :user-id="viewClientIdLogs" user-type="Client" style="height: 73vh" />
+
+      <template #footer>
+        <el-button @click="viewClientIdLogs = void 0">{{ $t('button.close') }}</el-button>
       </template>
     </el-dialog>
   </div>
