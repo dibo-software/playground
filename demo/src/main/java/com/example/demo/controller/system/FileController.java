@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,6 +41,11 @@ public class FileController {
     private FileStorageService fileStorageService;
 
     /**
+     * 附加允许的文件后缀列表
+     */
+    private static final List<String> ADDITIONAL_VALID_EXT = Arrays.asList("");
+
+    /**
      * 上传文件
      *
      * @param file 文件
@@ -48,9 +54,12 @@ public class FileController {
      */
     @PostMapping("/upload")
     public JsonResult<FileRecord> upload(@RequestParam("file") MultipartFile file) throws Exception {
-        if (!FileHelper.isValidFileExt(file.getOriginalFilename())) {
-            log.warn("非法的文件上传:{}", file.getOriginalFilename());
-            return JsonResult.FAIL_VALIDATION("非法的文件上传");
+        if (file == null || file.getOriginalFilename() == null) {
+            return JsonResult.FAIL_VALIDATION("文件上传异常：无有效文件！");
+        }
+        if (!FileHelper.isValidFileExt(file.getOriginalFilename(), ADDITIONAL_VALID_EXT)) {
+            log.warn("非法的文件上传:{} 文件类型不允许！", file.getOriginalFilename());
+            return JsonResult.FAIL_VALIDATION("非法的文件上传：文件类型不允许！");
         }
         FileRecord fileRecord = fileStorageService.save(file);
         fileRecordService.createEntity(fileRecord);
@@ -109,25 +118,6 @@ public class FileController {
     }
 
     /**
-     * 批量下载文件
-     *
-     * @param fileIds
-     * @param response
-     * @return
-     * @throws Exception
-     */
-    @PostMapping
-    public JsonResult<?> batchDownload(@RequestBody List<String> fileIds, HttpServletResponse response) throws Exception {
-        List<FileRecord> fileRecords = fileRecordService.getEntityListByIds(fileIds);
-        if (V.isEmpty(fileRecords)) {
-            log.warn("文件不存在:{}", fileIds);
-            return new JsonResult<>(Status.FAIL_VALIDATION, "文件不存在");
-        }
-//        fileStorageService.download(fileRecord, response);
-        return JsonResult.FAIL_VALIDATION("批量下载未实现");
-    }
-
-    /**
      * 获取图片文件
      *
      * @param fileId   文件ID
@@ -152,4 +142,5 @@ public class FileController {
         fileStorageService.download(fileRecord, response);
         return null;
     }
+
 }

@@ -39,4 +39,10 @@ public class IamRoleFormDTO extends IamRole {
      * 权限id列表
      */
     private List<String> permissionIdList;
+
+    /**
+     * 用户id列表
+     */
+    private List<String> userIdList;
+
 }

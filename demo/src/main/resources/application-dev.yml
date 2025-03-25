@@ -29,13 +29,14 @@ logging:
       springframework: info
     _org:
       springframework: info
+
 # Diboot Configuration
 diboot:
   init-sql: true #自动初始化SQL，开发环境下初次启动开启，初始化后可关闭
   # i18n: true #启用国际化
   file:
     # 文件存储路径（本地存储方式）
-    storage-directory: D:/temp/playground
+    storage-directory: /temp/playground
   iam:
     # token-expires-minutes: 60
     # Shiro的匿名urls
@@ -46,9 +47,7 @@ diboot:
       - /v3/**
       - /doc.html
       - /diboot-devtools/** # 允许devtools直接访问
-      - /auth/sso/** # 单点登录集成需打开该注释
-      - /valid
-      - /valid/get
+#     - /auth/sso/** # 单点登录集成需打开该注释
 #    以下为单点登录配置示例：
 #    cas-server:
 #      auth-center-url: https://cas.server.com:8443/cas
@@ -72,4 +71,4 @@ diboot:
       output-path-admin-ui: diboot-admin-ui/
       output-path-mobile-ui: diboot-mobile-ui/
       #output-path-sql: docs/update.sql # 数据结构变更SQL记录
-      #upgrade: true
+      #upgrade: true # 开启版本升级

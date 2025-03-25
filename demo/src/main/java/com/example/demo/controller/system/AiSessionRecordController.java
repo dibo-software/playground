@@ -7,6 +7,7 @@ import com.diboot.ai.common.request.AiChatRequest;
 import com.diboot.ai.common.request.AiEnum;
 import com.diboot.ai.common.response.AiChatResponse;
 import com.diboot.ai.common.response.AiChoice;
+import com.diboot.ai.config.AiConfiguration;
 import com.diboot.ai.entity.AiSessionRecord;
 import com.diboot.ai.service.AiSessionRecordService;
 import com.diboot.ai.vo.AiSessionRecordVO;
@@ -102,6 +103,20 @@ public class AiSessionRecordController extends BaseCrudRestController<AiSessionR
     }
 
     /**
+     * 获取模型列表
+     */
+    @GetMapping("/models")
+    public JsonResult<?> getAiModels() {
+        List<String> list = new ArrayList<>();
+        AiConfiguration config = client.getConfiguration();
+        if (config.getQwen() != null) list.add("qwen");
+        if (config.getKimi() != null) list.add("kimi");
+        if (config.getWenxin() != null) list.add("wenxin");
+        if (config.getDeepseek() != null) list.add("deepseek");
+        return JsonResult.OK(list);
+    }
+
+    /**
      * AI 问答
      * @param aiChatRequest
      * @param response
@@ -117,7 +132,7 @@ public class AiSessionRecordController extends BaseCrudRestController<AiSessionR
         response.setCharacterEncoding(Cons.CHARSET_UTF8);
         response.setHeader(HttpHeaders.CACHE_CONTROL, CacheControl.noCache().getHeaderValue());
 
-        SseEmitter sseEmitter = new SseEmitter();
+        SseEmitter sseEmitter = new SseEmitter(120_000L);
         try {
             client.executeStream(aiChatRequest, new EventSourceListener() {
                 @Override

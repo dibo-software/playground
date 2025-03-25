@@ -25,7 +25,7 @@ public class MybatisPlusConfig {
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         // 多租户拦截器
-        // interceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new DefaultTenantHandler()));
+        //interceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new DefaultTenantHandler()));
         // 数据权限拦截器
         // interceptor.addInnerInterceptor(new DataPermissionInterceptor(new DataAccessControlHandler()));
         // 分页拦截器

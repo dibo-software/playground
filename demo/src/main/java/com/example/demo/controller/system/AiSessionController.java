@@ -1,12 +1,9 @@
 package com.example.demo.controller.system;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.diboot.ai.client.AiClient;
-import com.diboot.ai.common.request.AiChatRequest;
 import com.diboot.ai.entity.AiSession;
 import com.diboot.ai.entity.AiSessionRecord;
 import com.diboot.ai.service.AiSessionService;
-import com.diboot.core.config.Cons;
 import com.diboot.core.controller.BaseCrudRestController;
 import com.diboot.core.vo.JsonResult;
 import com.diboot.core.vo.Pagination;
@@ -14,22 +11,10 @@ import com.diboot.iam.annotation.BindPermission;
 import com.diboot.iam.annotation.Log;
 import com.diboot.iam.annotation.OperationCons;
 import com.diboot.iam.util.IamSecurityUtils;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.Response;
-import okhttp3.sse.EventSource;
-import okhttp3.sse.EventSourceListener;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.CacheControl;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**

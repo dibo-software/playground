@@ -1,21 +1,17 @@
 package com.example.demo.controller.iam;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.diboot.core.cache.I18nCacheManager;
 import com.diboot.core.controller.BaseCrudRestController;
 import com.diboot.core.dto.SortParamDTO;
-import com.diboot.core.entity.I18nConfig;
-import com.diboot.core.service.I18nConfigService;
 import com.diboot.core.util.BeanUtils;
 import com.diboot.core.util.V;
 import com.diboot.core.vo.JsonResult;
+import com.diboot.core.vo.Pagination;
 import com.diboot.iam.annotation.BindPermission;
 import com.diboot.iam.annotation.Log;
 import com.diboot.iam.annotation.OperationCons;
-import com.diboot.iam.cache.IamCacheManager;
+import com.diboot.iam.cache.IamPermissionCacheManager;
 import com.diboot.iam.config.Cons;
 import com.diboot.iam.dto.IamResourceDTO;
 import com.diboot.iam.entity.IamResource;
@@ -27,9 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 系统资源权限相关Controller
@@ -47,10 +42,6 @@ public class ResourceController extends BaseCrudRestController<IamResource> {
 
     @Autowired
     private IamResourceService iamResourceService;
-    @Autowired(required = false)
-    private I18nConfigService i18nConfigService;
-    @Autowired(required = false)
-    private I18nCacheManager i18nCacheManager;
 
     /**
      * 查询ViewObject的分页数据
@@ -63,15 +54,8 @@ public class ResourceController extends BaseCrudRestController<IamResource> {
     @Log(operation = OperationCons.LABEL_LIST)
     @BindPermission(name = OperationCons.LABEL_LIST, code = OperationCons.CODE_READ)
     @GetMapping
-    public JsonResult getViewObjectListMapping(IamResource entity) throws Exception {
-        QueryWrapper<IamResource> queryWrapper = super.buildQueryWrapperByDTO(entity);
-        queryWrapper.lambda().orderByAsc(IamResource::getSortId);
-        List<IamResourceListVO> voList = iamResourceService.getViewObjectList(queryWrapper, null, IamResourceListVO.class);
-        Map<String, Object> paramsMap = getParamsMap();
-        if (!paramsMap.containsKey("displayName") && !paramsMap.containsKey("resourceCode")) {
-            voList = BeanUtils.buildTree(voList, Cons.TREE_ROOT_ID);
-        }
-        return JsonResult.OK(voList);
+    public JsonResult getViewObjectListMapping(IamResource entity, Pagination pagination) throws Exception {
+        return super.getViewObjectList(entity, pagination, IamResourceListVO.class);
     }
 
     /**
@@ -86,6 +70,16 @@ public class ResourceController extends BaseCrudRestController<IamResource> {
         queryWrapper.orderByAsc(IamResource::getSortId).orderByAsc(IamResource::getId);
         List<IamResourceListVO> list = iamResourceService.getViewObjectList(queryWrapper, null, IamResourceListVO.class);
         return JsonResult.OK(BeanUtils.buildTree(list, Cons.TREE_ROOT_ID));
+    }
+
+    @GetMapping("/tree")
+    public JsonResult getTreeList() {
+        LambdaQueryWrapper<IamResource> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.orderByAsc(IamResource::getSortId).orderByAsc(IamResource::getId);
+        List<IamResourceListVO> list = iamResourceService.getViewObjectList(queryWrapper, null, IamResourceListVO.class);
+        List<IamResourceListVO> tree = BeanUtils.buildTree(list, Cons.TREE_ROOT_ID);
+        tree.sort(Comparator.comparing(IamResource::getAppModule, Comparator.nullsFirst(Comparator.naturalOrder())));
+        return JsonResult.OK(tree);
     }
 
     /**
@@ -117,30 +111,15 @@ public class ResourceController extends BaseCrudRestController<IamResource> {
 
     /**
      * 更新用户、账号和用户角色关联列表
-     * @param iamResourceDTO
+     * @param IamResourceDTO
      * @return JsonResult
      * @throws Exception
      */
     @Log(operation = OperationCons.LABEL_UPDATE)
     @BindPermission(name = OperationCons.LABEL_UPDATE, code = OperationCons.CODE_WRITE)
     @PutMapping("/{id}")
-    public JsonResult updateEntityMapping(@PathVariable("id") String id, @Valid @RequestBody IamResourceDTO iamResourceDTO) throws Exception {
-        String oldDisplayName = iamResourceService.getValueOfField(iamResourceDTO.getId(), IamResource::getDisplayName);
-        iamResourceService.updateMenuResources(iamResourceDTO);
-        if(i18nConfigService != null && V.notEquals(oldDisplayName, iamResourceDTO.getDisplayName())) {
-            if(V.notEquals(oldDisplayName, iamResourceDTO.getDisplayName())) {
-                LambdaUpdateWrapper<I18nConfig> updateWrapper =
-                        Wrappers.<I18nConfig>lambdaUpdate()
-                                .set(I18nConfig::getContent, iamResourceDTO.getDisplayName())
-                                .eq(I18nConfig::getLanguage, "zh_CN")
-                                .eq(I18nConfig::getCode, iamResourceDTO.getDisplayNameI18n());
-                i18nConfigService.updateEntity(updateWrapper);
-                Map<String, String> i18nItemCache = new HashMap<>();
-                i18nItemCache.put(iamResourceDTO.getDisplayNameI18n(), iamResourceDTO.getDisplayName());
-                i18nCacheManager.cacheLanguage("zh_CN", i18nItemCache);
-                log.debug("I18N {}:{} 的缓存已被更新为: {}", "zh_CN", iamResourceDTO.getDisplayNameI18n(), iamResourceDTO.getDisplayName());
-            }
-        }
+    public JsonResult updateEntityMapping(@PathVariable("id") String id, @Valid @RequestBody IamResourceDTO IamResourceDTO) throws Exception {
+        iamResourceService.updateMenuResources(IamResourceDTO);
         return JsonResult.OK();
     }
 
@@ -177,8 +156,8 @@ public class ResourceController extends BaseCrudRestController<IamResource> {
      * @throws Exception
      */
     @GetMapping("/api-list")
-    public JsonResult apiList() throws Exception {
-        return JsonResult.OK(IamCacheManager.getApiPermissionVoList());
+    public JsonResult apiList(boolean openApi) throws Exception {
+        return JsonResult.OK(IamPermissionCacheManager.getApiPermissionVoList(openApi));
     }
 
     /**

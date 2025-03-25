@@ -5,6 +5,7 @@ type RoleType = 'system' | 'user' | 'assistant'
 type AiMessage = {
   role: RoleType
   content: string
+  reasoningContent?: string
 }
 
 export interface AiSession {
@@ -68,7 +69,7 @@ export default defineStore('chatAi', {
           .then(res => {
             this.sessions = res.data || []
           })
-          .catch(err => {
+          .catch(() => {
             reject()
           })
       })
@@ -88,7 +89,7 @@ export default defineStore('chatAi', {
               resolve(res.data)
             } else reject()
           })
-          .catch(err => {
+          .catch(() => {
             reject()
           })
       })
