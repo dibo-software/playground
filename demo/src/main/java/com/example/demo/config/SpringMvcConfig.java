@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = {"com.example"})
-@MapperScan(basePackages = {"com.example.demo.mapper"})
+@MapperScan(basePackages = {"com.example.api.mapper"})
 public class SpringMvcConfig {
 
     @Bean

@@ -1,7 +1,6 @@
 package com.example.demo.handler;
 
 import com.diboot.core.data.protect.DefaultDataEncryptHandler;
-import org.springframework.stereotype.Component;
 
 /**
  * 默认的加解密实现处理
