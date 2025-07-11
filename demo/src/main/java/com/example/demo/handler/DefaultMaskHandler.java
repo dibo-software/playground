@@ -1,7 +1,6 @@
 package com.example.demo.handler;
 
 import com.diboot.core.data.protect.DefaultDataMaskHandler;
-import org.springframework.stereotype.Component;
 
 /**
  * 默认的数据脱敏显示处理

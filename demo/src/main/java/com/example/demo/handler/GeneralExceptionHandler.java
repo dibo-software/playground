@@ -1,7 +1,7 @@
 package com.example.demo.handler;
 
 import com.diboot.core.handler.DefaultExceptionHandler;
- import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
 /**
