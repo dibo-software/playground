@@ -1,34 +1,35 @@
-<script setup lang="ts" name="Client">
-import { Plus, Edit, Search, ArrowUp, ArrowDown } from '@element-plus/icons-vue'
-import type { Client } from './type'
+<script setup lang="ts" name="Group">
+import { Plus, Edit, Search, ArrowDown } from '@element-plus/icons-vue'
+import type { Group } from './type'
 import Detail from './Detail.vue'
 import Form from './Form.vue'
+
+import type { Select } from '@/components/di/type'
 import { checkPermission } from '@/utils/permission'
 import { useI18n } from 'vue-i18n'
-import { uuid } from '@/utils/tools'
-import LogList from '@/views/system/operation-log/List.vue'
 
 const i18n = useI18n()
 
-const baseApi = '/iam/client'
+const baseApi = '/iam/group'
 
 const { queryParam, loading, dataList, pagination, getList, onSearch, resetFilter, remove, batchRemove } =
-  useList<Client>({ baseApi, initQueryParam: {} })
+  useList<Group>({ baseApi, initQueryParam: {} })
 
-const searchState = ref(false)
+const { relatedData, initRelatedData } = useOption({
+  load: {
+    orgIdOptions: { type: 'IamOrg', label: 'name', parent: 'parentId', lazyChild: false }
+  }
+})
+
+initRelatedData()
 
 defineExpose({
   refresh: onSearch,
-  addCondition: (key: keyof Client, value: any, refresh = false) => {
+  addCondition: (key: keyof Group, value: any, refresh = false) => {
     queryParam[key] = value
     if (refresh) onSearch()
   }
 })
-
-const { initRelatedData, relatedData } = useOption({
-  dict: ['ACCOUNT_STATUS']
-})
-initRelatedData()
 
 const sortChange = ({ column, prop, order }: { column: { sortBy?: string }; prop: string; order: string }) => {
   let orderBy: 'ASC' | 'DESC' | undefined
@@ -99,19 +100,20 @@ const closeDetailAndOpenForm = () => {
   openForm(dataId.value)
 }
 
-const handleOperation = (code: string, value?: string | string[]) => {
+const handleOperation = (code: string, value?: string | string[], row?: Group) => {
   switch (code) {
+    case 'detail':
+      openDetail(value as string)
+      break
+    case 'create':
+    case 'update':
+      openForm(value as string)
+      break
+    case 'remove':
+      remove(value as string, row?.name)
+      break
     case 'batchRemove':
       batchRemove(value as string[])
-      break
-    case 'updateKey':
-      api
-        .put(`${baseApi}/${value}`, { id: value, appSecret: uuid() })
-        .then(res => {
-          ElMessage.success(res.msg)
-          refreshData()
-        })
-        .catch(err => ElMessage.error(err.msg || err.message))
       break
     default:
       throw new Error(`不存在的操作编码${code}!`)
@@ -128,7 +130,7 @@ const activated = () => {
   nextTick(() => {
     const query = router.currentRoute.value.query
     for (const queryKey in query) {
-      queryParam[queryKey as keyof Client] = query[queryKey] as any
+      queryParam[queryKey as keyof Group] = query[queryKey] as any
     }
 
     onSearch()
@@ -136,47 +138,58 @@ const activated = () => {
 }
 
 router.currentRoute.value.meta.keepAlive ? onActivated(activated) : activated()
-
-const viewClientIdLogs = ref()
 </script>
 
 <template>
   <div class="list-page">
     <el-space wrap class="list-operation">
-      <el-button v-has-permission="'create'" type="primary" :icon="Plus" @click="openForm()">
+      <el-button v-has-permission="'create'" type="primary" :icon="Plus" @click="handleOperation('create')">
         {{ $t('operation.create') }}
       </el-button>
 
       <el-space>
-        <span class="search">
-          <el-input v-model="queryParam.name" placeholder="名称" clearable @change="onSearch" />
-        </span>
+        <el-input v-model="queryParam.name" :placeholder="$t('group.name')" clearable @change="onSearch" />
+        <el-tree-select
+          v-model="queryParam.orgId"
+          :placeholder="$t('group.orgId')"
+          :data="relatedData.orgIdOptions"
+          filterable
+          default-expand-all
+          check-strictly
+          clearable
+          @change="onSearch"
+        />
+        <di-selector
+          v-model="queryParam.members"
+          :placeholder="$t('group.members')"
+          data-type="IamUser"
+          data-label="realname"
+          :tree="{ type: 'IamOrg', label: 'name', parent: 'parentId', parentPath: 'parentIdsPath' }"
+          :list="{
+            baseApi: '/iam/user',
+            relatedKey: 'orgId',
+            searchArea: {
+              propList: [
+                { prop: 'realname', label: $t('user.realname'), type: 'input' },
+                { prop: 'userNum', label: $t('user.userNum'), type: 'input' },
+                { prop: 'gender', label: $t('user.gender'), type: 'select', loader: 'GENDER' } as Select
+              ]
+            },
+            columns: [
+              { prop: 'userNum', label: $t('user.userNum') },
+              { prop: 'realname', label: $t('user.realname') },
+              { prop: 'genderLabel', label: $t('user.gender') },
+              { prop: 'mobilePhone', label: $t('user.mobilePhone') },
+              { prop: 'sortId', label: $t('user.sortId') }
+            ]
+          }"
+          multiple
+          @change="onSearch"
+        />
         <el-button :icon="Search" type="primary" @click="onSearch">{{ $t('operation.search') }}</el-button>
         <el-button :title="$t('title.reset')" @click="resetFilter">{{ $t('operation.reset') }}</el-button>
-        <el-button
-          :icon="searchState ? ArrowUp : ArrowDown"
-          :title="searchState ? $t('searchState.up') : $t('searchState.down')"
-          @click="searchState = !searchState"
-        />
       </el-space>
     </el-space>
-
-    <el-form v-show="searchState" label-width="80px" class="list-search" @submit.prevent>
-      <el-row :gutter="18">
-        <el-col :md="8" :sm="24">
-          <el-form-item prop="appKey" label="AppKey">
-            <el-input v-model="queryParam.appKey" clearable @change="onSearch" />
-          </el-form-item>
-        </el-col>
-        <el-col :md="8" :sm="24">
-          <el-form-item prop="status" :label="$t('client.status')">
-            <el-select v-model="queryParam.status" filterable clearable @change="onSearch">
-              <el-option v-for="item in relatedData.accountStatusOptions" :key="item.value" v-bind="item" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
 
     <el-table
       ref="tableRef"
@@ -187,43 +200,36 @@ const viewClientIdLogs = ref()
       stripe
       row-key="id"
       style="border-top: 1px solid var(--el-border-color-lighter)"
-      @row-dblclick="(row: Client) => checkPermission('detail') && openDetail(row.id)"
+      @row-dblclick="(row: Group) => checkPermission('detail') && handleOperation('detail', row.id)"
       @sort-change="sortChange"
     >
-      <el-table-column :label="$t('client.name')" prop="name" show-overflow-tooltip />
-      <el-table-column label="AppKey" prop="appKey" show-overflow-tooltip />
-      <el-table-column label="AppSecret" prop="appSecret" show-overflow-tooltip />
-      <el-table-column :label="$t('client.status')" prop="statusLabel" :width="95">
-        <template #default="{ row }: { row: Client }">
-          <el-tag
-            v-if="row.statusLabel"
-            effect="dark"
-            type="info"
-            :color="(row.statusLabel as LabelValue<{ color?: string }>).ext?.color"
-          >
-            {{ (row.statusLabel as LabelValue).label }}
-          </el-tag>
+      <el-table-column :label="$t('group.name')" prop="name" show-overflow-tooltip :min-width="100" />
+      <el-table-column :label="$t('group.orgId')" prop="orgLabel" show-overflow-tooltip :min-width="100" />
+      <el-table-column :label="$t('group.members')" prop="members" show-overflow-tooltip :min-width="180">
+        <template #default="{ row }: { row: Group }">
+          {{ row.membersLabel?.join('、') }}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('baseField.createTime')" prop="createTime" show-overflow-tooltip />
-      <el-table-column :label="$t('baseField.updateTime')" prop="updateTime" show-overflow-tooltip />
-      <el-table-column :label="$t('operation.label')" fixed="right" :width="280">
-        <template #default="{ row }: { row: Client }">
+      <el-table-column :label="$t('group.description')" prop="description" show-overflow-tooltip :min-width="130" />
+      <el-table-column :label="$t('baseField.createTime')" prop="createTime" show-overflow-tooltip :width="165" />
+      <el-table-column :label="$t('baseField.updateTime')" prop="updateTime" show-overflow-tooltip :width="165" />
+      <el-table-column :label="$t('operation.label')" fixed="right" :width="180">
+        <template #default="{ row }: { row: Group }">
           <el-space>
             <el-button
-              v-has-permission="'update'"
-              type="warning"
+              v-has-permission="'detail'"
+              type="primary"
               text
               bg
               size="small"
-              @click="handleOperation('updateKey', row.id)"
+              @click="handleOperation('detail', row.id)"
             >
-              {{ $t('client.updateKey') }}
+              {{ $t('operation.detail') }}
             </el-button>
-            <el-button v-has-permission="'viewLogs'" text bg size="small" @click="viewClientIdLogs = row.id">
-              {{ $t('client.viewLogs') }}
-            </el-button>
-            <el-dropdown v-has-permission="['detail', 'update', 'delete']">
+            <el-dropdown
+              v-has-permission="['update', 'delete']"
+              @command="(code: string) => handleOperation(code, row.id, row)"
+            >
               <el-button text bg type="primary" size="small">
                 {{ $t('operation.more') }}
                 <el-icon :size="16" style="margin-left: 5px">
@@ -232,13 +238,10 @@ const viewClientIdLogs = ref()
               </el-button>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item v-if="checkPermission('detail')" @click="openDetail(row.id)">
-                    <el-button link>{{ $t('operation.detail') }}</el-button>
-                  </el-dropdown-item>
-                  <el-dropdown-item v-if="checkPermission('update')" @click="openForm(row.id)">
+                  <el-dropdown-item v-if="checkPermission('update')" command="update">
                     <el-button link>{{ $t('operation.update') }}</el-button>
                   </el-dropdown-item>
-                  <el-dropdown-item v-if="checkPermission('delete')" @click="remove(row.id, row.name)">
+                  <el-dropdown-item v-if="checkPermission('delete')" command="remove">
                     <el-button link type="danger">{{ $t('operation.delete') }}</el-button>
                   </el-dropdown-item>
                 </el-dropdown-menu>
@@ -253,7 +256,7 @@ const viewClientIdLogs = ref()
       v-if="pagination.total"
       v-model:current-page="pagination.current"
       v-model:page-size="pagination.pageSize"
-      size="small"
+      small
       background
       layout="total, sizes, prev, pager, next, jumper"
       :total="pagination.total"
@@ -261,7 +264,7 @@ const viewClientIdLogs = ref()
       @current-change="getList()"
     />
 
-    <el-dialog v-model="formVisible" width="60%" :title="formTitle" top="5vh" draggable @close="closeForm">
+    <el-dialog v-model="formVisible" width="50%" :title="formTitle" draggable @close="closeForm">
       <Form
         ref="formRef"
         @submitting="(val: boolean) => (submitting = val)"
@@ -277,7 +280,7 @@ const viewClientIdLogs = ref()
       </template>
     </el-dialog>
 
-    <el-dialog v-model="detailVisible" width="60%" :title="$t('title.detail')" draggable @close="closeDetail">
+    <el-dialog v-model="detailVisible" width="50%" :title="$t('title.detail')" draggable @close="closeDetail">
       <Detail ref="detailRef" />
 
       <template #footer>
@@ -292,21 +295,6 @@ const viewClientIdLogs = ref()
           {{ $t('operation.update') }}
         </el-button>
         <el-button @click="closeDetail">{{ $t('button.close') }}</el-button>
-      </template>
-    </el-dialog>
-
-    <el-dialog
-      :model-value="!!viewClientIdLogs"
-      :title="$t('client.viewLogs')"
-      top="5vh"
-      width="80%"
-      draggable
-      @close="viewClientIdLogs = void 0"
-    >
-      <LogList v-if="viewClientIdLogs" :user-id="viewClientIdLogs" user-type="Client" style="height: 73vh" />
-
-      <template #footer>
-        <el-button @click="viewClientIdLogs = void 0">{{ $t('button.close') }}</el-button>
       </template>
     </el-dialog>
   </div>
