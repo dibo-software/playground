@@ -25,7 +25,6 @@
       * 配置 `diboot.file.storage-directory` 本地文件存储路径
       * 配置 `diboot.iam.anon-urls` 中加入 `/diboot/**` 配置项，以放行devtools接口免登录
       * 配置 `diboot.lcdp.devtools` 相关参数，说明（application-dev.yml中已有配置好的示例）：
-        * license: 订阅用户配置该项，非订阅用户不配置
         * codes-author: 开发者姓名
         * codes-copyright: 代码版权归属
         * codes-version: 代码版本
@@ -59,8 +58,6 @@
 -> URL: http://localhost:8080/api/diboot/index.html
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ~~~
-> 注：
-> 1. 如您为订阅用户，请配置 `diboot.lcdp.devtools.license` 以便使用devtools全部功能。
 
 ## 其他参考文档
 * [V3 技术文档](http://www.diboot.com)
