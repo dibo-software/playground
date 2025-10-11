@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2021, www.dibo.ltd (service@dibo.ltd).
+ * Copyright (c) 2015-2099, www.dibo.ltd (service@dibo.ltd).
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -18,6 +18,8 @@ package com.diboot.iam.entity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.diboot.core.binding.query.BindQuery;
+import com.diboot.core.binding.query.Comparison;
 import com.diboot.core.entity.BaseTreeEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
@@ -66,6 +68,7 @@ public class IamOrg extends BaseTreeEntity<String> {
      */
     @NotNull(message = "{validation.iamOrg.name.NotNull.message}")
     @Length(max = 100, message = "{validation.iamOrg.name.Length.message}")
+    @BindQuery(comparison = Comparison.LIKE)
     @TableField()
     private String name;
 
@@ -82,6 +85,7 @@ public class IamOrg extends BaseTreeEntity<String> {
      */
     @NotNull(message = "{validation.iamOrg.code.NotNull.message}")
     @Length(max = 50, message = "{validation.iamOrg.code.Length.message}")
+    @BindQuery(comparison = Comparison.LIKE)
     @TableField()
     private String code;
 
