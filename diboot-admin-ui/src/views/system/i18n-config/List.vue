@@ -1,4 +1,4 @@
-<script setup lang="ts" name="I18nConfig">
+<script setup lang="ts">
 import { Search, Plus } from '@element-plus/icons-vue'
 import type { I18nConfig } from './type'
 import Form from './Form.vue'
