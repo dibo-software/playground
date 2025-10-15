@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2020, www.dibo.ltd (service@dibo.ltd).
+ * Copyright (c) 2015-2099, www.dibo.ltd (service@dibo.ltd).
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -19,6 +19,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.diboot.core.entity.BaseEntity;
 import com.diboot.core.util.S;
 import com.diboot.core.vo.LabelValue;
+
+import java.util.List;
 
 /**
  * 可登录用户Base类定义
@@ -59,11 +61,25 @@ public abstract class BaseLoginUser extends BaseEntity<String> {
     @TableField(exist = false)
     private LabelValue extensionObj;
 
+    /**
+     * 兼职岗 + 主岗
+      */
+    @TableField(exist = false)
+    private List<LabelValue> positions;
+
     public LabelValue getExtensionObj(){
         return this.extensionObj;
     }
     public void setExtensionObj(LabelValue extensionObj){
         this.extensionObj = extensionObj;
+    }
+
+    public List<LabelValue> getPositions() {
+        return positions;
+    }
+
+    public void setPositions(List<LabelValue> positions) {
+        this.positions = positions;
     }
 
     public String getAuthToken(){
