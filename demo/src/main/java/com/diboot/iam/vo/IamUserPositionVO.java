@@ -13,37 +13,33 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.diboot.iam.dto;
+package com.diboot.iam.vo;
 
-import com.diboot.iam.entity.IamRole;
+import com.diboot.core.binding.annotation.BindField;
+import com.diboot.iam.entity.IamOrg;
+import com.diboot.iam.entity.IamPosition;
+import com.diboot.iam.entity.IamUserPosition;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.io.Serial;
-import java.util.List;
-
 /**
- * 角色表单接收类
- * @author mazc@dibo.ltd
- * @version v2.0
- * @date 2019/12/18
+ * 用户岗位VO
  */
 @Getter
 @Setter
 @Accessors(chain = true)
-public class IamRoleFormDTO extends IamRole {
-    @Serial
-    private static final long serialVersionUID = 1444823850258901617L;
+public class IamUserPositionVO extends IamUserPosition {
 
-    /**
-     * 权限id列表
-     */
-    private List<String> permissionIdList;
+    @BindField(entity = IamOrg.class, field = "name", condition = "this.org_id = id")
+    private String orgName;
 
-    /**
-     * 用户id列表
-     */
-    private List<String> userIdList;
+    @BindField(entity = IamPosition.class, field = "name", condition = "this.position_id = id")
+    private String positionName;
 
+    @BindField(entity = IamPosition.class, field = "gradeValue", condition = "this.position_id = id")
+    private String positionGradeValue;
+
+    private String positionCode;
+    private String dataPermissionType;
 }
