@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2020, www.dibo.ltd (service@dibo.ltd).
+ * Copyright (c) 2015-2099, www.dibo.ltd (service@dibo.ltd).
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -187,7 +187,7 @@ public class IamUserServiceImpl extends BaseServiceImpl<IamUserMapper, IamUser> 
     @Override
     public boolean isUserNumExists(String id, String userNum) {
         if(V.isEmpty(userNum)){
-            return true;
+            return false;
         }
         LambdaQueryWrapper<IamUser> wrapper = Wrappers.<IamUser>lambdaQuery()
                 .select(IamUser::getUserNum)
@@ -277,7 +277,10 @@ public class IamUserServiceImpl extends BaseServiceImpl<IamUserMapper, IamUser> 
         if (V.notEmpty(orgId)) {
             orgIds.add(orgId);
             // 获取所有下级部门列表
-            orgIds.addAll(iamOrgService.getChildOrgIds(orgId));
+            List<String> childOrgIds = iamOrgService.getChildOrgIds(orgId);
+            if (V.notEmpty(childOrgIds)) {
+                orgIds.addAll(childOrgIds);
+            }
             // 相应部门下岗位相关用户
             LambdaQueryWrapper<IamUserPosition> queryUserIds = Wrappers.<IamUserPosition>lambdaQuery()
                     .eq(IamUserPosition::getUserType, IamUser.class.getSimpleName())

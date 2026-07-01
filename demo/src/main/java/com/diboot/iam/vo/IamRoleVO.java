@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2020, www.dibo.ltd (service@dibo.ltd).
+ * Copyright (c) 2015-2099, www.dibo.ltd (service@dibo.ltd).
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -25,6 +25,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.io.Serial;
 import java.util.List;
 
 /**
@@ -37,6 +38,7 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class IamRoleVO extends IamRole {
+    @Serial
     private static final long serialVersionUID = -6778550575399070076L;
 
     // 字段关联：this.id=iam_role_resource.role_id AND iam_role_resource.resource_id=id

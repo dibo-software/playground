@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2021, www.dibo.ltd (service@dibo.ltd).
+ * Copyright (c) 2015-2099, www.dibo.ltd (service@dibo.ltd).
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -56,8 +56,16 @@ public class IamOrgVO extends IamOrg  {
     @BindEntityList(entity = IamOrg.class, condition = "this.id=parent_id")
     private List<IamOrgVO> children;
 
-    // 字段关联：this.parent_id=id
+    // 字段关联：this.manager_id=id
     @BindField(entity = IamUser.class, field = "realname", condition = "this.manager_id=id")
     private String managerName;
+
+    // 字段关联：this.manager_id=id
+    @BindField(entity = IamUser.class, field = "avatarUrl", condition = "this.manager_id=id")
+    private String managerAvatarUrl;
+
+    // 字段关联：this.manager_id=id
+    @BindField(entity = IamUser.class, field = "gender", condition = "this.manager_id=id")
+    private String managerGender;
 
 }
