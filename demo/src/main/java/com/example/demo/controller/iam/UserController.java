@@ -22,6 +22,7 @@ import com.diboot.iam.service.IamUserService;
 import com.diboot.iam.util.IamSecurityUtils;
 import com.diboot.iam.vo.IamUserOrgVO;
 import com.diboot.iam.vo.IamUserVO;
+import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,7 @@ public class UserController extends BaseCrudRestController<IamUser> {
         dto.setOrgId(null);
         // 处理 _conditions
         if (V.notEmpty(_conditions)) {
-            List<Map> conditions = JSON.parseArray(_conditions, Map.class);
+            List<Map<String, Object>> conditions = JSON.parseArray(_conditions, new TypeReference<List<Map<String, Object>>>(){});
             for (Map<String, Object> condition : conditions) {
                 String field = String.valueOf(condition.get("field"));
                 Object value = condition.get("value");
@@ -150,6 +151,7 @@ public class UserController extends BaseCrudRestController<IamUser> {
      * @return
      * @throws Exception
      */
+    @BindPermission(name = "账号信息", code = OperationCons.CODE_READ)
     @GetMapping("/account/{id}")
     public JsonResult getUsername(@PathVariable("id") String id) throws Exception {
         IamAccount account = iamAccountService.getSingleEntity(
@@ -167,6 +169,7 @@ public class UserController extends BaseCrudRestController<IamUser> {
      * @return
      * @throws Exception
      */
+    @BindPermission(name = OperationCons.LABEL_LIST, code = OperationCons.CODE_READ)
     @GetMapping("/user-list/{orgId}")
     public JsonResult getUserList(@PathVariable("orgId") String orgId, IamUser iamUser, Pagination pagination) throws Exception {
         QueryWrapper<IamUser> wrapper = super.buildQueryWrapperByDTO(iamUser);

@@ -4,11 +4,13 @@ import com.diboot.core.util.S;
 import com.diboot.core.vo.JsonResult;
 import com.diboot.core.vo.Status;
 import com.diboot.file.entity.FileRecord;
+import com.diboot.file.interceptor.FileAccessInterceptor;
 import com.diboot.file.service.FileRecordService;
 import com.diboot.file.service.FileStorageService;
 import com.diboot.file.util.FileHelper;
 import com.diboot.file.util.ImageHelper;
 import com.diboot.iam.annotation.BindPermission;
+import com.diboot.iam.annotation.Log;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +35,15 @@ import java.util.List;
 @RequestMapping("/file")
 @BindPermission(name = "文件", code = "File")
 public class FileController {
+
     @Autowired
     private FileRecordService fileRecordService;
 
     @Autowired
     private FileStorageService fileStorageService;
+
+    @Autowired
+    private FileAccessInterceptor fileAccessInterceptor;
 
     /**
      * 附加允许的文件后缀列表
@@ -51,8 +57,10 @@ public class FileController {
      * @return 文件记录
      * @throws Exception
      */
+    @Log(operation = "上传文件")
     @PostMapping("/upload")
-    public JsonResult<FileRecord> upload(@RequestParam("file") MultipartFile file) throws Exception {
+    public JsonResult<FileRecord> upload(@RequestParam("file") MultipartFile file,
+                                         @RequestParam(value = "businessType", required = false) String businessType) throws Exception {
         if (file == null || file.getOriginalFilename() == null) {
             return JsonResult.FAIL_VALIDATION("文件上传异常：无有效文件！");
         }
@@ -60,7 +68,9 @@ public class FileController {
             log.warn("非法的文件上传:{} 文件类型不允许！", file.getOriginalFilename());
             return JsonResult.FAIL_VALIDATION("非法的文件上传：文件类型不允许！");
         }
+        fileAccessInterceptor.checkWrite(businessType);
         FileRecord fileRecord = fileStorageService.save(file);
+        fileRecord.setBusinessType(businessType);
         fileRecordService.createEntity(fileRecord);
         return JsonResult.OK(fileRecord);
     }
@@ -71,13 +81,17 @@ public class FileController {
      * @param files 文件列表
      * @return 结果集
      */
+    @Log(operation = "批量上传文件")
     @PostMapping(value = "/batch-upload")
-    public JsonResult<?> batchUploadFile(@RequestParam("files") MultipartFile[] files) {
+    public JsonResult<?> batchUploadFile(@RequestParam("files") MultipartFile[] files,
+                                         @RequestParam(value = "businessType", required = false) String businessType) {
+        fileAccessInterceptor.checkWrite(businessType);
         List<String> errFiles = new ArrayList<>();
         List<FileRecord> fileRecords = new ArrayList<>();
         for (MultipartFile file : files) {
             try {
                 FileRecord fileRecord = fileStorageService.save(file);
+                fileRecord.setBusinessType(businessType);
                 fileRecords.add(fileRecord);
             } catch (Exception e) {
                 String filename = file.getOriginalFilename();
@@ -102,6 +116,7 @@ public class FileController {
      * @return
      * @throws Exception
      */
+    @Log(operation = "查看/下载文件")
     @GetMapping("/{fileId}")
     public JsonResult<?> read(@PathVariable String fileId, HttpServletResponse response) throws Exception {
         if (S.contains(fileId, ".")) {
@@ -112,6 +127,7 @@ public class FileController {
             log.warn("文件不存在:{}", fileId);
             return new JsonResult<>(Status.FAIL_VALIDATION, "文件不存在");
         }
+        fileAccessInterceptor.checkRead(fileRecord);
         fileStorageService.download(fileRecord, response);
         return null;
     }
@@ -124,6 +140,7 @@ public class FileController {
      * @return
      * @throws Exception
      */
+    @Log(operation = "查看/下载图片")
     @GetMapping("/{fileId}/image")
     public JsonResult<?> readImage(@PathVariable String fileId, HttpServletResponse response) throws Exception {
         if (S.contains(fileId, ".")) {
@@ -138,6 +155,7 @@ public class FileController {
             log.warn("非图片文件:{}", fileId);
             return JsonResult.FAIL_VALIDATION("非图片文件");
         }
+        fileAccessInterceptor.checkRead(fileRecord);
         fileStorageService.download(fileRecord, response);
         return null;
     }
